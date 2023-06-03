@@ -1,0 +1,18 @@
+services:
+  backend:
+    container_name: backend_container
+    build:
+      args:
+        - DBPASSWORD=${DBPASSWORD}
+        - DBUSER=${DBUSER}
+        - HOST=${HOST}
+      context: ../backend
+    ports:
+      - 4000:4000
+    volumes:
+      - ../backend:/usr/app/backend
+      - ../share:/usr/app/share
+      - /usr/app/backend/node_modules
+    networks:
+      - redDatabase
+      - redBackend

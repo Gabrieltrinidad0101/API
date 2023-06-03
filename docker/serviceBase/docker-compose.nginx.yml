@@ -1,0 +1,12 @@
+services:
+  nginx:
+    container_name: nginx_container
+    image: nginx:1.23.3-alpine
+    ports:
+      - 8000:8000
+    volumes:
+      - ../nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ../nginx/conf.d:/etc/nginx/conf.d
+    networks:
+      - redBackend
+      - redFrontend

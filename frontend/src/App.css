@@ -1,0 +1,12 @@
+body{
+    margin: 0;
+    padding: 0;
+}
+
+.cursor-p{
+    cursor: pointer;
+}
+
+.d-none{
+    display: none !important;
+}

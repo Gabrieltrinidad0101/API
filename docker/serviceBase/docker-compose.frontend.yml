@@ -1,0 +1,16 @@
+services:
+  frontend:
+    stdin_open: true
+    container_name: frontend_container
+    build: 
+      args: 
+        - API=${API}
+      context: ../frontend
+    volumes:
+      - ../frontend:/usr/app/frontend
+      - ../share:/usr/app/share
+      - /usr/app/frontend/node_modules
+    ports:
+      - 3000:3000
+    networks:
+      - redFrontend

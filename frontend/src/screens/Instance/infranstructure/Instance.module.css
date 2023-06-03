@@ -1,0 +1,44 @@
+.container{
+    width: 95%;
+    height: 70px;
+    background: #012677;
+    display: grid;
+    grid-template-columns: 33% 33% 33%;
+    margin: auto;
+    margin-top: 10px;
+    border: 1px solid #000;
+    color: white;
+    padding: 10px;
+    font-weight: 600;
+}
+
+.container > .section{
+    display: grid;
+    grid-template-rows: 50% 50%;
+    align-items: center;
+}
+
+.container > .section > div:first-child{
+    border-bottom: 1px solid #000;
+    font-size: 20px;
+}
+
+.inputContainer{
+    background: #f2f2f2;
+    width: 85%;
+    height: 90%;
+    border: 1px solid #000;
+    display: grid;
+    grid-template-columns: 85% 15%;
+}
+
+.inputContainer > input{
+    border: none;
+    background: none;
+    height: 100%;
+    font-size: 110%;
+}
+.inputContainer >  button{
+    height: 100%;
+    border: none;
+}

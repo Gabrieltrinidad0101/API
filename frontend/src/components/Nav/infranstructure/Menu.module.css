@@ -1,0 +1,94 @@
+.nav{
+    width: 100%;
+    padding: 10px;
+}
+
+.listItems{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    list-style: none;
+    padding: 0;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    font-size: 28px;
+    font-weight: 900;
+    color: white;
+}
+
+.logo i {
+    font-size: 20px;
+    margin-right: 10px;
+}
+
+.item > a{
+    display: block;
+    width: 80%;
+    border-radius: 8px;
+    padding: 10px;
+    background: #202436;
+    cursor: pointer;
+    color: white;
+    text-decoration: none;   
+}
+
+.item > a > span{
+    margin-left: 20px;
+    font-weight: 500;
+}
+
+
+@media only screen and (min-width: 1000px) {
+    .item:last-child{
+        position: fixed;
+        bottom: 10px;
+        width: 13.5rem;
+    }
+}
+
+
+
+
+@media only screen and (max-width: 1000px) {
+    .nav{
+        padding: 0px;
+        display: flex;
+        align-items: center;
+        border-top: 1px solid #00000091;
+    }
+
+    .listItems{
+        flex-direction: row;
+        width: 100vw;
+        justify-content: space-evenly;
+        align-items: center;
+        height: 100%;
+    }
+
+    .item.bottom{
+        position: relative;
+        bottom: 0;
+    }
+
+    .item{
+        font-size: 19px;
+    }
+    
+    .item a{
+        background: none;
+    }
+
+    .item:last-child{
+        position: relative;
+        bottom: 0px;
+        white-space: nowrap;
+    }
+
+    .item span{
+        display: none;
+    }
+}

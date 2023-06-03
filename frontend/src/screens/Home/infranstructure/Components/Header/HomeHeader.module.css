@@ -1,0 +1,119 @@
+.header {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: calc(100% - 15rem) 15rem;
+    grid-template-rows: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.header .search {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.header .search > div{
+    width: 90%;
+    height: 40px;
+    display: grid;
+    border: 1px solid #000;
+    grid-template-columns: 90% 10%;
+    align-items: center;
+}
+
+.searchInput {
+    width: 100%;
+    font-size: 20px;
+    padding: 0 10px;
+    border: none;
+    outline: none;
+    font-weight: 700;
+    text-transform: lowercase;
+}
+
+
+
+.searchButton{
+    justify-self: center;
+    cursor: pointer;
+}
+
+
+.newProject {
+    display: inline-block;
+    outline: 0;
+    cursor: pointer;
+    text-align: center;
+    border: 0;
+    padding: 7px 16px;
+    min-height: 36px;
+    min-width: 36px;
+    color: #ffffff;
+    background: #008060;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 500;
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 0px 0px, rgba(0, 0, 0, 0.2) 0px -1px 0px 0px inset;
+}
+
+.searchButton{
+    justify-self: center;
+}
+
+.newProject a {
+    text-decoration: none;
+    background: transparent;
+    white-space: nowrap;
+}
+
+.newProject:hover {
+    box-shadow: rgba(80, 63, 205, 0.5) 0 1px 5px;
+    transition-duration: .1s;
+}
+
+
+
+@media only screen and (max-width: 1000px) {
+    .logo {
+        display: none !important;
+    }
+
+    .userPerfil {
+        display: none !important;
+    }
+
+    .header {
+        display: grid;
+        grid-template-columns: 100%;
+    }
+
+    .newProject {
+        position: fixed;
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        left: calc(100% - 90px);
+        top: calc(100% - 6rem - 80px );
+    }
+
+    .newProject{
+        color: transparent;
+    }
+
+    .newProject::after{
+        content: "+";
+        font-size: 70px;
+        color: wheat;
+        display: block;
+        margin-top: -40px;
+    }
+
+}
+
+@media only screen and (max-width: 450px) {
+    .header .search > div{
+        grid-template-columns: 80% 20%;
+    }
+}
