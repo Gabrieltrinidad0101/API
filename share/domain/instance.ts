@@ -5,9 +5,11 @@ export interface IInstanceAuthentication{
     _id?: string
 }
 
+export type TypeStatusInstance = "pending" | "authenticated"
+
 export default interface IInstance  extends IInstanceAuthentication{
     name: String,
-    status: String,
+    status: "pending" | "authenticated",
     plan: number,
     userId?: String,
     qr?: String
