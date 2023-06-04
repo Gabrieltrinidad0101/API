@@ -1,8 +1,8 @@
 import React from 'react'
-import Menu from '../../../../components/Nav/infranstructure/Menu'
-import Nav, { Logo } from '../../../../components/Nav/infranstructure/Nav'
+import Menu from './Nav/infranstructure/Menu'
+import Nav, { Logo } from './Nav/infranstructure/Nav'
 
-export default function HomeMenu() {
+export default function MenuDashboard() {
   return (
     <Menu>
       <Logo>

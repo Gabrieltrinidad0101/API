@@ -8,5 +8,9 @@ body{
 }
 
 .d-none{
-    display: none !important;
+    display: none;
+}
+
+.d-block{
+    display: block;
 }

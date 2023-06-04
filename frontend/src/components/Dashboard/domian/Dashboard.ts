@@ -6,11 +6,15 @@ export default interface IDashboard<T> {
 }
 
 export interface IDashboardState {
-  miniMenu?: boolean
   hideMenu?: boolean
 }
 
 export interface IDashboardContext {
   dashboardState: IDashboardState
   setDashboardState: (dashboard: IDashboardState) => void
+}
+
+
+export interface IHeader{
+  className: string
 }

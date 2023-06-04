@@ -2,9 +2,11 @@ import React, { useContext, useState } from 'react'
 import type IDashboard from '../domian/Dashboard'
 import DashboardCss from './Dashboard.module.css'
 import { type IDashboardState, type IDashboardContext } from '../domian/Dashboard'
+import HeaderDashboard from "./components/header/HeaderDashboard"
+import MenuDashboard from './components/Menu/MenuDashboard'
+import { Outlet } from 'react-router-dom'
 
 const initialState: IDashboardState = {
-  miniMenu: false,
   hideMenu: false
 }
 
@@ -13,7 +15,7 @@ const AuthContext = React.createContext<IDashboardContext>({
   dashboardState: initialState
 })
 
-export default function Dashboard ({ header, menu, main }: IDashboard<JSX.Element>): JSX.Element {
+export default function Dashboard (): JSX.Element {
   const [dashboardState, setDashboardState] = useState<IDashboardState>(initialState)
 
   const changeDashboard = (_dashboardState: IDashboardState): void => {
@@ -25,18 +27,11 @@ export default function Dashboard ({ header, menu, main }: IDashboard<JSX.Elemen
       setDashboardState: changeDashboard,
       dashboardState
     }}>
-      <div className={`
-        ${DashboardCss.container} ${(dashboardState.miniMenu ?? false) ? DashboardCss.miniMenu : ''}
-        ${(dashboardState.hideMenu ?? false) ? DashboardCss.hideMenu : ''}`
-        }>
-        <div className={DashboardCss.header}>
-          {header}
-        </div>
-        <div className={DashboardCss.menu} >
-          {menu}
-        </div>
+      <div className={`${DashboardCss.container} ${dashboardState.hideMenu ? DashboardCss.hideMenu : ""} `}>
+        <HeaderDashboard/>
+        <MenuDashboard/>
         <div className={DashboardCss.main} >
-          {main}
+          <Outlet/>
         </div>
       </div>
     </AuthContext.Provider>
