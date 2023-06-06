@@ -1,5 +1,5 @@
 import type IInstance from '../../../../../../share/domain/instance'
-import { type TypeStatusInstance, type ISearchInstance } from '../../../../../../share/domain/instance'
+import { type TypeStatusInstance, type ISearchInstance, type IInstanceQRStatus } from '../../../../../../share/domain/instance'
 import type IInstanceRepository from '../../domian/InstanceRepository'
 import InstanceModal from './instanceSchema'
 import crypto from 'crypto'
@@ -70,10 +70,9 @@ export default class InstanceRepository implements IInstanceRepository {
     await InstanceModal.updateOne({ _id }, { [key]: value })
   }
 
-  getQr = async (_id: string, token: string): Promise<string | undefined> => {
-    const instance = await InstanceModal.findById<IInstance>({ _id, token }, { qr: 1, _id: 0 })
-    if (instance === null || instance.qr === undefined) return ''
-    return instance.qr.toString()
+  getQrAndStatus = async (_id: string, token: string): Promise<IInstanceQRStatus | undefined | null> => {
+    const instance = await InstanceModal.findById<IInstanceQRStatus>({ _id, token }, { qr: 1, status: 1, _id: 0 })
+    return instance
   }
 
   getAllInstance = async (): Promise<IInstance[]> => {

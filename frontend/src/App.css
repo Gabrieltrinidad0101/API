@@ -1,16 +1,27 @@
-body{
+body {
     margin: 0;
     padding: 0;
 }
 
-.cursor-p{
+.cursor-p {
     cursor: pointer;
 }
 
-.d-none{
+.d-none {
     display: none;
 }
 
-.d-block{
+.d-block {
     display: block;
+}
+
+.btn-primary {
+    border: none;
+    color: white;
+    height: 40px;
+    padding: 0 30px;
+    font-size: 20px;
+    border-radius: 10px;
+    background-color: #1e90ff;
+    cursor: pointer;
 }

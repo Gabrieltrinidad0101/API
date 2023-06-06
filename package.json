@@ -1,0 +1,15 @@
+{
+  "name": "designcreate",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Gabrieltrinidad0101 <gabrielqwes123@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@commitlint/cli": "^17.4.4",
+    "@commitlint/config-conventional": "^17.4.4",
+    "husky": "^8.0.0"
+  },
+  "scripts": {
+    "prepare": "husky install"
+  }
+}

@@ -7,5 +7,11 @@ instanceRepository.getAllInstance()
   .then(instances => {
     instances.forEach((instance) => {
       whatsAppController.start(instance)
+        .catch(error => {
+          console.log(error)
+        })
     })
+  })
+  .catch(error => {
+    console.log(error)
   })

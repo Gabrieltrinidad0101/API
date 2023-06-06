@@ -1,5 +1,5 @@
 import type IInstance from '../../../../../share/domain/instance'
-import { type TypeStatusInstance, type ISearchInstance } from '../../../../../share/domain/instance'
+import { type TypeStatusInstance, type ISearchInstance, type IInstanceQRStatus } from '../../../../../share/domain/instance'
 
 export default interface IInstanceRepository {
   update: (Instance: IInstance) => Promise<IInstance>
@@ -8,6 +8,6 @@ export default interface IInstanceRepository {
   delete: (_id: string, userId: string) => Promise<void>
   updateQr: (_id: string, value: string) => Promise<void>
   updateStatus: (_id: string, value: TypeStatusInstance) => Promise<void>
-  getQr: (_id: string, token: string) => Promise<string | undefined>
+  getQrAndStatus: (_id: string, token: string) => Promise<IInstanceQRStatus | undefined | null>
   getAllInstance: () => Promise<IInstance[]>
 }

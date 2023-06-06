@@ -1,3 +1,3 @@
-const wait = (time: number) => new Promise((res,rej)=> setTimeout(res,time))
+const wait = async (time: number): Promise<void> => { await new Promise((resolve, reject) => setTimeout(resolve, time)) }
 
-export default wait;
+export default wait

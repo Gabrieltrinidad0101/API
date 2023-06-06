@@ -1,8 +1,7 @@
 import React, { useContext, useState } from 'react'
-import type IDashboard from '../domian/Dashboard'
 import DashboardCss from './Dashboard.module.css'
 import { type IDashboardState, type IDashboardContext } from '../domian/Dashboard'
-import HeaderDashboard from "./components/header/HeaderDashboard"
+import HeaderDashboard from './components/header/HeaderDashboard'
 import MenuDashboard from './components/Menu/MenuDashboard'
 import { Outlet } from 'react-router-dom'
 
@@ -27,7 +26,7 @@ export default function Dashboard (): JSX.Element {
       setDashboardState: changeDashboard,
       dashboardState
     }}>
-      <div className={`${DashboardCss.container} ${dashboardState.hideMenu ? DashboardCss.hideMenu : ""} `}>
+      <div className={`${DashboardCss.container} ${(dashboardState.hideMenu ?? false) ? DashboardCss.hideMenu : ''} `}>
         <HeaderDashboard/>
         <MenuDashboard/>
         <div className={DashboardCss.main} >

@@ -1,57 +1,61 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom';
-import { isEmptyNullOrUndefined } from '../../../../../../../share/application/isEmptyNullUndefiner';
-import IInstance from '../../../../../../../share/domain/instance';
-import {instanceApp} from '../../dependencies'
-import InstancesCss from "./Instances.module.css"
+import { useNavigate } from 'react-router-dom'
+import { isEmptyNullOrUndefined } from '../../../../../../../share/application/isEmptyNullUndefiner'
+import type IInstance from '../../../../../../../share/domain/instance'
+import { instanceApp } from '../../dependencies'
+import InstancesCss from './Instances.module.css'
 
-export default function Instances() {
-    const [instancesData,setInstancesData] = useState<IInstance[]>([]);
-    const navigation = useNavigate()
+export default function Instances (): JSX.Element {
+  const [instancesData, setInstancesData] = useState<IInstance[]>([])
+  const navigation = useNavigate()
 
-    useEffect(()=>{
-        instanceApp.get({limit: 10,skip: 0,search: ""})
-            .then(instances=>{
-                if(isEmptyNullOrUndefined(instances) || instances === undefined) return
-                setInstancesData(instances)
-            })
-    },[])
+  useEffect(() => {
+    instanceApp.get({ limit: 10, skip: 0, search: '' })
+      .then(instances => {
+        if (isEmptyNullOrUndefined(instances) || instances === undefined) return
+        setInstancesData(instances)
+      })
+      .catch(error => {
+        console.log(error)
+      })
+  }, [])
 
-    const goToInstances = (idInstance: string | undefined)=>{
-        if(idInstance === undefined) return alert("Error try later")
-        navigation(`/instance?id=${idInstance}`)
-    }
+  const goToInstances = (idInstance: string | undefined): void => {
+    if (idInstance === undefined) { alert('Error try later'); return }
+    navigation(`/instance?id=${idInstance}`)
+  }
 
-    return (
+  return (
         <div className={InstancesCss.wrapper}>
             <table>
-                <caption>
-                    Instances
-                </caption>
                 <thead>
-                    <tr className={InstancesCss.headerTable}>
-                        <th>Instance</th>
+                    <tr>
+                        <th>#</th>
                         <th>WhatsApp name</th>
                         <th>Create Date</th>
                         <th>Expire Date</th>
                         <th>Status</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     {
-                        instancesData.map((instanceData)=>
-                        <tr key={instanceData._id} onClick={()=>goToInstances(instanceData._id)}>
-                            <td data-cell="name">{instanceData._id}</td>
-                            <td data-cell="name">{instanceData.name}</td>
-                            <td data-cell="name">Prubea</td>
-                            <td data-cell="name">Prubea</td>
-                            <td data-cell="name">{instanceData.status}</td>
-                            <td data-cell="name">1111111</td>
-                        </tr>
+                        instancesData.map((instanceData) => {
+                          console.log(instanceData.createdAt)
+                          return <tr key={instanceData._id} onClick={() => { goToInstances(instanceData._id) }}>
+                                <td data-column="#">{instanceData._id}</td>
+                                <td data-column="WhatsApp name">{instanceData.name}</td>
+                                <td data-column="Create Date">{instanceData.createdAt?.substring(0, 10)}</td>
+                                <td data-column="Expire Date">Prubea</td>
+                                <td data-column="Status">{instanceData.status}</td>
+                                <td>1111111</td>
+                            </tr>
+                        }
                         )
                     }
+
                 </tbody>
             </table>
         </div>
-    )
+  )
 }

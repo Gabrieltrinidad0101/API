@@ -83,10 +83,10 @@ export default class Instance {
         message: 'Invalid token'
       }
     }
-    const qr = await this.instanceRepository.getQr(_id, token)
+    const qrAndStatus = await this.instanceRepository.getQrAndStatus(_id, token)
     return {
       statusCode: 200,
-      message: qr
+      message: qrAndStatus
     }
   }
 }

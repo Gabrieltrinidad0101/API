@@ -1,18 +1,22 @@
 import { IHttpStatusCode } from "./httpResult"
 
 export interface IInstanceAuthentication{
-    token?: String,
+    token?: string,
     _id?: string
+}
+
+export interface IInstanceQRStatus{
+    qr?: string
+    status: TypeStatusInstance
 }
 
 export type TypeStatusInstance = "pending" | "authenticated"
 
-export default interface IInstance  extends IInstanceAuthentication{
-    name: String,
-    status: "pending" | "authenticated",
-    plan: number,
-    userId?: String,
-    qr?: String
+export default interface IInstance  extends IInstanceAuthentication,IInstanceQRStatus{
+    name?: string
+    plan?: number
+    userId?: string
+    createdAt?: string
 }
 
 export interface SaveInstance extends IHttpStatusCode {

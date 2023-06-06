@@ -1,78 +1,69 @@
 import React, { useEffect, useRef, useState } from 'react'
-import IInstance from '../../../../../share/domain/instance'
-import { customFecth, serverUrl, Toast, wait } from '../../../share/infranstruture/dependencies'
-import InstanceApp from '../application/instanceApp'
+import type IInstance from '../../../../../share/domain/instance'
+import { customFecth, wait } from '../../../share/infranstruture/dependencies'
 import InstanceCss from './Instance.module.css'
 import QRCode from 'qrcode'
+import type IHttpResult from '../../../../../share/domain/httpResult'
+import { type IInstanceQRStatus } from '../../../../../share/domain/instance'
+import { useLocation } from 'react-router-dom'
+import InstanceActive from './components/instanceActive/InstanceActive'
+import InstanceUrlData from './components/instanceUrlData/InstanceUrlData'
+import { instanceApp } from './dependencies'
 import { isEmptyNullOrUndefined } from '../../../../../share/application/isEmptyNullUndefiner'
-import IHttpResult from '../../../../../share/domain/httpResult'
-const instanceApp = new InstanceApp({
-  customFecth,
-  toast: Toast
-})
 
-export default function Instance() {
+export default function Instance (): JSX.Element {
   const instance = new URLSearchParams(window.location.search).get('id') ?? ''
-  const [instanceState,setInstanceState] =  useState<IInstance | undefined>();
-  const containerQr = useRef<HTMLDivElement>(null);
-  
-  const createQr = async (qr: string )=>{
+  const [instanceState, setInstanceState] = useState<IInstance>()
+  const containerQr = useRef<HTMLDivElement>(null)
+  const location = useLocation()
+
+  const createQr = async (qr: string): Promise<void> => {
     const res = await QRCode.toCanvas(qr)
-    if(containerQr.current === null) return
+    if (containerQr.current === null) return
     const qrOld = containerQr.current.firstChild
-    if(qrOld !== null) containerQr.current.removeChild(qrOld)
-    containerQr.current.appendChild(res);
+    if (qrOld !== null) containerQr.current.removeChild(qrOld)
+    containerQr.current.appendChild(res)
   }
 
-  const getQr = async (instance: IInstance) => { 
-    while(true){
-      await wait(10000)
-      const res = await customFecth.get<IHttpResult<string>>(`${instance?._id}/instance/qr`,{
+  const getQr = async (instance: IInstance): Promise<void> => {
+    while (location.pathname === '/instance') {
+      const res = await customFecth.get<IHttpResult<IInstanceQRStatus>>(`${instance?._id ?? ''}/instance/qr`, {
         token: instance.token
       })
-      if(isEmptyNullOrUndefined(res?.message) || res?.message === undefined) continue;
-      createQr(res?.message);
+      const qrAndStatus = res?.message
+      setInstanceState(prevState => ({ ...prevState, status: qrAndStatus?.status ?? 'pending' }))
+      if (!isEmptyNullOrUndefined(qrAndStatus?.qr) && qrAndStatus?.qr !== undefined) {
+        createQr(qrAndStatus?.qr)
+          .catch(error => {
+            console.log(error)
+          })
+      }
+      await wait(10000)
     }
   }
 
-
-  useEffect(()=>{
+  useEffect((): void => {
     instanceApp.findById(instance)
-      .then(res=>{
-        if(res === undefined) return
+      .then(async (res) => {
+        if (res === undefined) return
         setInstanceState(res)
-        getQr(res);
+        await getQr(res)
       })
-  },[])
-
+      .catch(error => {
+        console.log(error)
+      })
+  }, [])
 
   return (
     <>
       <div className={InstanceCss.container}>
-        <div className={InstanceCss.section}>
-            <div>Estado de autenticación</div>
-            <div>{instanceState?.status.toUpperCase()}</div>
-        </div>
-        <div className={InstanceCss.section}>
-            <div>Api de Url</div>
-            <div className={InstanceCss.inputContainer}>
-                <input type="text" value={`${serverUrl}/${instanceState?._id}`} disabled />
-                <button>
-                  <i className="fa-regular fa-copy"></i>
-                </button>
-            </div>
-        </div>
-        <div className={InstanceCss.section}>
-            <div>Api de Url</div>
-            <div className={InstanceCss.inputContainer}>  
-                <input type="text" value={`${instanceState?.token || ""}`} disabled />
-                <button>
-                  <i className="fa-regular fa-copy"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-    <div ref={containerQr}></div> 
+        <InstanceUrlData Prop={instanceState}/>
+        {
+          instanceState?.status === 'pending'
+            ? <div ref={containerQr}></div>
+            : <InstanceActive Prop={instanceState} />
+        }
+      </div>
     </>
-    )
+  )
 }

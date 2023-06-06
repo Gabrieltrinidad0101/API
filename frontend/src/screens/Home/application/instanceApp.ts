@@ -16,10 +16,11 @@ export default class InstancesApp implements IInstancesApp {
 
   createNewInstance = async (): Promise<void> => {
     const _id = await this.instanceApp.save({
-      name: "Default",
+      name: 'Default',
       plan: 10,
-      status: "pending"
+      status: 'pending'
     }, 'noShowSucessAlter')
+    console.log(_id)
   }
 
   get = async ({ skip, limit, search }: ISearchInstance): Promise<IInstance[] | undefined> => {

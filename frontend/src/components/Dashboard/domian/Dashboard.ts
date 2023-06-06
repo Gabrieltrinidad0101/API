@@ -14,7 +14,6 @@ export interface IDashboardContext {
   setDashboardState: (dashboard: IDashboardState) => void
 }
 
-
-export interface IHeader{
+export interface IHeader {
   className: string
 }

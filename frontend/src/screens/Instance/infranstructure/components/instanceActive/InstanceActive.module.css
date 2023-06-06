@@ -1,0 +1,43 @@
+.container{
+    display: grid;
+    height: 100%;
+    width: 100%; 
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 70%;
+}
+
+.containerSendMessage{
+    justify-self: center;
+    height: 80%;
+    width: 90%;
+    display: grid;
+    grid-template-rows: 20% 80%;
+    border: 1px solid blue;
+}
+
+.title{
+    background: #011e5d;
+    padding: 0 10px;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.containerInputs > div{
+    padding: 5px;
+}
+
+
+.phone > input{
+    width: 70%;
+    height: 30px;
+    font-size: 25px;
+}
+
+
+.message > textarea{
+    width: 90%;
+    font-size: 25px;
+    resize: none;
+}

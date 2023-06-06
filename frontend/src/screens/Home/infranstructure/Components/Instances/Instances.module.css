@@ -1,70 +1,79 @@
-.wrapper {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-}
-
 table {
-    border-collapse: collapse;
     width: 95%;
-    height: 90%;
+    border-collapse: collapse;
+    margin: 30px auto;
+}
+
+/* Zebra striping */
+tr:nth-of-type(odd) {
+    background: #eee;
+}
+
+th {
     background: #212529;
+    color: white;
+    font-weight: bold;
 }
 
-caption,
+td,
 th {
+    padding: 10px;
     text-align: left;
+    font-size: 18px;
 }
 
-caption {
-    font-size: 1rem;
-    font-weight: 700;
-    text-transform: uppercase;
-
-}
-
-th {
-    color: #fff;
-    font-size: 20px;
-    background: #212529 !important;
-    height: 50px;
-}
-
-tr {
-    border-bottom: 1px solid #000;
-    background: #fff;
-}
+/* 
+Max width before this PARTICULAR table gets nasty
+This query will take effect for any screen smaller than 760px
+and also iPads specifically.
+*/
+@media only screen and (max-width: 760px),
+(min-device-width: 768px) and (max-device-width: 1024px) {
 
 
+    /* Force table to not be like tables anymore */
+    table,
+    thead,
+    tbody,
+    th,
+    td,
+    tr {
+        display: block;
+    }
 
+    /* Hide table headers (but not display: none;, for accessibility) */
+    thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
 
-
-@media (max-width: 650px) {
-    th {
-        display: none;
+    tr {
+        border: 1px solid #ccc;
     }
 
     td {
-        display: grid;
-        grid-template-columns: 15ch auto;
-        padding: .5rem 1rem;
-        gap: 100px
+        /* Behave  like a "row" */
+        border: none;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        padding-left: 50%;
     }
 
-    td:first-child {
-        padding-top: 2rem;
+    td:before {
+        /* Now like a table header */
+        position: absolute;
+        /* Top/left values mimic padding */
+        top: 6px;
+        left: 6px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        /* Label the data */
+        content: attr(data-column);
+
+        color: #000;
+        font-weight: bold;
     }
 
-
-    td:last-child {
-        padding-bottom: 2rem;
-    }
-
-    td::before {
-        content: attr(data-cell) ": ";
-        font-weight: 700;
-        text-transform: capitalize;
-    }
 }

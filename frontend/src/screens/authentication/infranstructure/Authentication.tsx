@@ -11,8 +11,8 @@ export default function Authentication ({ isRegister }: IAuthenticationPage): JS
     isRegister
   }
 
-  useEffect(()=>{
-    document.title = isRegister ? "register": "login"
+  useEffect(() => {
+    document.title = isRegister ? 'register' : 'login'
   })
 
   return (

@@ -2,7 +2,7 @@ import React from 'react'
 import Menu from './Nav/infranstructure/Menu'
 import Nav, { Logo } from './Nav/infranstructure/Nav'
 
-export default function MenuDashboard() {
+export default function MenuDashboard (): JSX.Element {
   return (
     <Menu>
       <Logo>

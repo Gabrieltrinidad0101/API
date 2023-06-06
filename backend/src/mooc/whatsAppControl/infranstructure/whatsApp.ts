@@ -11,7 +11,7 @@ export default class WhatsAppController implements IWhatsAppController {
   async sendMessage (sendMessage: ISendMessage): Promise<void> {
     const instanceKey = `${sendMessage._id ?? ''}${sendMessage.token ?? ''}`
     const exist = clients.has(instanceKey)
-    if (!exist) return
+    if (!exist || sendMessage.to === undefined) return
     const client = clients.get(instanceKey)
     await client?.sendMessage(`${sendMessage.to}@c.us`, sendMessage.body ?? '')
   }
@@ -40,7 +40,14 @@ export default class WhatsAppController implements IWhatsAppController {
         })
     })
 
-    client.initialize()
+    client.on('disconnected', () => {
+      this.instanceRepository.updateStatus(id, 'pending')
+        .catch(error => {
+          console.log(error)
+        })
+    })
+
+    await client.initialize()
     clients.set(clientId, client)
   }
 }

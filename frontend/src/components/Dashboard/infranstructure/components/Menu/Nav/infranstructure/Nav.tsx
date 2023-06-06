@@ -19,7 +19,7 @@ export default function Nav ({ onClick, text, children, to }: INav<React.ReactNo
   )
 }
 
-export function Logo({children,onClick}: PropLogo) {
+export function Logo ({ children, onClick }: PropLogo): JSX.Element {
   return <div className={MenuCss.logo} onClick={onClick}>
     {children}
   </div>
