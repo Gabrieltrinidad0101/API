@@ -45,7 +45,7 @@ export default function InstanceActive ({ Prop: instance }: Prop<IInstance | und
           </div>
           <div className={InstanceCss.message}>
             <h3>Message</h3>
-            <textarea name="message" id="" rows={2} onChange={inputChange} ></textarea>
+            <textarea name="body" rows={2} onChange={inputChange} ></textarea>
           </div>
         </div>
       </div>

@@ -16,37 +16,56 @@ export default class WhatsAppController implements IWhatsAppController {
     await client?.sendMessage(`${sendMessage.to}@c.us`, sendMessage.body ?? '')
   }
 
-  async start (instanceAuthentication: IInstanceAuthentication): Promise<void> {
-    const id = instanceAuthentication._id
-    const token = instanceAuthentication.token
-    if (id === undefined || token === undefined) return
-    const clientId = `${id}${token}`
-    const client = new Client({ authStrategy: new LocalAuth({ clientId }) })
+  onQr = (client: Client, id: string): void => {
     client.on('qr', (qr: string) => {
       this.instanceRepository.updateQr(id, qr)
         .catch(error => {
           console.log(error)
         })
     })
+  }
 
-    client.on('ready', () => {
-      console.log('ok')
-    })
-
+  onAuthenticated = (client: Client, id: string): void => {
     client.on('authenticated', (session) => {
       this.instanceRepository.updateStatus(id, 'authenticated')
         .catch(error => {
           console.log(error)
         })
     })
+  }
 
-    client.on('disconnected', () => {
-      this.instanceRepository.updateStatus(id, 'pending')
-        .catch(error => {
-          console.log(error)
-        })
+  onDisconnected = (client: Client, id: string): void => {
+    client.on('disconnected', (): void => {
+      try {
+        this.instanceRepository.updateStatus(id, 'pending')
+          .catch(err => {
+            console.log(err)
+          })
+        client.initialize()
+          .catch(err => {
+            console.log(err)
+          })
+      } catch (ex) {
+        console.log(ex)
+      }
+    })
+  }
+
+  async start (instanceAuthentication: IInstanceAuthentication): Promise<void> {
+    const id = instanceAuthentication._id
+    const token = instanceAuthentication.token
+    if (id === undefined || token === undefined) return
+    const clientId = `${id}${token}`
+    const client = new Client({
+      authStrategy: new LocalAuth({ clientId }),
+      puppeteer: {
+        headless: false
+      }
     })
 
+    this.onQr(client, id)
+    this.onAuthenticated(client, id)
+    this.onDisconnected(client, id)
     await client.initialize()
     clients.set(clientId, client)
   }
