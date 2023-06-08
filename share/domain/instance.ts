@@ -14,7 +14,6 @@ export type TypeStatusInstance = "pending" | "authenticated"
 
 export default interface IInstance  extends IInstanceAuthentication,IInstanceQRStatus{
     name?: string
-    plan?: number
     userId?: string
     createdAt?: string
 }

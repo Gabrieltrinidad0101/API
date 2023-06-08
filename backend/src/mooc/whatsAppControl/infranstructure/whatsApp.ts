@@ -3,7 +3,7 @@ import { type IInstanceAuthentication } from '../../../../../share/domain/instan
 import type IInstanceRepository from '../../instance/domian/InstanceRepository'
 import { type ISendMessage } from '../../messages/domian/messages'
 import type IWhatsAppController from '../domian/whatsAppController'
-
+import wait from '../../../../../share/application/wait'
 const clients = new Map<string, Client>()
 export default class WhatsAppController implements IWhatsAppController {
   constructor (private readonly instanceRepository: IInstanceRepository) { }
@@ -52,21 +52,25 @@ export default class WhatsAppController implements IWhatsAppController {
   }
 
   async start (instanceAuthentication: IInstanceAuthentication): Promise<void> {
-    const id = instanceAuthentication._id
-    const token = instanceAuthentication.token
-    if (id === undefined || token === undefined) return
-    const clientId = `${id}${token}`
-    const client = new Client({
-      authStrategy: new LocalAuth({ clientId }),
-      puppeteer: {
-        headless: false
-      }
-    })
-
-    this.onQr(client, id)
-    this.onAuthenticated(client, id)
-    this.onDisconnected(client, id)
-    await client.initialize()
-    clients.set(clientId, client)
+    try {
+      const id = instanceAuthentication._id
+      const token = instanceAuthentication.token
+      if (id === undefined || token === undefined) return
+      const clientId = `${id}${token}`
+      const client = new Client({
+        authStrategy: new LocalAuth({ clientId }),
+        puppeteer: {
+          headless: false
+        }
+      })
+      clients.set(clientId, client)
+      this.onQr(client, id)
+      this.onAuthenticated(client, id)
+      this.onDisconnected(client, id)
+      await client.initialize()
+    } catch (error: any) {
+      await wait(10000)
+      await this.start(instanceAuthentication)
+    }
   }
 }

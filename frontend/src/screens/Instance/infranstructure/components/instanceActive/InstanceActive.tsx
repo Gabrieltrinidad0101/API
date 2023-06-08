@@ -6,21 +6,23 @@ import type Prop from '../../../../../share/domian/prop'
 import type IInstance from '../../../../../../../share/domain/instance'
 import { type IToAndMessage } from '../../../domian/IInstance'
 import { Toast } from '../../../../../share/infranstruture/toast'
+import { isEmptyNullOrUndefined } from '../../../../../../../share/application/isEmptyNullUndefiner'
 
 export default function InstanceActive ({ Prop: instance }: Prop<IInstance | undefined>): JSX.Element {
   const [inputs, setInputsMessage] = useState<IToAndMessage>()
 
   const sendTestMessage = (): void => {
-    if (inputs?.to === undefined) {
-      Toast.error('Phone number is required')
+    const { to, body } = inputs ?? { to: 0, body: '' }
+    if (isEmptyNullOrUndefined(to, body) || isNaN(Number(to)) || to === 0) {
+      Toast.error('Phone number and Message are required')
       return
     }
 
     instanceApp.sendTestMessage({
       _id: instance?._id,
       token: instance?.token,
-      body: inputs?.body ?? 'Prueba',
-      to: inputs?.to
+      body,
+      to
     }).catch(error => {
       console.log(error)
     })
