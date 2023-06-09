@@ -14,13 +14,12 @@ export default class InstancesApp implements IInstancesApp {
     private readonly customFecth: ICustomFecth
   ) { }
 
-  createNewInstance = async (): Promise<void> => {
-    const _id = await this.instanceApp.save({
+  createNewInstance = async (): Promise<IInstance | undefined> => {
+    const instance = await this.instanceApp.save({
       name: 'Default',
-      plan: 10,
       status: 'pending'
     }, 'noShowSucessAlter')
-    console.log(_id)
+    return instance
   }
 
   get = async ({ skip, limit, search }: ISearchInstance): Promise<IInstance[] | undefined> => {

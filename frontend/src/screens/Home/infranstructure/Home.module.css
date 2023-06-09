@@ -2,4 +2,6 @@
     height: 100%;
     display: grid;
     grid-template-rows: 10% 90%;
+    grid-template-columns: 95%;
+    justify-content: center;
 }

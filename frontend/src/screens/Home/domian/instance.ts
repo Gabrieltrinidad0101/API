@@ -2,7 +2,7 @@ import { type ISearchInstance } from '../../../../../share/domain/instance'
 import type IInstance from '../../../../../share/domain/instance'
 
 export default interface IInstancesApp {
-  createNewInstance: () => Promise<void>
+  createNewInstance: () => Promise<IInstance | undefined>
   get: (searchInstance: ISearchInstance) => Promise<IInstance[] | undefined>
   deleteInstance: (InstanceID: string) => Promise<void>
   goToInstance: (InstanceId: string | undefined, type: string) => Promise<void>
@@ -10,6 +10,10 @@ export default interface IInstancesApp {
 
 export interface IInstanceAppTypeSearch {
   InstanceApp: IInstancesApp
+}
+
+export interface IPropInstance {
+  instancesData: IInstance[]
 }
 
 export interface ISearchInstanceContext {

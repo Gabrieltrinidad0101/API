@@ -1,5 +1,5 @@
 import { model, Schema } from 'mongoose'
-
+import formatDate from '../../../../../../share/application/date'
 const instanceSchema = new Schema({
   name: String,
   userId: String,
@@ -8,8 +8,8 @@ const instanceSchema = new Schema({
   token: String,
   qr: String,
   createdAt: {
-    type: Date,
-    default: Date.now
+    type: String,
+    default: formatDate
   }
 })
 

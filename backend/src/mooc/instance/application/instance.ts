@@ -27,15 +27,15 @@ export default class Instance {
         message: 'Internal Error try later'
       }
     }
-    const InstanceSaved = await this.instanceRepository.update(Instance)
-    this.whatsAppController.start(InstanceSaved)
+    const instanceSaved = await this.instanceRepository.update(Instance)
+    this.whatsAppController.start(instanceSaved)
       .catch(error => {
         console.log(error)
       })
     return {
       statusCode: 200,
       message: 'Instance saved successfully',
-      _id: InstanceSaved._id
+      instance: instanceSaved
     }
   }
 

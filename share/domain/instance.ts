@@ -19,7 +19,7 @@ export default interface IInstance  extends IInstanceAuthentication,IInstanceQRS
 }
 
 export interface SaveInstance extends IHttpStatusCode {
-    _id?: string
+    instance?: IInstance
 }
 
 export interface ISearchInstance {

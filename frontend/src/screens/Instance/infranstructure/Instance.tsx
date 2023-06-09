@@ -5,7 +5,6 @@ import InstanceCss from './Instance.module.css'
 import QRCode from 'qrcode'
 import type IHttpResult from '../../../../../share/domain/httpResult'
 import { type IInstanceQRStatus } from '../../../../../share/domain/instance'
-import { useLocation } from 'react-router-dom'
 import InstanceActive from './components/instanceActive/InstanceActive'
 import InstanceUrlData from './components/instanceUrlData/InstanceUrlData'
 import { instanceApp } from './dependencies'
@@ -15,7 +14,6 @@ export default function Instance (): JSX.Element {
   const instance = new URLSearchParams(window.location.search).get('id') ?? ''
   const [instanceState, setInstanceState] = useState<IInstance>()
   const containerQr = useRef<HTMLDivElement>(null)
-  const location = useLocation()
 
   const createQr = async (qr: string): Promise<void> => {
     const res = await QRCode.toCanvas(qr)
@@ -26,7 +24,7 @@ export default function Instance (): JSX.Element {
   }
 
   const getQr = async (instance: IInstance): Promise<void> => {
-    while (location.pathname === '/instance') {
+    while (window.location.pathname === '/instance') {
       const res = await customFecth.get<IHttpResult<IInstanceQRStatus>>(`${instance?._id ?? ''}/instance/qr`, {
         token: instance.token
       })
@@ -38,7 +36,8 @@ export default function Instance (): JSX.Element {
             console.log(error)
           })
       }
-      await wait(10000)
+
+      await wait(qrAndStatus?.status === 'pending' ? 1000 : 10000)
     }
   }
 

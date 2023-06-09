@@ -17,7 +17,8 @@ export default class InstanceRepository implements IInstanceRepository {
     await instanceModal.save()
     return {
       ...instance,
-      _id: instanceModal._id.toString()
+      _id: instanceModal._id.toString(),
+      createdAt: instanceModal.createdAt
     }
   }
 

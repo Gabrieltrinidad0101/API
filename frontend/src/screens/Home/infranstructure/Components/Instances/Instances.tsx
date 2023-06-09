@@ -1,61 +1,35 @@
-import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { isEmptyNullOrUndefined } from '../../../../../../../share/application/isEmptyNullUndefiner'
-import type IInstance from '../../../../../../../share/domain/instance'
-import { instanceApp } from '../../dependencies'
+import React from 'react'
 import InstancesCss from './Instances.module.css'
+import { DataGrid, type GridColDef } from '@mui/x-data-grid'
+import { type IPropInstance } from '../../../domian/instance'
 
-export default function Instances (): JSX.Element {
-  const [instancesData, setInstancesData] = useState<IInstance[]>([])
-  const navigation = useNavigate()
+export default function Instances ({ instancesData }: IPropInstance): JSX.Element {
+  const columns: GridColDef[] = [
+    { field: '_id', headerName: 'ID', flex: 1 },
+    { field: 'name', headerName: 'Name', flex: 1 },
+    { field: 'createdAt', headerName: 'Created at', flex: 1 },
+    { field: 'status', headerName: 'Status', flex: 1 }
+  ]
 
-  useEffect(() => {
-    instanceApp.get({ limit: 10, skip: 0, search: '' })
-      .then(instances => {
-        if (isEmptyNullOrUndefined(instances) || instances === undefined) return
-        setInstancesData(instances)
-      })
-      .catch(error => {
-        console.log(error)
-      })
-  }, [])
-
-  const goToInstances = (idInstance: string | undefined): void => {
-    if (idInstance === undefined) { alert('Error try later'); return }
-    navigation(`/instance?id=${idInstance}`)
-  }
+  // const navigation = useNavigate()
+  // const goToInstances = (idInstance: string | undefined): void => {
+  //   if (idInstance === undefined) { alert('Error try later'); return }
+  //   navigation(`/instance?id=${idInstance}`)
+  // }
 
   return (
-        <div className={InstancesCss.wrapper}>
-            <table>
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>WhatsApp name</th>
-                        <th>Create Date</th>
-                        <th>Expire Date</th>
-                        <th>Status</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        instancesData.map((instanceData) => {
-                          console.log(instanceData.createdAt)
-                          return <tr key={instanceData._id} onClick={() => { goToInstances(instanceData._id) }}>
-                                <td data-column="#">{instanceData._id}</td>
-                                <td data-column="WhatsApp name">{instanceData.name}</td>
-                                <td data-column="Create Date">{instanceData.createdAt?.substring(0, 10)}</td>
-                                <td data-column="Expire Date">Prubea</td>
-                                <td data-column="Status">{instanceData.status}</td>
-                                <td>1111111</td>
-                            </tr>
-                        }
-                        )
-                    }
-
-                </tbody>
-            </table>
-        </div>
+    <div className={InstancesCss.wrapper}>
+      <DataGrid
+        rows={instancesData}
+        columns={columns}
+        getRowId={(row) => row._id}
+        initialState={{
+          pagination: {
+            paginationModel: { page: 0, pageSize: 10 }
+          }
+        }}
+        pageSizeOptions={[5, 30]}
+      />
+    </div>
   )
 }
