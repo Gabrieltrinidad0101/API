@@ -2,6 +2,7 @@ import axios, { AxiosError } from 'axios'
 import type ICustomFecth from '../domian/customFecth'
 import type BaseHttp from '../domian/baseHttp'
 import { Toast, serverUrl } from './dependencies'
+import { isEmptyNullOrUndefined } from '../../../../share/application/isEmptyNullUndefiner'
 
 class CustomFecth implements ICustomFecth {
   private readonly customFecth = axios.create({
@@ -63,7 +64,11 @@ class CustomFecth implements ICustomFecth {
       showNoAlert = true
       document.getElementById('LoadingFetch')?.setAttribute('style', 'display:none')
       if (error instanceof AxiosError) {
-        const errorMsg: string = ((error.response !== undefined) && error.response.data !== '') ? `${error.response?.data.message as string}` : 'Internal error try later'
+        let errorMsg: string = 'Internal error try later'
+        const response = error.response
+        if (isEmptyNullOrUndefined(response?.data) && !isEmptyNullOrUndefined(response?.data.message)) {
+          errorMsg = response?.data.message ?? errorMsg
+        }
         Toast.error(errorMsg)
         return
       }

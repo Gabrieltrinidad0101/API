@@ -1,8 +1,9 @@
 import { IHttpStatusCode } from "./httpResult"
 
 export interface IInstanceAuthentication{
-    token?: string,
-    _id?: string
+    token: string,
+    _id: string
+    userId: string | undefined
 }
 
 export interface IInstanceQRStatus{
@@ -14,8 +15,8 @@ export type TypeStatusInstance = "pending" | "authenticated"
 
 export default interface IInstance  extends IInstanceAuthentication,IInstanceQRStatus{
     name?: string
-    userId?: string
     createdAt?: string
+    webhookUrl?: string
 }
 
 export interface SaveInstance extends IHttpStatusCode {

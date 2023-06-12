@@ -52,4 +52,11 @@ export default class InstanceControl {
     const result = await this.Instance.getQr(_id, token)
     return result
   }
+
+  saveWebhookUrl = async (req: Request, res: Response): Promise<IHttpStatusCode> => {
+    const _id = req.params._id
+    const webhookUrl = req.body.webhookUrl
+    const result = await this.Instance.saveWebhookUrl(_id, webhookUrl)
+    return result
+  }
 }

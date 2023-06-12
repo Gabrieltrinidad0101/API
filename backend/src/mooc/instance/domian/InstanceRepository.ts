@@ -10,4 +10,5 @@ export default interface IInstanceRepository {
   updateStatus: (_id: string, value: TypeStatusInstance) => Promise<void>
   getQrAndStatus: (_id: string, token: string) => Promise<IInstanceQRStatus | undefined | null>
   getAllInstance: () => Promise<IInstance[]>
+  saveWebhookUrl: (_id: string, url: string) => Promise<void>
 }

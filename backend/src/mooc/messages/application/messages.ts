@@ -1,10 +1,10 @@
-import { type TypeInstanceValidation } from '../../share/domain/Validator'
+import { type TypeValidation } from '../../share/domain/Validator'
 import { type ISendMessage } from '../domian/messages'
 import type IWhatsAppController from '../../whatsAppControl/domian/whatsAppController'
 import { type IHttpStatusCode } from '../../../../../share/domain/httpResult'
 export default class MessagesApp {
   constructor (
-    private readonly instanceValidation: TypeInstanceValidation,
+    private readonly instanceValidation: TypeValidation,
     private readonly whatsAppController: IWhatsAppController
   ) { }
 

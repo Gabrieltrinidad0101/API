@@ -3,15 +3,23 @@ import { type ISearchInstance, type SaveInstance } from '../../../../../share/do
 import type IInstance from '../../../../../share/domain/instance'
 import { type IHttpStatusCode } from '../../../../../share/domain/httpResult'
 import type IInstanceRepository from '../domian/InstanceRepository'
-import { type TypeInstanceValidation } from '../../share/domain/Validator'
+import { type TypeValidation } from '../../share/domain/Validator'
 import type IWhatsAppController from '../../whatsAppControl/domian/whatsAppController'
-
+import type IInstanceContructor from '../domian/instance'
 export default class Instance {
+  private readonly instanceRepository: IInstanceRepository
+  private readonly instanceValidator: TypeValidation
+  private readonly urlValidator: TypeValidation
+  private readonly whatsAppController: IWhatsAppController
+
   constructor (
-    private readonly instanceRepository: IInstanceRepository,
-    private readonly instanceValidation: TypeInstanceValidation,
-    private readonly whatsAppController: IWhatsAppController
-  ) { }
+    { instanceRepository, instanceValidator, urlValidator, whatsAppController }: IInstanceContructor
+  ) {
+    this.instanceRepository = instanceRepository
+    this.instanceValidator = instanceValidator
+    this.urlValidator = urlValidator
+    this.whatsAppController = whatsAppController
+  }
 
   private validateSearchHttp (searchHttp: ISearchInstance): boolean {
     return isEmptyNullOrUndefined(searchHttp.skip) ||
@@ -19,12 +27,11 @@ export default class Instance {
   }
 
   async save (Instance: IInstance): Promise<SaveInstance> {
-    const error = this.instanceValidation(Instance)
+    const error = this.instanceValidator(Instance)
     if (error !== undefined) {
       return {
         statusCode: 422,
-        error,
-        message: 'Internal Error try later'
+        error
       }
     }
     const instanceSaved = await this.instanceRepository.update(Instance)
@@ -80,13 +87,28 @@ export default class Instance {
     if (isEmptyNullOrUndefined(token)) {
       return {
         statusCode: 422,
-        message: 'Invalid token'
+        error: 'Invalid token'
       }
     }
     const qrAndStatus = await this.instanceRepository.getQrAndStatus(_id, token)
     return {
       statusCode: 200,
       message: qrAndStatus
+    }
+  }
+
+  async saveWebhookUrl (_id: string, webhookUrl: string): Promise<IHttpStatusCode> {
+    const error = this.urlValidator({ webhookUrl })
+    if (error !== undefined) {
+      return {
+        statusCode: 422,
+        error
+      }
+    }
+    await this.instanceRepository.saveWebhookUrl(_id, webhookUrl)
+    return {
+      statusCode: 200,
+      message: 'Save Success'
     }
   }
 }

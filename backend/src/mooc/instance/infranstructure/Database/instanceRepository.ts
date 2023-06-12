@@ -11,7 +11,6 @@ export default class InstanceRepository implements IInstanceRepository {
       await InstanceModal.updateOne({ _id: instance._id }, instance)
       return instance
     }
-    delete instance._id
     instance.token = crypto.randomUUID()
     const instanceModal = new InstanceModal({ ...instance })
     await instanceModal.save()
@@ -65,6 +64,10 @@ export default class InstanceRepository implements IInstanceRepository {
 
   updateStatus = async (_id: string, value: TypeStatusInstance): Promise<void> => {
     await this.updateInstance(_id, 'status', value)
+  }
+
+  saveWebhookUrl = async (_id: string, webhookUrl: string): Promise<void> => {
+    await this.updateInstance(_id, 'webhookUrl', webhookUrl)
   }
 
   private readonly updateInstance = async (_id: string, key: keyof IInstance, value: unknown): Promise<void> => {

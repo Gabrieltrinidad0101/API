@@ -29,7 +29,7 @@ export default function Instance (): JSX.Element {
         token: instance.token
       })
       const qrAndStatus = res?.message
-      setInstanceState(prevState => ({ ...prevState, status: qrAndStatus?.status ?? 'pending' }))
+      if (qrAndStatus?.status !== instanceState?.status) setInstanceState(prevState => ({ ...prevState, status: qrAndStatus?.status ?? 'pending' }))
       if (!isEmptyNullOrUndefined(qrAndStatus?.qr) && qrAndStatus?.qr !== undefined) {
         createQr(qrAndStatus?.qr)
           .catch(error => {
@@ -58,9 +58,9 @@ export default function Instance (): JSX.Element {
       <div className={InstanceCss.container}>
         <InstanceUrlData Prop={instanceState}/>
         {
-          instanceState?.status === 'pending'
-            ? <div ref={containerQr}></div>
-            : <InstanceActive Prop={instanceState} />
+          instanceState?.status !== 'pending' && instanceState !== undefined
+            ? <InstanceActive Prop={instanceState} />
+            : <div ref={containerQr}></div>
         }
       </div>
     </>

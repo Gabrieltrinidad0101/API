@@ -1,7 +1,7 @@
 import type Joi from 'joi'
-import { type TypeInstanceValidation } from '../domain/Validator'
+import { type TypeValidation } from '../domain/Validator'
 
-const validator = (schema: Joi.ObjectSchema<any>): TypeInstanceValidation => (payload: unknown): string | undefined => {
+const validator = (schema: Joi.ObjectSchema<any>): TypeValidation => (payload: unknown): string | undefined => {
   const { error } = schema.validate(payload)
   return JSON.stringify(error?.details)
 }

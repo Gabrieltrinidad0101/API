@@ -1,11 +1,10 @@
 import { CustomFetchError, type IFecthAlert } from '../../../share/domian/customFecth'
 import { type SaveInstance } from '../../../../../share/domain/instance'
-import type IInstanceApp from '../domian/IInstance'
 import type IInstance from '../../../../../share/domain/instance'
 import type IHttpResult from '../../../../../share/domain/httpResult'
 import { type ISendMessage } from '../domian/IInstance'
 
-export default class InstanceApp implements IInstanceApp {
+export default class InstanceApp {
   constructor (private readonly fetchAlert: IFecthAlert) {}
 
   save = async (InstanceBasic: IInstance, showSucessAlter?: 'noShowSucessAlter'): Promise<IInstance | undefined> => {
@@ -37,6 +36,18 @@ export default class InstanceApp implements IInstanceApp {
     try {
       const url = `/${sendMessage._id ?? ''}/messages/chat`
       const res = await this.fetchAlert.customFecth.post<IHttpResult<string>>(url, sendMessage)
+      if (res?.message === undefined) return
+      this.fetchAlert.toast.sucess(res?.message.toString())
+    } catch (error) {
+      const errorToShow = error instanceof CustomFetchError ? error.message : 'Internal error try later'
+      this.fetchAlert.toast.error(errorToShow)
+    }
+  }
+
+  saveWebhookUrl = async (id: string | undefined, webhookUrl: string): Promise<void> => {
+    try {
+      const url = `/${id}/saveWebhookUrl`
+      const res = await this.fetchAlert.customFecth.post<IHttpResult<string>>(url, { webhookUrl })
       if (res?.message === undefined) return
       this.fetchAlert.toast.sucess(res?.message.toString())
     } catch (error) {

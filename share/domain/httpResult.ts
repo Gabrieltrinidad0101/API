@@ -1,6 +1,6 @@
 export default interface IHttpResult<T>{
     error?: T
-    message: T
+    message?: T
 }
 
 export interface IHttpStatusCode extends IHttpResult<any>{

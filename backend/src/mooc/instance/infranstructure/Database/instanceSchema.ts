@@ -7,6 +7,7 @@ const instanceSchema = new Schema({
   plan: String,
   token: String,
   qr: String,
+  webhookUrl: String,
   createdAt: {
     type: String,
     default: formatDate
