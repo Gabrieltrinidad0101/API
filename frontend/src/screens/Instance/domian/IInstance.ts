@@ -1,4 +1,3 @@
-import type IInstance from '../../../../../share/domain/instance'
 import { type IInstanceAuthentication } from '../../../../../share/domain/instance'
 export interface IInstanceEvents {
   save: () => Promise<void>

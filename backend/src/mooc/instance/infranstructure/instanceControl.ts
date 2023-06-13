@@ -59,4 +59,11 @@ export default class InstanceControl {
     const result = await this.Instance.saveWebhookUrl(_id, webhookUrl)
     return result
   }
+
+  restart = async (req: Request, res: Response): Promise<IHttpStatusCode> => {
+    const _id = req.params._id
+    const token = req.body.token
+    const result = await this.Instance.restart(_id, token)
+    return result
+  }
 }

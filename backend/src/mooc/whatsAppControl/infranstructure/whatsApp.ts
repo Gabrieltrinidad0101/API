@@ -83,7 +83,7 @@ export default class WhatsAppController implements IWhatsAppController {
         console.log('Error user without id')
         return
       }
-      this.instanceRepository.findById(_id, userId)
+      this.instanceRepository.findByIdAndUserId(_id, userId)
         .then(instance => {
           if (instance === null) {
             console.log('On message to instance not found')
@@ -100,22 +100,35 @@ export default class WhatsAppController implements IWhatsAppController {
     })
   }
 
-  async start (instanceAuthentication: IInstanceAuthentication): Promise<void> {
+  getClientId = (instanceAuthentication: IInstanceAuthentication): string | undefined => {
+    const id = instanceAuthentication._id
+    const token = instanceAuthentication.token
+    if (id === undefined || token === undefined) return
+    const clientId = `${id}${token}`
+    return clientId
+  }
+
+  restart = async (instanceAuthentication: IInstanceAuthentication): Promise<void> => {
+    const clientId = this.getClientId(instanceAuthentication)
+    if (clientId === undefined) return
+    const client = clients.get(clientId)
+    if (client === undefined) return
+    await client.destroy()
+    await this.start(instanceAuthentication)
+  }
+
+  start = async (instanceAuthentication: IInstanceAuthentication): Promise<void> => {
     try {
-      const id = instanceAuthentication._id
-      const token = instanceAuthentication.token
-      if (id === undefined || token === undefined) return
-      const clientId = `${id}${token}`
+      const { _id } = instanceAuthentication
+      const clientId = this.getClientId(instanceAuthentication)
+      if (clientId === undefined) return
       const client = new Client({
-        authStrategy: new LocalAuth({ clientId }),
-        puppeteer: {
-          headless: false
-        }
+        authStrategy: new LocalAuth({ clientId })
       })
       clients.set(clientId, client)
       this.onMessage(client, instanceAuthentication)
-      this.onQr(client, id)
-      this.onAuthenticated(client, id)
+      this.onQr(client, _id)
+      this.onAuthenticated(client, _id)
       this.onDisconnected(client, instanceAuthentication)
       this.onReady(client, instanceAuthentication)
         .catch(error => {

@@ -21,10 +21,17 @@ export default class InstanceRepository implements IInstanceRepository {
     }
   }
 
-  async findById (_id: string, userId: string): Promise<IInstance | null> {
+  async findByIdAndUserId (_id: string, userId: string): Promise<IInstance | null> {
     const isValid = mongoose.Types.ObjectId.isValid(_id)
     if (!isValid) return null
     const instanceModal = await InstanceModal.findOne<IInstance>({ _id, userId }, { userId: 0 })
+    return instanceModal
+  }
+
+  async findByIdAndToken (_id: string, token: string): Promise<IInstance | null> {
+    const isValid = mongoose.Types.ObjectId.isValid(_id)
+    if (!isValid) return null
+    const instanceModal = await InstanceModal.findOne<IInstance>({ _id, token }, { userId: 0 })
     return instanceModal
   }
 

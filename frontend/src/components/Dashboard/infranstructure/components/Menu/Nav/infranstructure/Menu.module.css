@@ -8,14 +8,13 @@
 
 .nav{
     width: 100%;
-    padding: 10px;
 }
 
 .listItems{
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 15px;
     list-style: none;
     padding: 0;
 }
@@ -33,8 +32,13 @@
     margin-right: 10px;
 }
 
-.item > a{
-    display: block;
+.item{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.item > .title{
     width: 80%;
     border-radius: 8px;
     padding: 10px;
@@ -42,9 +46,12 @@
     cursor: pointer;
     color: white;
     text-decoration: none;   
+    display: grid;
+    grid-template-columns: 10% 80% 10%;
+
 }
 
-.item > a > span{
+.item > .title > span{
     margin-left: 20px;
     font-weight: 500;
 }
@@ -55,6 +62,24 @@
     width: 13.5rem;
 }
 
+.subMenu{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.subMenu > a {
+    margin-top: 8px;
+    width: 70%;
+    background: #262834;
+    height: 25px;
+    color: white;
+    text-decoration: none;
+    font-size: 15px;
+    padding: 5px 0px 0px 10px;
+    border-radius: 8px;
+}
 
 
 

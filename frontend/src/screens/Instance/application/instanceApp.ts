@@ -46,7 +46,7 @@ export default class InstanceApp {
 
   saveWebhookUrl = async (id: string | undefined, webhookUrl: string): Promise<void> => {
     try {
-      const url = `/${id}/saveWebhookUrl`
+      const url = `/${id ?? ''}/saveWebhookUrl`
       const res = await this.fetchAlert.customFecth.post<IHttpResult<string>>(url, { webhookUrl })
       if (res?.message === undefined) return
       this.fetchAlert.toast.sucess(res?.message.toString())

@@ -47,7 +47,7 @@ export default class Instance {
   }
 
   async findById (_id: string, userId: string): Promise<IHttpStatusCode> {
-    const Instance = await this.instanceRepository.findById(_id, userId)
+    const Instance = await this.instanceRepository.findByIdAndUserId(_id, userId)
     if (Instance === null) {
       return {
         statusCode: 422,
@@ -106,6 +106,28 @@ export default class Instance {
       }
     }
     await this.instanceRepository.saveWebhookUrl(_id, webhookUrl)
+    return {
+      statusCode: 200,
+      message: 'Save Success'
+    }
+  }
+
+  async restart (_id: string, token: string): Promise<IHttpStatusCode> {
+    if (isEmptyNullOrUndefined(token)) {
+      return {
+        statusCode: 422,
+        error: 'Token is required'
+      }
+    }
+    const instance = await this.instanceRepository.findByIdAndToken(_id, token)
+    if (isEmptyNullOrUndefined(instance) || instance === null) {
+      return {
+        statusCode: 404,
+        error: 'Instance does not exist'
+      }
+    }
+
+    await this.whatsAppController.start(instance)
     return {
       statusCode: 200,
       message: 'Save Success'

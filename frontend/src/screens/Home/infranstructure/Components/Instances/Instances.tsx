@@ -4,7 +4,6 @@ import { DataGrid, type GridCellParams, type GridColDef } from '@mui/x-data-grid
 import { type IPropInstance } from '../../../domian/instance'
 import Button from '@mui/material/Button'
 import { useNavigate } from 'react-router-dom'
-import { Stack } from '@mui/system'
 
 export default function Instances ({ instancesData }: IPropInstance): JSX.Element {
   const columns: GridColDef[] = [

@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import Code from '../../../../../components/code/Code'
 import InstanceCss from './InstanceActive.module.css'
 import type Prop from '../../../../../share/domian/prop'
 import type IInstance from '../../../../../../../share/domain/instance'
@@ -11,7 +10,7 @@ import { Toast } from '../../../../../share/infranstruture/toast'
 export default function InstanceActive ({ Prop: instance }: Prop<IInstance>): JSX.Element {
   const [webhookUrl, setWebhookUrl] = useState<string>(instance?.webhookUrl ?? '')
 
-  const saveUrl = () => {
+  const saveUrl = (): void => {
     if (isEmptyNullOrUndefined(webhookUrl)) { Toast.error('Webhook url is required'); return }
     instanceApp.saveWebhookUrl(instance?._id, webhookUrl)
       .catch(error => {

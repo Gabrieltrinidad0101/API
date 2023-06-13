@@ -8,20 +8,13 @@ body {
 }
 
 .d-none {
-    display: none;
+    display: none !important;
+}
+
+.ml-5{
+    margin-right: 5px;
 }
 
 .d-block {
     display: block;
-}
-
-.btn-primary {
-    border: none;
-    color: white;
-    height: 40px;
-    padding: 0 30px;
-    font-size: 20px;
-    border-radius: 10px;
-    background-color: #1e90ff;
-    cursor: pointer;
 }
