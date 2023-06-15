@@ -22,7 +22,7 @@ export default function Nav ({ onClick, text, children, icon, to }: INav<React.R
   }
 
   const goTo = (): void => {
-    isEmptyNullOrUndefined(to) && to !== undefined && navigate(to)
+    !isEmptyNullOrUndefined(to) && to !== undefined && navigate(to)
   }
 
   return (
@@ -31,7 +31,7 @@ export default function Nav ({ onClick, text, children, icon, to }: INav<React.R
           {icon}
           <span>{text}</span>
           {
-            isEmptyNullOrUndefined(children) &&
+            !isEmptyNullOrUndefined(children) &&
             <i className={`fa-solid fa-chevron-up fa-rotate-${navIsClose ? '270' : '180'}`}></i>
           }
       </div>

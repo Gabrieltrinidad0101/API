@@ -7,12 +7,21 @@ import type IHttpResult from '../../../../../share/domain/httpResult'
 import { type IInstanceQRStatus } from '../../../../../share/domain/instance'
 import InstanceActive from './components/instanceActive/InstanceActive'
 import InstanceUrlData from './components/instanceUrlData/InstanceUrlData'
+import InstanceTools from './components/instanceTools/InstanceTools'
 import { instanceApp } from './dependencies'
 import { isEmptyNullOrUndefined } from '../../../../../share/application/isEmptyNullUndefiner'
+import InstanceName from './components/instanceName/InstanceName'
+const initialState: IInstance = {
+  _id: '',
+  status: 'pending',
+  token: '',
+  userId: ''
+}
 
 export default function Instance (): JSX.Element {
   const instance = new URLSearchParams(window.location.search).get('id') ?? ''
-  const [instanceState, setInstanceState] = useState<IInstance>()
+  const [instanceState, setInstanceState] = useState<IInstance>(initialState)
+
   const containerQr = useRef<HTMLDivElement>(null)
 
   const createQr = async (qr: string): Promise<void> => {
@@ -53,15 +62,19 @@ export default function Instance (): JSX.Element {
       })
   }, [])
 
+  const isInstanceActive = instanceState?.status !== 'pending' && !isEmptyNullOrUndefined(instanceState)
+  let InstanceState = () => <div ref={containerQr}></div>
+  if (isInstanceActive) InstanceState = () => <InstanceActive Prop={instanceState} />
+
   return (
     <>
       <div className={InstanceCss.container}>
-        <InstanceUrlData Prop={instanceState}/>
-        {
-          instanceState?.status !== 'pending' && instanceState !== undefined
-            ? <InstanceActive Prop={instanceState} />
-            : <div ref={containerQr}></div>
-        }
+        <div className={InstanceCss.section1}>
+          <InstanceName/>
+          <InstanceTools Prop={instanceState} />
+        </div>
+        <InstanceUrlData Prop={instanceState} />
+        <InstanceState/>
       </div>
     </>
   )

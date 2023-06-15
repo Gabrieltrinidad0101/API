@@ -127,7 +127,7 @@ export default class Instance {
       }
     }
 
-    await this.whatsAppController.start(instance)
+    await this.whatsAppController.restart(instance)
     return {
       statusCode: 200,
       message: 'Save Success'

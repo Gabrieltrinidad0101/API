@@ -1,7 +1,13 @@
 .container{
     height: 100%;
     display: grid;
-    grid-template-rows: 20% 80%;
+    grid-template-rows: 10% 20% 70%;
     grid-template-columns: 95%;
     justify-content: center;
+}
+
+.section1{
+    display: grid;
+    grid-template-columns: 70% 30%;
+    align-items: center;
 }

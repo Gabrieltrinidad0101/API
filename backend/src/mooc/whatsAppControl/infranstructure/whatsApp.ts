@@ -1,5 +1,5 @@
-import { Client, LocalAuth, type Message } from 'whatsapp-web.js'
-import { type IInstanceAuthentication } from '../../../../../share/domain/instance'
+import { Client, LocalAuth, WAState, type Message } from 'whatsapp-web.js'
+import type IInstance from '../../../../../share/domain/instance'
 import type IInstanceRepository from '../../instance/domian/InstanceRepository'
 import { type ISendMessage } from '../../messages/domian/messages'
 import type IWhatsAppController from '../domian/whatsAppController'
@@ -44,7 +44,7 @@ export default class WhatsAppController implements IWhatsAppController {
     })
   }
 
-  onDisconnected = (client: Client, instanceAuthentication: IInstanceAuthentication): void => {
+  onDisconnected = (client: Client, instanceAuthentication: IInstance): void => {
     client.on('disconnected', (): void => {
       try {
         this.instanceRepository.updateStatus(instanceAuthentication._id, 'pending')
@@ -60,9 +60,10 @@ export default class WhatsAppController implements IWhatsAppController {
     })
   }
 
-  onReady = async (client: Client, instanceAuthentication: IInstanceAuthentication): Promise<void> => {
+  onScreenLoad = async (client: Client, instanceAuthentication: IInstance): Promise<void> => {
     for (let i = 0; (i < 10 || client.pupPage === null); i++) await wait(1000)
     client.pupPage?.on('close', (): void => {
+      console.log('Close')
       this.start(instanceAuthentication)
         .catch(() => {
           console.log('ok')
@@ -76,7 +77,7 @@ export default class WhatsAppController implements IWhatsAppController {
     })
   }
 
-  onMessage = (client: Client, instanceAuthentication: IInstanceAuthentication): void => {
+  onMessage = (client: Client, instanceAuthentication: IInstance): void => {
     client.on('message', (message: Message) => {
       const { _id, userId } = instanceAuthentication
       if (userId === undefined) {
@@ -100,7 +101,7 @@ export default class WhatsAppController implements IWhatsAppController {
     })
   }
 
-  getClientId = (instanceAuthentication: IInstanceAuthentication): string | undefined => {
+  getClientId = (instanceAuthentication: IInstance): string | undefined => {
     const id = instanceAuthentication._id
     const token = instanceAuthentication.token
     if (id === undefined || token === undefined) return
@@ -108,34 +109,47 @@ export default class WhatsAppController implements IWhatsAppController {
     return clientId
   }
 
-  restart = async (instanceAuthentication: IInstanceAuthentication): Promise<void> => {
+  restart = async (instanceAuthentication: IInstance): Promise<void> => {
     const clientId = this.getClientId(instanceAuthentication)
     if (clientId === undefined) return
-    const client = clients.get(clientId)
-    if (client === undefined) return
-    await client.destroy()
-    await this.start(instanceAuthentication)
+    this.destroy(clientId)
   }
 
-  start = async (instanceAuthentication: IInstanceAuthentication): Promise<void> => {
+  destroy = async (clientId: string): Promise<void> => {
+    try {
+      const client = clients.get(clientId)
+      if (client === undefined) return
+      await client.destroy()
+    } catch {
+
+    }
+  }
+
+  start = async (instanceAuthentication: IInstance): Promise<void> => {
     try {
       const { _id } = instanceAuthentication
       const clientId = this.getClientId(instanceAuthentication)
       if (clientId === undefined) return
+      this.destroy(clientId)
       const client = new Client({
-        authStrategy: new LocalAuth({ clientId })
+        authStrategy: new LocalAuth({ clientId }),
+        puppeteer: {
+          headless: false
+        }
       })
+
       clients.set(clientId, client)
       this.onMessage(client, instanceAuthentication)
       this.onQr(client, _id)
       this.onAuthenticated(client, _id)
       this.onDisconnected(client, instanceAuthentication)
-      this.onReady(client, instanceAuthentication)
-        .catch(error => {
-          console.log(error)
-        })
+      // this.onScreenLoad(client, instanceAuthentication)
+      //   .catch(error => {
+      //     console.log(error)
+      //   })
       await client.initialize()
     } catch (error: any) {
+      console.log(error)
       await wait(10000)
       await this.start(instanceAuthentication)
     }

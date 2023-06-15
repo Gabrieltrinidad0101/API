@@ -20,7 +20,7 @@ export default class InstanceControl {
 
   save = async (req: Request, res: Response): Promise<IHttpStatusCode> => {
     const instance = req.body as IInstance
-    instance.userId = req.headers.userId?.toString()
+    instance.userId = req.headers.userId?.toString() ?? ''
     const result = await this.Instance.save(instance)
     return result
   }
