@@ -11,6 +11,8 @@ export interface IInstanceQRStatus{
     status: TypeStatusInstance
 }
 
+export type TypeInstanceStart = "start" | "error" | "windowClose" | "disconnected"
+
 export type TypeStatusInstance = "pending" | "initial" | "authenticated"
 
 export default interface IInstance  extends IInstanceAuthentication,IInstanceQRStatus{

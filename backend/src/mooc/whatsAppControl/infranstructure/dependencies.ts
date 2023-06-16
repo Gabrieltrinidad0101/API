@@ -6,7 +6,7 @@ export const whatsAppController = new WhatsAppController(instanceRepository)
 instanceRepository.getAllInstance()
   .then(instances => {
     instances.forEach((instance) => {
-      whatsAppController.start(instance)
+      whatsAppController.start(instance, 'start')
         .catch(error => {
           console.log(error)
         })

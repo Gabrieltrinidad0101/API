@@ -35,7 +35,7 @@ export default class Instance {
       }
     }
     const instanceSaved = await this.instanceRepository.update(Instance)
-    this.whatsAppController.start(instanceSaved)
+    this.whatsAppController.start(instanceSaved, 'start')
       .catch(error => {
         console.log(error)
       })
