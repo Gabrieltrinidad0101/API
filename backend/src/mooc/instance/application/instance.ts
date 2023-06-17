@@ -133,4 +133,22 @@ export default class Instance {
       message: 'Save Success'
     }
   }
+
+  async logout (_id: string, token: string): Promise<IHttpStatusCode> {
+    if (isEmptyNullOrUndefined(_id) || isEmptyNullOrUndefined(token)) {
+      return {
+        error: 'instance id and token is required',
+        statusCode: 422
+      }
+    }
+    const instance = await this.instanceRepository.findByIdAndToken(_id, token)
+    if (instance?.status !== 'pending') { await this.whatsAppController.logout(_id, token) }
+    const message = instance?.status !== 'pending'
+      ? 'Logout completed successfully'
+      : 'Instance is not authenticated'
+    return {
+      statusCode: 200,
+      message
+    }
+  }
 }

@@ -5,13 +5,14 @@ import { Button, TextField } from '@mui/material'
 import { instanceApp } from '../../dependencies'
 import type IInstance from '../../../../../../../share/domain/instance'
 import type Prop from '../../../../../share/domian/prop'
-import { type IToAndMessage } from '../../../domian/IInstance'
 import SendMessageCss from './SendMessage.module.css'
+import { type IToAndMessage } from '../../../../../../../share/domain/SendMessage'
 
 export default function SendMessage ({ Prop: instance }: Prop<IInstance | undefined>): JSX.Element {
   const [inputs, setInputsMessage] = useState<IToAndMessage>()
 
   const sendTestMessage = (): void => {
+    if (instance === undefined) return
     const { to, body } = inputs ?? { to: 0, body: '' }
     if (isEmptyNullOrUndefined(to, body) || isNaN(Number(to)) || to === 0) {
       Toast.error('Phone number and Message are required')
@@ -19,8 +20,8 @@ export default function SendMessage ({ Prop: instance }: Prop<IInstance | undefi
     }
 
     instanceApp.sendTestMessage({
-      _id: instance?._id,
-      token: instance?.token,
+      _id: instance._id,
+      token: instance.token,
       body,
       to
     }).catch(error => {

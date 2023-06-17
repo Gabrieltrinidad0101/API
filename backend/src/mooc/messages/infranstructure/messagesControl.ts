@@ -1,7 +1,7 @@
 import { type IHttpStatusCode } from '../../../../../share/domain/httpResult'
 import { type Request, type Response } from 'express'
 import type MessagesApp from '../application/messages'
-import { type ISendMessage } from '../domian/messages'
+import ISendMessage from '../../../../../share/domain/SendMessage'
 
 export default class MessagesControl {
   constructor (

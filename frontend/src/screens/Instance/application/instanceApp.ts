@@ -1,13 +1,12 @@
 import { CustomFetchError, type IFecthAlert } from '../../../share/domian/customFecth'
-import { type SaveInstance } from '../../../../../share/domain/instance'
+import { type IInstanceInitial, type SaveInstance } from '../../../../../share/domain/instance'
 import type IInstance from '../../../../../share/domain/instance'
 import type IHttpResult from '../../../../../share/domain/httpResult'
-import { type ISendMessage } from '../domian/IInstance'
-
+import type ISendMessage from '../../../../../share/domain/SendMessage'
 export default class InstanceApp {
   constructor (private readonly fetchAlert: IFecthAlert) {}
 
-  save = async (InstanceBasic: IInstance, showSucessAlter?: 'noShowSucessAlter'): Promise<IInstance | undefined> => {
+  save = async (InstanceBasic: IInstanceInitial, showSucessAlter?: 'noShowSucessAlter'): Promise<IInstance | undefined> => {
     try {
       const responseHttp = await this.fetchAlert.customFecth.post<SaveInstance>('/save', {
         ...InstanceBasic
@@ -34,7 +33,7 @@ export default class InstanceApp {
 
   sendTestMessage = async (sendMessage: ISendMessage): Promise<void> => {
     try {
-      const url = `/${sendMessage._id ?? ''}/messages/chat`
+      const url = `/${sendMessage._id}/messages/chat`
       const res = await this.fetchAlert.customFecth.post<IHttpResult<string>>(url, sendMessage)
       if (res?.message === undefined) return
       this.fetchAlert.toast.sucess(res?.message.toString())

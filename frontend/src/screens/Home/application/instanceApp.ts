@@ -4,12 +4,11 @@ import type IInstance from '../../../../../share/domain/instance'
 import type IHttpResult from '../../../../../share/domain/httpResult'
 import type ICustomFecth from '../../../share/domian/customFecth'
 import type IToast from '../../../share/domian/IToast'
-import type IInstanceApp from '../../Instance/domian/IInstance'
-import type IInstancesApp from '../domian/instance'
+import type InstanceApp from '../../Instance/application/instanceApp'
 
-export default class InstancesApp implements IInstancesApp {
+export default class InstancesApp {
   constructor (
-    private readonly instanceApp: IInstanceApp,
+    private readonly instanceApp: InstanceApp,
     private readonly toast: IToast,
     private readonly customFecth: ICustomFecth
   ) { }

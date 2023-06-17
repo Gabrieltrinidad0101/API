@@ -15,7 +15,8 @@ const initialState: IInstance = {
   _id: '',
   status: 'pending',
   token: '',
-  userId: ''
+  userId: '',
+  name: ''
 }
 
 export default function Instance (): JSX.Element {
@@ -63,7 +64,8 @@ export default function Instance (): JSX.Element {
   }, [])
 
   const isInstanceActive = instanceState?.status !== 'pending' && !isEmptyNullOrUndefined(instanceState)
-  let InstanceState = () => <div ref={containerQr}></div>
+  console.log(isInstanceActive)
+  let InstanceState = (): JSX.Element => <div ref={containerQr}></div>
   if (isInstanceActive) InstanceState = () => <InstanceActive Prop={instanceState} />
 
   return (

@@ -18,6 +18,13 @@ export default class InstanceControl {
     }
   }
 
+  logout = async (req: Request): Promise<IHttpStatusCode> => {
+    const _id = req.params._id
+    const token = req.body.token
+    const res = await this.Instance.logout(_id, token)
+    return res
+  }
+
   save = async (req: Request, res: Response): Promise<IHttpStatusCode> => {
     const instance = req.body as IInstance
     instance.userId = req.headers.userId?.toString() ?? ''

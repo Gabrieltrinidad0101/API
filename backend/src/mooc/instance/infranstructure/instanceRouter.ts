@@ -10,6 +10,7 @@ router.get('/findById/:_id', verifyAuthentication.verify, instanceControl.findBy
 router.get('/get', verifyAuthentication.verify, instanceControl.get)
 router.get('/:_id/instance/qr', instanceControl.getQr)
 router.post('/:_id/instance/restart', instanceControl.restart)
+router.post('/:_id/instance/logout', instanceControl.logout)
 router.post('/:_id/saveWebhookUrl', verifyAuthentication.verify, instanceControl.saveWebhookUrl)
 router.post('/save', verifyAuthentication.verify, instanceControl.save)
 router.delete('/delete/:_id', verifyAuthentication.verify, instanceControl.delete)

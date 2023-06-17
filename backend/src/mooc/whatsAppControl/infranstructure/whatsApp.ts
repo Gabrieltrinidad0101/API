@@ -1,19 +1,18 @@
 import { Client, LocalAuth, WAState, type Message } from 'whatsapp-web.js'
 import type IInstance from '../../../../../share/domain/instance'
 import type IInstanceRepository from '../../instance/domian/InstanceRepository'
-import { type ISendMessage } from '../../messages/domian/messages'
 import type IWhatsAppController from '../domian/whatsAppController'
 import wait from '../../../../../share/application/wait'
 import sendReceiveMessage from './sendReceiveMessage'
 import { type TypeInstanceStart } from '../../../../../share/domain/instance'
-
+import type ISendMessage from '../../../../../share/domain/SendMessage'
 const clients = new Map<string, Client>()
 export default class WhatsAppController implements IWhatsAppController {
   constructor (private readonly instanceRepository: IInstanceRepository) { }
 
   async sendMessage (sendMessage: ISendMessage): Promise<void> {
     try {
-      const instanceKey = `${sendMessage._id ?? ''}${sendMessage.token ?? ''}`
+      const instanceKey = `${sendMessage._id}${sendMessage.token}`
       const exist = clients.has(instanceKey)
       if (!exist || sendMessage.to === undefined) return
       const client = clients.get(instanceKey)
@@ -48,13 +47,11 @@ export default class WhatsAppController implements IWhatsAppController {
   onDisconnected = (client: Client, instance: IInstance): void => {
     client.on('disconnected', (): void => {
       try {
-        // this.instanceRepository.updateStatus(instance._id, 'pending')
-        //   .catch(err => {
-        //     console.log(err)
-        //   })
-        // this.start(instance, "disconnected").catch(error => {
-        //   console.log(error)
-        // })
+        if (instance._id === undefined) return
+        this.instanceRepository.updateStatus(instance._id, 'pending')
+          .catch(err => {
+            console.log(err)
+          })
       } catch (ex) {
         console.log(ex)
       }
@@ -83,10 +80,7 @@ export default class WhatsAppController implements IWhatsAppController {
   onMessage = (client: Client, instance: IInstance): void => {
     client.on('message', (message: Message) => {
       const { _id, userId } = instance
-      if (userId === undefined) {
-        console.log('Error user without id')
-        return
-      }
+      if (_id === undefined || userId === undefined) return
       this.instanceRepository.findByIdAndUserId(_id, userId)
         .then(instance => {
           if (instance === null) {
@@ -133,19 +127,26 @@ export default class WhatsAppController implements IWhatsAppController {
       const client = clients.get(clientId)
       if (client === undefined) return
       const status = await client.getState()
-      return status ?? client.pupPage !== undefined ? WAState.OPENING : undefined
+      const screenIsOpen = client.pupPage !== undefined ? WAState.OPENING : undefined
+      return status ?? screenIsOpen
     } catch (error) {
       return undefined
     }
   }
 
+  logout = async (instanceId: string, token: string) => {
+    const client = clients.get(`${instanceId}${token}`)
+    await client?.logout()
+    await this.instanceRepository.updateStatus(instanceId, 'pending')
+  }
+
   start = async (instance: IInstance, instanceStart: TypeInstanceStart): Promise<void> => {
     try {
       const { _id } = instance
+      if (_id === undefined) return
       const clientId = this.getClientId(instance)
       if (clientId === undefined) return
       const status = await this.getStatus(clientId)
-      console.log(status, ' ', instanceStart)
       if (status === WAState.CONNECTED || status === WAState.OPENING) return
       const client = new Client({
         authStrategy: new LocalAuth({ clientId }),
@@ -153,7 +154,7 @@ export default class WhatsAppController implements IWhatsAppController {
           headless: false
         }
       })
-      client.destroy()
+      await this.destroy(clientId)
       clients.set(clientId, client)
       this.onMessage(client, instance)
       this.onQr(client, _id)
@@ -168,7 +169,6 @@ export default class WhatsAppController implements IWhatsAppController {
       })
       await client.initialize()
     } catch (error: any) {
-      console.log('Any error')
       await wait(10000)
       await this.start(instance, 'error')
     }
