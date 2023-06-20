@@ -16,7 +16,7 @@
 
 .title{
     background: #011e5d;
-    padding: 0 10px;
+    padding: 30px 10px;
     color: white;
     display: flex;
     justify-content: space-between;
@@ -28,6 +28,8 @@
     flex-direction: column;
     justify-content: space-evenly;
     padding-left: 3px;
+    padding-top: 10px;
+    gap: 10px
 }
 
 .message {

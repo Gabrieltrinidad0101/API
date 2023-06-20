@@ -6,6 +6,7 @@ import type IInstanceRepository from '../domian/InstanceRepository'
 import { type TypeValidation } from '../../share/domain/Validator'
 import type IWhatsAppController from '../../whatsAppControl/domian/whatsAppController'
 import type IInstanceContructor from '../domian/instance'
+
 export default class Instance {
   private readonly instanceRepository: IInstanceRepository
   private readonly instanceValidator: TypeValidation
@@ -26,15 +27,15 @@ export default class Instance {
       isEmptyNullOrUndefined(searchHttp.limit)
   }
 
-  async save (Instance: IInstance): Promise<SaveInstance> {
-    const error = this.instanceValidator(Instance)
+  async save (instance: IInstance): Promise<SaveInstance> {
+    const error = this.instanceValidator(instance)
     if (error !== undefined) {
       return {
         statusCode: 422,
         error
       }
     }
-    const instanceSaved = await this.instanceRepository.update(Instance)
+    const instanceSaved = await this.instanceRepository.update(instance)
     this.whatsAppController.start(instanceSaved, 'start')
       .catch(error => {
         console.log(error)
@@ -112,6 +113,20 @@ export default class Instance {
     }
   }
 
+  async saveName (_id: string, name: string): Promise<IHttpStatusCode> {
+    if (name === undefined || name === null) {
+      return {
+        statusCode: 422,
+        error: 'Invalid name'
+      }
+    }
+    await this.instanceRepository.saveName(_id, name)
+    return {
+      statusCode: 200,
+      message: 'Name save success'
+    }
+  }
+
   async restart (_id: string, token: string): Promise<IHttpStatusCode> {
     if (isEmptyNullOrUndefined(token)) {
       return {
@@ -130,7 +145,7 @@ export default class Instance {
     await this.whatsAppController.restart(instance)
     return {
       statusCode: 200,
-      message: 'Save Success'
+      message: 'Instance restarted successfully'
     }
   }
 
@@ -142,13 +157,18 @@ export default class Instance {
       }
     }
     const instance = await this.instanceRepository.findByIdAndToken(_id, token)
-    if (instance?.status !== 'pending') { await this.whatsAppController.logout(_id, token) }
-    const message = instance?.status !== 'pending'
-      ? 'Logout completed successfully'
-      : 'Instance is not authenticated'
+    if (instance?.status === 'pending') {
+      return {
+        error: 'Instance is not authenticated',
+        statusCode: 403
+      }
+    }
+
+    await this.whatsAppController.logout(_id, token)
+
     return {
       statusCode: 200,
-      message
+      message: 'Logout completed successfully'
     }
   }
 }

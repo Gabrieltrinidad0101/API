@@ -1,10 +1,26 @@
 import { TextField } from '@mui/material'
-import React from 'react'
+import React, { useState } from 'react'
+import type IInstance from '../../../../../../../share/domain/instance'
+import { instanceApp } from '../../dependencies'
+import type Prop from '../../../../../share/domian/prop'
 
-export default function InstanceName (): JSX.Element {
+export default function InstanceName ({ Prop: instance }: Prop<IInstance>): JSX.Element {
+  const [instanceName, setInstanceName] = useState<string>(instance.name)
+
+  const saveName = async (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.code !== 'Enter') return
+    const newInstanceName = { ...instance, name: instanceName }
+    await instanceApp.saveName(newInstanceName)
+  }
+
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target
+    setInstanceName(value)
+  }
+
   return (
     <div>
-      <TextField id="standard-basic" label="Instance Name" variant="standard" />
+      <TextField id="standard-basic" value={ instanceName } onChange={onChange} onKeyDown={saveName} label="Instance Name" variant="standard" />
     </div>
   )
 }

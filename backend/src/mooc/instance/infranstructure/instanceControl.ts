@@ -67,6 +67,13 @@ export default class InstanceControl {
     return result
   }
 
+  saveName = async (req: Request, res: Response): Promise<IHttpStatusCode> => {
+    const _id = req.params._id
+    const name = req.body.name
+    const result = await this.Instance.saveName(_id, name)
+    return result
+  }
+
   restart = async (req: Request, res: Response): Promise<IHttpStatusCode> => {
     const _id = req.params._id
     const token = req.body.token

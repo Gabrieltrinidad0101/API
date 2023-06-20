@@ -1,1 +1,1 @@
-export type TypeValidation = (payload: unknown) => string | undefined
+export type TypeValidation = (payload: unknown) => unknown | undefined

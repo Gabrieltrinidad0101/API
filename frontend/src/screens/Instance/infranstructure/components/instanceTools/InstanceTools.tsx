@@ -1,19 +1,19 @@
 import React from 'react'
 import { Button } from '@mui/material'
 import ToolsCss from './InstanceTools.module.css'
-import { customFecth } from '../../../../../share/infranstruture/dependencies'
 import type IProp from '../../../../../share/domian/prop'
 import type IInstance from '../../../../../../../share/domain/instance'
-import API from '../../../../../share/application/Api'
+import { instanceApp } from '../../dependencies'
+
 export default function Tools ({ Prop: instance }: IProp<IInstance>) {
+  const { _id, token } = instance
+
   const reStart = async (): Promise<void> => {
-    customFecth.post(API.restartInstance(instance._id), { token: instance.token })
-      .catch(error => { console.log(error) })
+    await instanceApp.restart(_id, token)
   }
 
   const logout = async (): Promise<void> => {
-    customFecth.post(API.logoutInstance(instance._id), { token: instance.token })
-      .catch(error => { console.log(error) })
+    await instanceApp.logout(_id, token)
   }
 
   return (

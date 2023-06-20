@@ -1,4 +1,4 @@
-import { Client, LocalAuth, WAState, type Message } from 'whatsapp-web.js'
+import { Client, LocalAuth, MessageMedia, WAState, type Message } from 'whatsapp-web.js'
 import type IInstance from '../../../../../share/domain/instance'
 import type IInstanceRepository from '../../instance/domian/InstanceRepository'
 import type IWhatsAppController from '../domian/whatsAppController'
@@ -6,6 +6,7 @@ import wait from '../../../../../share/application/wait'
 import sendReceiveMessage from './sendReceiveMessage'
 import { type TypeInstanceStart } from '../../../../../share/domain/instance'
 import type ISendMessage from '../../../../../share/domain/SendMessage'
+import getMessageMediaExtension from './getMediaFileExtension'
 const clients = new Map<string, Client>()
 export default class WhatsAppController implements IWhatsAppController {
   constructor (private readonly instanceRepository: IInstanceRepository) { }
@@ -13,10 +14,15 @@ export default class WhatsAppController implements IWhatsAppController {
   async sendMessage (sendMessage: ISendMessage): Promise<void> {
     try {
       const instanceKey = `${sendMessage._id}${sendMessage.token}`
-      const exist = clients.has(instanceKey)
-      if (!exist || sendMessage.to === undefined) return
       const client = clients.get(instanceKey)
-      await client?.sendMessage(`${sendMessage.to}@c.us`, sendMessage.body ?? '')
+      if (sendMessage.body !== undefined) {
+        await client?.sendMessage(`${sendMessage.to}@c.us`, sendMessage.body)
+      } else if (sendMessage.document !== undefined) {
+        const extension = getMessageMediaExtension(sendMessage.filename ?? '')
+        if (extension === false) return
+        const media = await MessageMedia.fromUrl(sendMessage.document)
+        await client?.sendMessage(`${sendMessage.to ?? ''}@c.us`, media)
+      }
     } catch (error: any) {
       console.log(error)
     }
@@ -62,8 +68,6 @@ export default class WhatsAppController implements IWhatsAppController {
     for (let i = 0; (i < 10 || client.pupPage === null); i++) await wait(1000)
     console.log('Screen ready')
     client.pupPage?.on('close', (): void => {
-      console.log('Close')
-      client?.removeAllListeners()
       this.start(instance, 'windowClose')
         .catch(() => {
           console.log('ok')
@@ -135,17 +139,22 @@ export default class WhatsAppController implements IWhatsAppController {
   }
 
   logout = async (instanceId: string, token: string) => {
-    const client = clients.get(`${instanceId}${token}`)
-    await client?.logout()
-    await this.instanceRepository.updateStatus(instanceId, 'pending')
+    try {
+      await this.instanceRepository.updateStatus(instanceId, 'pending')
+      const client = clients.get(`${instanceId}${token}`)
+      await client?.logout()
+    } catch {
+
+    }
   }
 
   start = async (instance: IInstance, instanceStart: TypeInstanceStart): Promise<void> => {
     try {
-      const { _id } = instance
+      const { _id, token } = instance
       if (_id === undefined) return
       const clientId = this.getClientId(instance)
       if (clientId === undefined) return
+      this.instanceRepository.updateStatus(_id, 'initial')
       const status = await this.getStatus(clientId)
       if (status === WAState.CONNECTED || status === WAState.OPENING) return
       const client = new Client({
@@ -164,9 +173,6 @@ export default class WhatsAppController implements IWhatsAppController {
         .catch(error => {
           console.log(error)
         })
-      client.on('change_state', (state) => {
-        console.log(state)
-      })
       await client.initialize()
     } catch (error: any) {
       await wait(10000)

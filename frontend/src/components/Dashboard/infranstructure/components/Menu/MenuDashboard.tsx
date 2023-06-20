@@ -23,7 +23,7 @@ export default function MenuDashboard (): JSX.Element {
       <Nav text='Instance' icon={<i className={'fa-solid fa-layer-group'}></i>}>
         <Link to="#">
           <i className="fa-solid fa-arrow-right-from-bracket ml-5"></i>
-          Close session
+          WhatsApp logout
         </Link>
         <Link to="#">
           <i className="fa-solid fa-rotate ml-5"></i>

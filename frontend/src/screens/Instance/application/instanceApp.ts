@@ -3,6 +3,10 @@ import { type IInstanceInitial, type SaveInstance } from '../../../../../share/d
 import type IInstance from '../../../../../share/domain/instance'
 import type IHttpResult from '../../../../../share/domain/httpResult'
 import type ISendMessage from '../../../../../share/domain/SendMessage'
+import API from '../../../share/application/Api'
+import { isEmptyNullOrUndefined } from '../../../../../share/application/isEmptyNullUndefiner'
+import APIURL from '../../../share/application/Api'
+
 export default class InstanceApp {
   constructor (private readonly fetchAlert: IFecthAlert) {}
 
@@ -33,7 +37,7 @@ export default class InstanceApp {
 
   sendTestMessage = async (sendMessage: ISendMessage): Promise<void> => {
     try {
-      const url = `/${sendMessage._id}/messages/chat`
+      const url = isEmptyNullOrUndefined(sendMessage.body) ? APIURL.sendMessage(sendMessage._id) : APIURL.sendMessage(sendMessage._id)
       const res = await this.fetchAlert.customFecth.post<IHttpResult<string>>(url, sendMessage)
       if (res?.message === undefined) return
       this.fetchAlert.toast.sucess(res?.message.toString())
@@ -43,9 +47,9 @@ export default class InstanceApp {
     }
   }
 
-  saveWebhookUrl = async (id: string | undefined, webhookUrl: string): Promise<void> => {
+  saveWebhookUrl = async (id: string, webhookUrl: string): Promise<void> => {
     try {
-      const url = `/${id ?? ''}/saveWebhookUrl`
+      const url = APIURL.saveWebhookUrl(id)
       const res = await this.fetchAlert.customFecth.post<IHttpResult<string>>(url, { webhookUrl })
       if (res?.message === undefined) return
       this.fetchAlert.toast.sucess(res?.message.toString())
@@ -53,5 +57,29 @@ export default class InstanceApp {
       const errorToShow = error instanceof CustomFetchError ? error.message : 'Internal error try later'
       this.fetchAlert.toast.error(errorToShow)
     }
+  }
+
+  logout = async (_id: string, token: string): Promise<void> => {
+    const url = API.logoutInstance(_id)
+    const { error, message } = await this.fetchAlert.customFecth.post<IHttpResult<string>>(url, { token }) ?? {}
+    if (error !== undefined || isEmptyNullOrUndefined(message) || message === undefined) return
+    this.fetchAlert.toast.sucess(message)
+  }
+
+  saveName = async ({ _id, name, token }: IInstance): Promise<void> => {
+    const url = API.saveInstanceName(_id)
+    const { error, message } = await this.fetchAlert.customFecth.post<IHttpResult<string>>(url, {
+      token,
+      name
+    }) ?? {}
+    if (error !== undefined || isEmptyNullOrUndefined(message) || message === undefined) return
+    this.fetchAlert.toast.sucess(message)
+  }
+
+  restart = async (id: string, token: string): Promise<void> => {
+    const url = API.restartInstance(id)
+    const { error, message } = await this.fetchAlert.customFecth.post<IHttpResult<string>>(url, { token }) ?? {}
+    if (error !== undefined || isEmptyNullOrUndefined(message) || message === undefined) return
+    this.fetchAlert.toast.sucess(message)
   }
 }

@@ -8,6 +8,7 @@ import Loading from './components/loading/Loading'
 import Home from './screens/Home/infranstructure/Home'
 import Instance from './screens/Instance/infranstructure/Instance'
 import Dashboard from './components/Dashboard/infranstructure/Dashboard'
+import Documentation from './screens/docs/infranstructure/Documentation'
 export default function App (): JSX.Element {
   return (
     <BrowserRouter>
@@ -16,8 +17,9 @@ export default function App (): JSX.Element {
         <Route path="/login" element={<Authentication isRegister={false} />}></Route>
         <Route element={<AuthenticationProvider />} >
           <Route element={<Dashboard/>}>
-            <Route path='/home' element={<Home />} />
-            <Route path="/instance" element={<Instance />} />
+            <Route path='/home' element={<Home/>} />
+            <Route path="/instance" element={<Instance/>} />
+            <Route path="/docs" element={<Documentation/>} />
           </Route>
         </Route>
       </Routes>

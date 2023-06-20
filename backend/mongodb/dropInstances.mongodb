@@ -1,0 +1,3 @@
+use("chatPLus")
+
+db.instances.drop();

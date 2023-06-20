@@ -3,7 +3,7 @@
     height: 70px;
     background: #012677;
     display: grid;
-    grid-template-columns: 33% 33% 33%;
+    grid-template-columns: 20% 26% 26% 26%;
     margin: auto;
     margin-top: 10px;
     border: 1px solid #000;
@@ -30,6 +30,7 @@
     border: 1px solid #000;
     display: grid;
     grid-template-columns: 85% 15%;
+    align-items: center;
 }
 
 .inputContainer > input{
@@ -41,4 +42,5 @@
 .inputContainer >  button{
     height: 100%;
     border: none;
+    padding: 0;
 }

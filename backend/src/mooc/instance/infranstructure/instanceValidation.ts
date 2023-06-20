@@ -9,7 +9,7 @@ const validator = (schema: Joi.ObjectSchema<any>): TypeValidation =>
 
 const instanceSchema = Joi.object({
   name: Joi.string().required(),
-  status: Joi.string().valid('active', 'pending', 'cancel').required(),
+  status: Joi.string().valid('active', 'pending', 'cancel', 'initial').required(),
   userId: Joi.string().required()
 })
 

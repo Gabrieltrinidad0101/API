@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import InstanceCss from './InstanceActive.module.css'
 import type Prop from '../../../../../share/domian/prop'
 import type IInstance from '../../../../../../../share/domain/instance'
-import SendMessage from '../sendMessage/SendMessage'
+import SendMessage from '../../../../../components/sendMessage/infranstructure/SendMessage'
 import { instanceApp } from '../../dependencies'
 import { Button, FormControl, InputAdornment, InputLabel, OutlinedInput } from '@mui/material'
 import { isEmptyNullOrUndefined } from '../../../../../../../share/application/isEmptyNullUndefiner'
@@ -41,7 +41,14 @@ export default function InstanceActive ({ Prop: instance }: Prop<IInstance>): JS
           label="Password"
         />
       </FormControl>
-      <SendMessage Prop={instance} />
+      <SendMessage Prop={{
+        _id: instance._id,
+        token: instance.token,
+        multiline: true,
+        title: 'Send Test Message',
+        messagePlaceHolder: 'Message',
+        typeOfSend: 'body'
+      }} />
     </div>
   )
 }

@@ -77,6 +77,10 @@ export default class InstanceRepository implements IInstanceRepository {
     await this.updateInstance(_id, 'webhookUrl', webhookUrl)
   }
 
+  saveName = async (_id: string, name: string): Promise<void> => {
+    await this.updateInstance(_id, 'name', name)
+  }
+
   private readonly updateInstance = async (_id: string, key: keyof IInstance, value: unknown): Promise<void> => {
     await InstanceModal.updateOne({ _id }, { [key]: value })
   }

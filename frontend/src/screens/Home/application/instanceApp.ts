@@ -16,7 +16,7 @@ export default class InstancesApp {
   createNewInstance = async (): Promise<IInstance | undefined> => {
     const instance = await this.instanceApp.save({
       name: 'Default',
-      status: 'pending'
+      status: 'initial'
     }, 'noShowSucessAlter')
     return instance
   }

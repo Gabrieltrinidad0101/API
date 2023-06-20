@@ -1,6 +1,6 @@
 import type IInstance from '../../../../../share/domain/instance'
 import { type TypeInstanceStart } from '../../../../../share/domain/instance'
-import { type ISendMessage } from '../../messages/domian/messages'
+import type ISendMessage from '../../../../../share/domain/SendMessage'
 
 export default interface IWhatsAppController {
   start: (instance: IInstance, instanceStart: TypeInstanceStart) => Promise<void>

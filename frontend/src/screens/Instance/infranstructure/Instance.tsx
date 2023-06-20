@@ -11,6 +11,7 @@ import InstanceTools from './components/instanceTools/InstanceTools'
 import { instanceApp } from './dependencies'
 import { isEmptyNullOrUndefined } from '../../../../../share/application/isEmptyNullUndefiner'
 import InstanceName from './components/instanceName/InstanceName'
+import InstanceStateControl from './components/instanceStateControl/InstanceStateControl'
 const initialState: IInstance = {
   _id: '',
   status: 'pending',
@@ -20,39 +21,38 @@ const initialState: IInstance = {
 }
 
 export default function Instance (): JSX.Element {
-  const instance = new URLSearchParams(window.location.search).get('id') ?? ''
+  const instanceId = new URLSearchParams(window.location.search).get('id') ?? ''
   const [instanceState, setInstanceState] = useState<IInstance>(initialState)
 
-  const containerQr = useRef<HTMLDivElement>(null)
+  const qrRef = useRef<HTMLDivElement>(null)
 
   const createQr = async (qr: string): Promise<void> => {
     const res = await QRCode.toCanvas(qr)
-    if (containerQr.current === null) return
-    const qrOld = containerQr.current.firstChild
-    if (qrOld !== null) containerQr.current.removeChild(qrOld)
-    containerQr.current.appendChild(res)
+    if (qrRef.current === null) return
+    const qrOld = qrRef.current.firstChild
+    if (qrOld !== null) qrRef.current.removeChild(qrOld)
+    qrRef.current.appendChild(res)
   }
 
-  const getQr = async (instance: IInstance): Promise<void> => {
+  const getQr = async ({ _id }: IInstance): Promise<void> => {
     while (window.location.pathname === '/instance') {
-      const res = await customFecth.get<IHttpResult<IInstanceQRStatus>>(`${instance?._id ?? ''}/instance/qr`, {
-        token: instance.token
+      const res = await customFecth.get<IHttpResult<IInstanceQRStatus>>(`${_id}/instance/qr`, {
+        token: instanceState?.token
       })
-      const qrAndStatus = res?.message
-      if (qrAndStatus?.status !== instanceState?.status) setInstanceState(prevState => ({ ...prevState, status: qrAndStatus?.status ?? 'pending' }))
-      if (!isEmptyNullOrUndefined(qrAndStatus?.qr) && qrAndStatus?.qr !== undefined) {
-        createQr(qrAndStatus?.qr)
+      const { status, qr } = res?.message ?? { status: 'pending' }
+      setInstanceState(prevState => ({ ...prevState, status }))
+      if (!isEmptyNullOrUndefined(qr) && qr !== undefined) {
+        createQr(qr)
           .catch(error => {
             console.log(error)
           })
       }
-
-      await wait(qrAndStatus?.status === 'pending' ? 1000 : 10000)
+      await wait(1000)
     }
   }
 
   useEffect((): void => {
-    instanceApp.findById(instance)
+    instanceApp.findById(instanceId)
       .then(async (res) => {
         if (res === undefined) return
         setInstanceState(res)
@@ -63,20 +63,21 @@ export default function Instance (): JSX.Element {
       })
   }, [])
 
+  if (instanceState._id === '') { return <h1>Loading</h1> }
+
   const isInstanceActive = instanceState?.status !== 'pending' && !isEmptyNullOrUndefined(instanceState)
-  console.log(isInstanceActive)
-  let InstanceState = (): JSX.Element => <div ref={containerQr}></div>
-  if (isInstanceActive) InstanceState = () => <InstanceActive Prop={instanceState} />
+  let InstanceState = <div ref={qrRef}></div>
+  if (isInstanceActive) InstanceState = <InstanceActive Prop={instanceState} />
 
   return (
     <>
       <div className={InstanceCss.container}>
         <div className={InstanceCss.section1}>
-          <InstanceName/>
+          <InstanceName Prop={instanceState}/>
           <InstanceTools Prop={instanceState} />
         </div>
         <InstanceUrlData Prop={instanceState} />
-        <InstanceState/>
+        <InstanceStateControl Prop={ { instance: instanceState, qrRef } } />
       </div>
     </>
   )

@@ -66,7 +66,7 @@ class CustomFecth implements ICustomFecth {
       if (error instanceof AxiosError) {
         let errorMsg: string = 'Internal error try later'
         const response = error.response
-        if (isEmptyNullOrUndefined(response?.data) && !isEmptyNullOrUndefined(response?.data.message)) {
+        if (!isEmptyNullOrUndefined(response?.data) && !isEmptyNullOrUndefined(response?.data.message)) {
           errorMsg = response?.data.message ?? errorMsg
         }
         Toast.error(errorMsg)
