@@ -2,8 +2,7 @@ import { CustomFetchError, type IFecthAlert } from '../../../share/domian/custom
 import { type IInstanceInitial, type SaveInstance } from '../../../../../share/domain/instance'
 import type IInstance from '../../../../../share/domain/instance'
 import type IHttpResult from '../../../../../share/domain/httpResult'
-import type ISendMessage from '../../../../../share/domain/SendMessage'
-import API from '../../../share/application/Api'
+import type ISendMessage from '../../../../../share/domain/Send'
 import { isEmptyNullOrUndefined } from '../../../../../share/application/isEmptyNullUndefiner'
 import APIURL from '../../../share/application/Api'
 
@@ -35,10 +34,10 @@ export default class InstanceApp {
     }
   }
 
-  sendTestMessage = async (sendMessage: ISendMessage): Promise<void> => {
+  sendTestMessage = async (send: ISendMessage): Promise<void> => {
     try {
-      const url = isEmptyNullOrUndefined(sendMessage.body) ? APIURL.sendMessage(sendMessage._id) : APIURL.sendMessage(sendMessage._id)
-      const res = await this.fetchAlert.customFecth.post<IHttpResult<string>>(url, sendMessage)
+      const url = isEmptyNullOrUndefined(send.body) ? APIURL.sendMessage(send._id) : APIURL.sendDocument(send._id)
+      const res = await this.fetchAlert.customFecth.post<IHttpResult<string>>(url, send)
       if (res?.message === undefined) return
       this.fetchAlert.toast.sucess(res?.message.toString())
     } catch (error) {
@@ -60,14 +59,14 @@ export default class InstanceApp {
   }
 
   logout = async (_id: string, token: string): Promise<void> => {
-    const url = API.logoutInstance(_id)
+    const url = APIURL.logoutInstance(_id)
     const { error, message } = await this.fetchAlert.customFecth.post<IHttpResult<string>>(url, { token }) ?? {}
     if (error !== undefined || isEmptyNullOrUndefined(message) || message === undefined) return
     this.fetchAlert.toast.sucess(message)
   }
 
   saveName = async ({ _id, name, token }: IInstance): Promise<void> => {
-    const url = API.saveInstanceName(_id)
+    const url = APIURL.saveInstanceName(_id)
     const { error, message } = await this.fetchAlert.customFecth.post<IHttpResult<string>>(url, {
       token,
       name
@@ -77,7 +76,7 @@ export default class InstanceApp {
   }
 
   restart = async (id: string, token: string): Promise<void> => {
-    const url = API.restartInstance(id)
+    const url = APIURL.restartInstance(id)
     const { error, message } = await this.fetchAlert.customFecth.post<IHttpResult<string>>(url, { token }) ?? {}
     if (error !== undefined || isEmptyNullOrUndefined(message) || message === undefined) return
     this.fetchAlert.toast.sucess(message)

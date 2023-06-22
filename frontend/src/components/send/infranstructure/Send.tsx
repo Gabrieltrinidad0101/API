@@ -1,27 +1,27 @@
 import React, { useState } from 'react'
 import { Toast } from '../../../share/infranstruture/toast'
 import { isEmptyNullOrUndefined } from '../../../../../share/application/isEmptyNullUndefiner'
-import { Box, Button, TextField } from '@mui/material'
+import { Button, TextField } from '@mui/material'
 import { instanceApp } from '../../../screens/Instance/infranstructure/dependencies'
-import type IInstance from '../../../../../share/domain/instance'
 import type Prop from '../../../share/domian/prop'
-import SendMessageCss from './SendMessage.module.css'
-import { type IToAndMessage } from '../../../../../share/domain/SendMessage'
-import { type IPropSendMessage } from '../domian/SendMessage'
+import SendMessageCss from './Send.module.css'
+import { type IToAndData } from '../../../../../share/domain/Send'
+import { type IPropSend } from '../domian/Send'
 
-const SendMessage = ({ Prop: propSendMessage }: Prop<IPropSendMessage>): JSX.Element => {
-  const [inputs, setInputsMessage] = useState<IToAndMessage>()
+const Send = ({ Prop: propSend }: Prop<IPropSend>): JSX.Element => {
+  const [inputs, setInputsMessage] = useState<IToAndData>({ to: '', body: '', filename: '' })
   const sendTestMessage = (): void => {
-    const { to, body, filename } = inputs ?? { to: 0, body: '', filename: '' }
-    if (isEmptyNullOrUndefined(to, body, filename) || isNaN(Number(to)) || to === 0) {
-      Toast.error('Phone number and Message are required')
+    const { to, body, filename } = inputs
+    if ((isEmptyNullOrUndefined(filename) && (propSend.showFileName ?? true)) ||
+      isEmptyNullOrUndefined(to, body)) {
+      Toast.error('All the fields are required')
       return
     }
 
     instanceApp.sendTestMessage({
-      _id: propSendMessage._id,
-      token: propSendMessage.token,
-      [propSendMessage.typeOfSend]: body,
+      _id: propSend._id,
+      token: propSend.token,
+      [propSend.typeOfSend]: body,
       to,
       filename
     }).catch(error => {
@@ -37,23 +37,24 @@ const SendMessage = ({ Prop: propSendMessage }: Prop<IPropSendMessage>): JSX.Ele
   return (
     <div className={SendMessageCss.containerSendMessage}>
       <div className={SendMessageCss.title}>
-        <h2>{propSendMessage?.title}</h2>
+        <h2>{propSend?.title}</h2>
         <Button variant="contained" onClick={sendTestMessage} endIcon={<i className="fa-solid fa-paper-plane"></i>}>
           Send
         </Button>
       </div>
       <div className={SendMessageCss.containerInputs}>
         <div className={SendMessageCss.miniInput}>
-          <TextField name="to" type="number" onChange={inputChange} label="Phone" variant="outlined" value={inputs?.to} />
+          <TextField name="to" type="text" onChange={inputChange} label="Phone" variant="outlined" value={inputs?.to} />
           {
-           !propSendMessage.multiline &&
-            <TextField name="filename" type="text" onChange={inputChange} label="File Name" variant="outlined" value={inputs?.filename} className='ml-3'/>}
+            propSend.showFileName &&
+            <TextField name="filename" type="text" onChange={inputChange} label="File Name" variant="outlined" value={inputs?.filename} className='ml-3' />
+          }
         </div>
         <div className={SendMessageCss.message}>
           <TextField id="outlined-basic"
-            label={propSendMessage.messagePlaceHolder}
+            label={propSend.messagePlaceHolder}
             name="body"
-            multiline={propSendMessage.multiline}
+            multiline={propSend.multiline}
             rows={5}
             value={inputs?.body}
             fullWidth
@@ -66,4 +67,4 @@ const SendMessage = ({ Prop: propSendMessage }: Prop<IPropSendMessage>): JSX.Ele
   )
 }
 
-export default SendMessage
+export default Send

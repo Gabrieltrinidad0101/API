@@ -3,26 +3,26 @@ import type IUserRepository from '../domain/IUserRepository'
 import type IToken from '../domain/token'
 import type IEncrypt from '../domain/encrypt'
 import type IUser from '../../../../../share/domain/user'
-import { isEmptyNullOrUndefined } from '../../../../../share/application/isEmptyNullUndefiner'
+import { type TypeValidation } from '../../share/domain/Validator'
 
 export default class Authentication {
   constructor (
     private readonly token: IToken,
     private readonly encrypt: IEncrypt,
-    private readonly userRepository: IUserRepository) { }
-
-  private validateUser (user: IUser): IHttpStatusCode | undefined {
-    if (isEmptyNullOrUndefined(user.name) || isEmptyNullOrUndefined(user.password)) {
-      return {
-        message: 'The user name and password are required',
-        statusCode: 500
-      }
-    }
-  }
+    private readonly userRepository: IUserRepository,
+    private readonly userSignUpValidator: TypeValidation,
+    private readonly userSignInValidator: TypeValidation
+  ) { }
 
   async register (user: IUser): Promise<IHttpStatusCode> {
-    const userIsNoValid = this.validateUser(user)
-    if (userIsNoValid !== undefined) return userIsNoValid
+    const error = this.userSignUpValidator(user)
+    if (error !== undefined) {
+      return {
+        error,
+        statusCode: 422,
+        message: 'Complete all the data is required'
+      }
+    }
     const userExist = await this.userRepository.findByName(user?.name ?? '')
     if (userExist !== null) {
       return {
@@ -38,8 +38,13 @@ export default class Authentication {
   }
 
   async login (user: IUser): Promise<IHttpStatusCode> {
-    const userIsNoValid = this.validateUser(user)
-    if (userIsNoValid !== undefined) return userIsNoValid
+    const error = this.userSignInValidator(user)
+    if (error !== undefined) {
+      return {
+        error,
+        statusCode: 422
+      }
+    }
     const userExist = await this.userRepository.findByName(user?.name ?? '')
     const validateUser = (userExist !== null) && await this.encrypt.validate(user?.password ?? '', userExist?.password ?? '')
     if (validateUser) {

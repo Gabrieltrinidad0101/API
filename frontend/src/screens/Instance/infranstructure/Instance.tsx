@@ -5,7 +5,6 @@ import InstanceCss from './Instance.module.css'
 import QRCode from 'qrcode'
 import type IHttpResult from '../../../../../share/domain/httpResult'
 import { type IInstanceQRStatus } from '../../../../../share/domain/instance'
-import InstanceActive from './components/instanceActive/InstanceActive'
 import InstanceUrlData from './components/instanceUrlData/InstanceUrlData'
 import InstanceTools from './components/instanceTools/InstanceTools'
 import { instanceApp } from './dependencies'
@@ -64,10 +63,6 @@ export default function Instance (): JSX.Element {
   }, [])
 
   if (instanceState._id === '') { return <h1>Loading</h1> }
-
-  const isInstanceActive = instanceState?.status !== 'pending' && !isEmptyNullOrUndefined(instanceState)
-  let InstanceState = <div ref={qrRef}></div>
-  if (isInstanceActive) InstanceState = <InstanceActive Prop={instanceState} />
 
   return (
     <>

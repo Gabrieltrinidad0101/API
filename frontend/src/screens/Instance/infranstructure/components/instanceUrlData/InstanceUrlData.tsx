@@ -6,9 +6,9 @@ import { serverUrl } from '../../../../../share/infranstruture/dependencies'
 import { IconButton } from '@mui/material'
 
 export default function InstanceUrlData ({ Prop: instance }: Prop<IInstance>): JSX.Element {
-  const copy = (id: string) => {
+  const copy = (id: string): void => {
     const element = document.getElementById(id)
-    if (!(element instanceof HTMLInputElement)) return element
+    if (!(element instanceof HTMLInputElement)) return
     navigator.clipboard.writeText(element.value)
       .then(() => {
         console.log('Text copied to clipboard')
@@ -27,7 +27,7 @@ export default function InstanceUrlData ({ Prop: instance }: Prop<IInstance>): J
         <div>Url Api</div>
         <div className={InstanceUrlDataCss.inputContainer}>
           <input type="text" id="url" value={`${serverUrl}/${instance._id ?? ''}`} disabled />
-          <IconButton color="primary" onClick={() => copy('url')}>
+          <IconButton color="primary" onClick={() => { copy('url') }}>
             <i className="fa-regular fa-copy"></i>
           </IconButton>
         </div>
@@ -36,7 +36,7 @@ export default function InstanceUrlData ({ Prop: instance }: Prop<IInstance>): J
         <div>Instance Id</div>
         <div className={InstanceUrlDataCss.inputContainer}>
           <input type="text" id="instanceId" value={instance._id ?? ''} disabled />
-          <IconButton color="primary" onClick={() => copy('instanceId')}>
+          <IconButton color="primary" onClick={() => { copy('instanceId') }}>
             <i className="fa-regular fa-copy"></i>
           </IconButton>
         </div>
@@ -45,7 +45,7 @@ export default function InstanceUrlData ({ Prop: instance }: Prop<IInstance>): J
         <div>Token</div>
         <div className={InstanceUrlDataCss.inputContainer}>
           <input type="text" id="token" value={instance.token ?? ''} disabled />
-          <IconButton color="primary" onClick={() => copy('token')}>
+          <IconButton color="primary" onClick={() => { copy('token') }}>
             <i className="fa-regular fa-copy"></i>
           </IconButton>
         </div>

@@ -4,12 +4,13 @@ import type IHttpResult from '../../../../../share/domain/httpResult'
 
 const Auth = async (authenticaction: IAuthentication): Promise<void> => {
   try {
-    if (authenticaction.user.name === '' || authenticaction.user.password === '') {
-      authenticaction.toast.error('All the inputs are required'); return
+    const isAnyFieldEmpty = Object.values(authenticaction.user).some(field => field === '')
+    if (isAnyFieldEmpty) {
+      authenticaction.toast.error('All The Inputs Are Required'); return
     }
     const httpResult = await authenticaction.customFecth.post<IHttpResult<string>>('/user/authentication', authenticaction.user)
     if (httpResult == null) return
-    localStorage.setItem('token', httpResult.message)
+    localStorage.setItem('token', httpResult.message ?? '')
     authenticaction.toast.sucess(`Welcome ${authenticaction.user.name ?? ''}`)
     authenticaction.navigation('/home')
     authenticaction.userState.setUser(authenticaction.user)

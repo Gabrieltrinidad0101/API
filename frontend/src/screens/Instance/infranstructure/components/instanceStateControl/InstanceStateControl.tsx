@@ -4,7 +4,9 @@ import type Prop from '../../../../../share/domian/prop'
 import { type TypeInstanceStateByComponent, type IInstanceStateControl } from '../../../domian/Instance'
 import InstanceActive from '../instanceActive/InstanceActive'
 
-export default function InstanceStateControl ({ Prop: instanceStateControl }: Prop<IInstanceStateControl<React.LegacyRef<HTMLDivElement>>>) {
+type TypeInstanceStateControl = IInstanceStateControl<React.LegacyRef<HTMLDivElement>>
+
+export default function InstanceStateControl ({ Prop: instanceStateControl }: Prop<TypeInstanceStateControl>): JSX.Element {
   const InstanceState: TypeInstanceStateByComponent<JSX.Element> = {
     pending: <div ref={instanceStateControl.qrRef}></div>,
     initial: <Skeleton

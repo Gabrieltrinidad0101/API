@@ -5,9 +5,9 @@ const messageSchema = Joi.object({
   token: Joi.string().required(),
   _id: Joi.string().required(),
   to: Joi.string().required(),
-  body: Joi.string(),
-  document: Joi.string(),
-  filename: Joi.string()
+  body: Joi.string().optional().allow(''),
+  document: Joi.string().optional().allow(''),
+  filename: Joi.string().optional().allow('')
 })
 
 export const messageValidator = validator(messageSchema)

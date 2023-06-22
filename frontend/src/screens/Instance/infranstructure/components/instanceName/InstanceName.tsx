@@ -7,13 +7,16 @@ import type Prop from '../../../../../share/domian/prop'
 export default function InstanceName ({ Prop: instance }: Prop<IInstance>): JSX.Element {
   const [instanceName, setInstanceName] = useState<string>(instance.name)
 
-  const saveName = async (e: React.KeyboardEvent<HTMLDivElement>) => {
+  const saveName = (e: React.KeyboardEvent<HTMLDivElement>): void => {
     if (e.code !== 'Enter') return
     const newInstanceName = { ...instance, name: instanceName }
-    await instanceApp.saveName(newInstanceName)
+    instanceApp.saveName(newInstanceName)
+      .catch(error => {
+        console.log(error)
+      })
   }
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { value } = e.target
     setInstanceName(value)
   }

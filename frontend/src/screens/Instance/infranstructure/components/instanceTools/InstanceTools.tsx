@@ -5,15 +5,21 @@ import type IProp from '../../../../../share/domian/prop'
 import type IInstance from '../../../../../../../share/domain/instance'
 import { instanceApp } from '../../dependencies'
 
-export default function Tools ({ Prop: instance }: IProp<IInstance>) {
+export default function Tools ({ Prop: instance }: IProp<IInstance>): JSX.Element {
   const { _id, token } = instance
 
-  const reStart = async (): Promise<void> => {
-    await instanceApp.restart(_id, token)
+  const reStart = (): void => {
+    instanceApp.restart(_id, token)
+      .catch(error => {
+        console.log(error)
+      })
   }
 
-  const logout = async (): Promise<void> => {
-    await instanceApp.logout(_id, token)
+  const logout = (): void => {
+    instanceApp.logout(_id, token)
+      .catch(error => {
+        console.log(error)
+      })
   }
 
   return (

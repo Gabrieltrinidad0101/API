@@ -9,6 +9,7 @@ import { customFecth } from '../../../../share/infranstruture/dependencies'
 import { Link, useNavigate } from 'react-router-dom'
 import type IUser from '../../../../../../share/domain/user'
 import { useAuthenticationContext } from '../../../../share/infranstruture/AuthenticationContext'
+import { TextField } from '@mui/material'
 
 export default function AuthComponent ({ Prop: authenticationComponent }: Prop<IAuthenticationComponent>): JSX.Element {
   const [user, setUser] = useState<IUser>({
@@ -43,21 +44,14 @@ export default function AuthComponent ({ Prop: authenticationComponent }: Prop<I
   return (
     <div className="screen-1">
       <div className="logo">
-        <img src={imagesContainer.logo} alt="designCreate" />
-      </div>
-      <div className="input-auth mb-3">
-        <label htmlFor="email">Name</label>
-        <div className="sec-2">
-          <input type="text" name="name" onChange={inputChange} placeholder="Username" />
+        <div>
+          <img src={imagesContainer.logo} alt="designCreate" />
         </div>
       </div>
-      <div className="input-auth">
-        <label htmlFor="password">Password</label>
-        <div className="sec-2">
-          <input type="password" onChange={inputChange} name="password" placeholder="············" />
-          <i className="show-hide"></i>
-        </div>
-      </div>
+      <TextField id="standard-basic" onChange={inputChange} name="name" label="Username" variant="standard" />
+      <TextField id="standard-basic" onChange={inputChange} name="cellPhone" type="number" label="Cell Phone  " variant="standard" />
+      <TextField id="standard-basic" onChange={inputChange} name="email" type="email" label="Email" variant="standard" />
+      <TextField id="standard-basic" onChange={inputChange} name="password" type="password" label="Password" variant="standard" />
       <button id="auth-button" className="login" onClick={clickAuth}>{!authenticationComponent.isRegister ? 'Login' : 'Register'}</button>
       <Link to={authenticationComponent.isRegister ? '/login' : '/register'}>
         {authenticationComponent.isRegister ? 'Login' : 'Register'}

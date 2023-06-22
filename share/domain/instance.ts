@@ -1,7 +1,5 @@
 import { IHttpStatusCode } from "./httpResult"
 
-
-
 export interface IInstanceInitial{
     status: TypeStatusInstance
     name: TypeInstanceName

@@ -1,0 +1,22 @@
+.container {
+    width: 50%;
+    height: 70px;
+    display: grid;
+    grid-template-columns: 80% 20%;
+    color: white;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.inputsContainer{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.inputsContainer > div{
+    width: 40%;
+}
+
+.headerContainer{
+    display: flex;
+}
