@@ -6,11 +6,13 @@ import type IUserState from '../domian/user'
 import { Outlet, useNavigate } from 'react-router-dom'
 import { isEmptyNullOrUndefined } from '../../../../share/application/isEmptyNullUndefiner'
 
-const userInitialState = {
+const userInitialState: IUser = {
   name: '',
   password: '',
   isRegister: false,
-  _id: ''
+  _id: '',
+  email: '',
+  cellPhone: ''
 }
 
 const AuthContext = React.createContext<IUserState>({

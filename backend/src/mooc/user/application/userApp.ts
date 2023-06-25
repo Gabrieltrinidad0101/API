@@ -2,17 +2,23 @@ import { type IHttpStatusCode } from '../../../../../share/domain/httpResult'
 import type IUserRepository from '../domain/IUserRepository'
 import type IToken from '../domain/token'
 import type IEncrypt from '../domain/encrypt'
+import { type IUserApp } from '../domain/user'
 import type IUser from '../../../../../share/domain/user'
 import { type TypeValidation } from '../../share/domain/Validator'
 
-export default class Authentication {
-  constructor (
-    private readonly token: IToken,
-    private readonly encrypt: IEncrypt,
-    private readonly userRepository: IUserRepository,
-    private readonly userSignUpValidator: TypeValidation,
-    private readonly userSignInValidator: TypeValidation
-  ) { }
+export default class UserApp {
+  private readonly token: IToken
+  private readonly encrypt: IEncrypt
+  private readonly userRepository: IUserRepository
+  private readonly userSignUpValidator: TypeValidation
+  private readonly userSignInValidator: TypeValidation
+  constructor (userApp: IUserApp) {
+    this.token = userApp.token
+    this.encrypt = userApp.encrypt
+    this.userRepository = userApp.userRepository
+    this.userSignUpValidator = userApp.userSignUpValidator
+    this.userSignInValidator = userApp.userSignInValidator
+  }
 
   async register (user: IUser): Promise<IHttpStatusCode> {
     const error = this.userSignUpValidator(user)
@@ -23,7 +29,7 @@ export default class Authentication {
         message: 'Complete all the data is required'
       }
     }
-    const userExist = await this.userRepository.findByName(user?.name ?? '')
+    const userExist = await this.userRepository.findByEmail(user.name)
     if (userExist !== null) {
       return {
         message: 'The user exists',
@@ -45,7 +51,7 @@ export default class Authentication {
         statusCode: 422
       }
     }
-    const userExist = await this.userRepository.findByName(user?.name ?? '')
+    const userExist = await this.userRepository.findByEmail(user.email)
     const validateUser = (userExist !== null) && await this.encrypt.validate(user?.password ?? '', userExist?.password ?? '')
     if (validateUser) {
       return {
@@ -53,8 +59,31 @@ export default class Authentication {
       }
     }
     return {
-      message: 'The username or password is incorrect',
+      message: 'The email or password is incorrect',
       statusCode: 404
+    }
+  }
+
+  async update (user: IUser): Promise<IHttpStatusCode> {
+    const error = this.userSignUpValidator(user)
+    if (error !== undefined) {
+      return {
+        error,
+        statusCode: 422,
+        message: 'Complete all the data is required'
+      }
+    }
+    const userExist = await this.userRepository.findByEmail(user.name)
+    if (userExist !== null) {
+      return {
+        message: 'The user exists',
+        statusCode: 409
+      }
+    }
+    await this.userRepository.update(user)
+
+    return {
+      message: this.token.sign({ _id: user._id })
     }
   }
 

@@ -1,5 +1,4 @@
-import React, { useState } from 'react'
-import './AuthComponent.css'
+import React from 'react'
 import imagesContainer from '../../../../share/application/imagesContainer'
 import type Prop from '../../../../share/domian/prop'
 import { Toast } from '../../../../share/infranstruture/toast'
@@ -9,19 +8,27 @@ import { customFecth } from '../../../../share/infranstruture/dependencies'
 import { Link, useNavigate } from 'react-router-dom'
 import type IUser from '../../../../../../share/domain/user'
 import { useAuthenticationContext } from '../../../../share/infranstruture/AuthenticationContext'
-import { TextField } from '@mui/material'
+import UserComponent from '../../../../components/user/insfratructure/User'
+
+const Footer = ({ Prop: isRegister }: Prop<boolean>): JSX.Element => {
+  return <Link to={isRegister ? '/login' : '/register'}>
+    {isRegister ? 'Login' : 'Register'}
+  </Link>
+}
 
 export default function AuthComponent ({ Prop: authenticationComponent }: Prop<IAuthenticationComponent>): JSX.Element {
-  const [user, setUser] = useState<IUser>({
+  const user = {
     name: '',
     password: '',
-    isRegister: authenticationComponent.isRegister
-  })
+    cellPhone: '',
+    email: ''
+  }
 
+  const isRegister = authenticationComponent.isRegister
   const navigation = useNavigate()
   const userState = useAuthenticationContext()
 
-  const clickAuth = (): void => {
+  const clickAuth = async (user: IUser): Promise<void> => {
     const _user: IUser = { ...user, isRegister: authenticationComponent.isRegister }
     const authentication: IAuthentication = {
       user: _user,
@@ -30,32 +37,24 @@ export default function AuthComponent ({ Prop: authenticationComponent }: Prop<I
       navigation: (path: string) => { navigation(path) },
       userState
     }
-    authenticationComponent.onSubmit(authentication)
-      .catch((error: DOMException) => {
-        console.error(error)
-      })
+    await authenticationComponent.onSubmit(authentication)
   }
 
-  const inputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const { name, value } = e.target
-    setUser({ ...user, [name]: value })
-  }
+  const typeOfAuthentication = isRegister ? 'Register' : 'Login'
+  const logo = <img src={imagesContainer.logo} alt="designCreate" />
+  const submitButtonName = typeOfAuthentication
 
-  return (
-    <div className="screen-1">
-      <div className="logo">
-        <div>
-          <img src={imagesContainer.logo} alt="designCreate" />
-        </div>
-      </div>
-      <TextField id="standard-basic" onChange={inputChange} name="name" label="Username" variant="standard" />
-      <TextField id="standard-basic" onChange={inputChange} name="cellPhone" type="number" label="Cell Phone  " variant="standard" />
-      <TextField id="standard-basic" onChange={inputChange} name="email" type="email" label="Email" variant="standard" />
-      <TextField id="standard-basic" onChange={inputChange} name="password" type="password" label="Password" variant="standard" />
-      <button id="auth-button" className="login" onClick={clickAuth}>{!authenticationComponent.isRegister ? 'Login' : 'Register'}</button>
-      <Link to={authenticationComponent.isRegister ? '/login' : '/register'}>
-        {authenticationComponent.isRegister ? 'Login' : 'Register'}
-      </Link>
-    </div>
-  )
+  return <UserComponent
+    logo={logo}
+    submitButtonName={submitButtonName}
+    user={user}
+    hidenInputs={
+      {
+        cellPhone: !isRegister,
+        username: !isRegister
+      }
+    }
+    onSubmit={clickAuth}
+    footer={<Footer Prop={isRegister} />}
+  />
 }

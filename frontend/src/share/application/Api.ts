@@ -6,7 +6,9 @@ const APIURL = {
   saveInstanceName: (instanceId: string) => `/${instanceId}/instance/name`,
   sendMessage: (instanceId: string) => `/${instanceId}/messages/chat`,
   sendDocument: (instanceId: string) => `/${instanceId}/messages/document`,
-  saveWebhookUrl: (instanceId: string) => `/${instanceId}/instance/webhookUrl`
+  saveWebhookUrl: (instanceId: string) => `/${instanceId}/instance/webhookUrl`,
+  updateUser: '/user/update',
+  authentication: '/user/authentication'
 }
 
 export default APIURL

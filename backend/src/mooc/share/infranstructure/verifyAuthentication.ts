@@ -1,6 +1,6 @@
 import { type Request, type Response } from 'express'
 import { type IHttpStatusCode } from '../../../../../share/domain/httpResult'
-import type IToken from '../../authentication/domain/token'
+import type IToken from '../../user/domain/token'
 import type IUserId from '../domain/userId'
 import { isEmptyNullOrUndefined } from '../../../../../share/application/isEmptyNullUndefiner'
 export default class VerifyAuthentication {

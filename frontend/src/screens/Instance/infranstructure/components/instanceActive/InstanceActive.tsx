@@ -47,7 +47,9 @@ export default function InstanceActive ({ Prop: instance }: Prop<IInstance>): JS
         multiline: true,
         title: 'Send Test Message',
         messagePlaceHolder: 'Message',
-        typeOfSend: 'body'
+        typeOfSend: 'body',
+        showFileName: false
+
       }} />
     </div>
   )

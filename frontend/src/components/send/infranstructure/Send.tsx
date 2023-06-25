@@ -7,20 +7,23 @@ import type Prop from '../../../share/domian/prop'
 import SendMessageCss from './Send.module.css'
 import { type IToAndData } from '../../../../../share/domain/Send'
 import { type IPropSend } from '../domian/Send'
+import instanceAuthentication from '../../../screens/docs/infranstructure/getInstanceAuthentication'
 
 const Send = ({ Prop: propSend }: Prop<IPropSend>): JSX.Element => {
   const [inputs, setInputsMessage] = useState<IToAndData>({ to: '', body: '', filename: '' })
   const sendTestMessage = (): void => {
     const { to, body, filename } = inputs
-    if ((isEmptyNullOrUndefined(filename) && (propSend.showFileName ?? true)) ||
+    const { _id, token } = instanceAuthentication()
+
+    if ((isEmptyNullOrUndefined(filename) && (propSend.showFileName ?? false)) ||
       isEmptyNullOrUndefined(to, body)) {
       Toast.error('All the fields are required')
       return
     }
 
     instanceApp.sendTestMessage({
-      _id: propSend._id,
-      token: propSend.token,
+      _id,
+      token,
       [propSend.typeOfSend]: body,
       to,
       filename

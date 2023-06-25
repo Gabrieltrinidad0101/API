@@ -1,6 +1,6 @@
 import * as dotenv from 'dotenv'
 import express from 'express'
-import { authRouter } from './mooc/authentication/infranstructure/authRouter'
+import { authRouter } from './mooc/user/infranstructure/userRouter'
 import { instanceRouter } from './mooc/instance/infranstructure/instanceRouter'
 import { messageRouter } from './mooc/messages/infranstructure/messagesRouter'
 import cors from 'cors'

@@ -17,3 +17,10 @@ export interface IDashboardContext {
 export interface IHeader {
   className: string
 }
+
+export interface IIAvatar {
+  name: string
+  width?: number
+  height?: number
+  onClick?: () => void
+}

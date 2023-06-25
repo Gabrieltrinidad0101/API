@@ -4,11 +4,15 @@ import Auth from '../application/Auth'
 import 'react-toastify/dist/ReactToastify.css'
 import type IAuthenticationComponent from '../domian/IAuthenticaction'
 import type IAuthenticationPage from '../../../share/domian/authentication'
-
+import AuthenticationCss from './Authentication.module.css'
 export default function Authentication ({ isRegister }: IAuthenticationPage): JSX.Element {
   const authenticationComponent: IAuthenticationComponent = {
     onSubmit: Auth,
-    isRegister
+    isRegister,
+    hidenInputs: {
+      cellPhone: !isRegister,
+      username: !isRegister
+    }
   }
 
   useEffect(() => {
@@ -16,7 +20,7 @@ export default function Authentication ({ isRegister }: IAuthenticationPage): JS
   })
 
   return (
-    <div className='login-screen'>
+    <div className={AuthenticationCss.loginScreen}>
       <AuthComponent Prop={authenticationComponent} />
     </div>
   )

@@ -1,0 +1,51 @@
+* {
+    font-family: "Poppins";
+}
+
+.screenOne {
+    background: #f1f7fe;
+    padding: 2em;
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+    width: 280px;
+}
+
+.logo {
+    margin-top: -3em;
+    height: 130px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo img {
+    width: 250px;
+    pointer-events: none;
+}
+
+.login {
+    padding: 1em;
+    background: #2a9df4;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-weight: 600;
+}
+
+.footer {
+    display: flex;
+    font-size: 0.7em;
+    color: #5e5e5e;
+    gap: 14em;
+    padding-bottom: 10em;
+}
+
+.footer span {
+    cursor: pointer;
+}
+
+button {
+    cursor: pointer;
+    font-size: 20px;
+}   
