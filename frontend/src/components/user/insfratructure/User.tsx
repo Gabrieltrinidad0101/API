@@ -20,7 +20,7 @@ export default function UserComponent (userComponent: IUserComponent<JSX.Element
   }
 
   const isHiden = (value: boolean | undefined): boolean => {
-    return value === undefined || value
+    return value === undefined || !value
   }
 
   return (

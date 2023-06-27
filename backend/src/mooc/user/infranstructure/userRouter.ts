@@ -8,6 +8,6 @@ const router = new RouterManager(authRouter)
 
 router.post('/authentication', userControl.authentication)
 router.get('/verifyAuthentication', verifyAuthentication.verify, userControl.verifyAuthentication)
-router.get('/verifyAuthentication', verifyAuthentication.verify, userControl.update)
+router.put('/update', verifyAuthentication.verify, userControl.update)
 
 export { authRouter }

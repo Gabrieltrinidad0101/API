@@ -17,16 +17,9 @@ const Footer = ({ Prop: isRegister }: Prop<boolean>): JSX.Element => {
 }
 
 export default function AuthComponent ({ Prop: authenticationComponent }: Prop<IAuthenticationComponent>): JSX.Element {
-  const user = {
-    name: '',
-    password: '',
-    cellPhone: '',
-    email: ''
-  }
-
   const isRegister = authenticationComponent.isRegister
   const navigation = useNavigate()
-  const userState = useAuthenticationContext()
+  const { user, setUser } = useAuthenticationContext()
 
   const clickAuth = async (user: IUser): Promise<void> => {
     const _user: IUser = { ...user, isRegister: authenticationComponent.isRegister }
@@ -35,7 +28,7 @@ export default function AuthComponent ({ Prop: authenticationComponent }: Prop<I
       toast: Toast,
       customFecth,
       navigation: (path: string) => { navigation(path) },
-      userState
+      setUser
     }
     await authenticationComponent.onSubmit(authentication)
   }

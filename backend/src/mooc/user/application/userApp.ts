@@ -5,6 +5,7 @@ import type IEncrypt from '../domain/encrypt'
 import { type IUserApp } from '../domain/user'
 import type IUser from '../../../../../share/domain/user'
 import { type TypeValidation } from '../../share/domain/Validator'
+import { getUserDto } from './dto'
 
 export default class UserApp {
   private readonly token: IToken
@@ -12,16 +13,19 @@ export default class UserApp {
   private readonly userRepository: IUserRepository
   private readonly userSignUpValidator: TypeValidation
   private readonly userSignInValidator: TypeValidation
+  private readonly userUpdateValidator: TypeValidation
   constructor (userApp: IUserApp) {
     this.token = userApp.token
     this.encrypt = userApp.encrypt
     this.userRepository = userApp.userRepository
     this.userSignUpValidator = userApp.userSignUpValidator
     this.userSignInValidator = userApp.userSignInValidator
+    this.userUpdateValidator = userApp.userUpdateValidator
   }
 
   async register (user: IUser): Promise<IHttpStatusCode> {
-    const error = this.userSignUpValidator(user)
+    const userDto = getUserDto(user)
+    const error = this.userSignUpValidator(userDto)
     if (error !== undefined) {
       return {
         error,
@@ -29,22 +33,23 @@ export default class UserApp {
         message: 'Complete all the data is required'
       }
     }
-    const userExist = await this.userRepository.findByEmail(user.name)
+    const userExist = await this.userRepository.findByEmail(userDto.email)
     if (userExist !== null) {
       return {
         message: 'The user exists',
         statusCode: 409
       }
     }
-    user.password = await this.encrypt.enCode(user?.password ?? '')
-    const userSave = await this.userRepository.insert(user)
+    userDto.password = await this.encrypt.enCode(userDto?.password ?? '')
+    const userSave = await this.userRepository.insert(userDto)
     return {
       message: this.token.sign({ _id: userSave?._id })
     }
   }
 
   async login (user: IUser): Promise<IHttpStatusCode> {
-    const error = this.userSignInValidator(user)
+    const userDto = getUserDto(user)
+    const error = this.userSignInValidator(userDto)
     if (error !== undefined) {
       return {
         error,
@@ -65,7 +70,7 @@ export default class UserApp {
   }
 
   async update (user: IUser): Promise<IHttpStatusCode> {
-    const error = this.userSignUpValidator(user)
+    const error = this.userUpdateValidator(user)
     if (error !== undefined) {
       return {
         error,
@@ -83,7 +88,7 @@ export default class UserApp {
     await this.userRepository.update(user)
 
     return {
-      message: this.token.sign({ _id: user._id })
+      message: 'User is updated successfully'
     }
   }
 
@@ -95,7 +100,7 @@ export default class UserApp {
           statusCode: 500
         }
       }
-      const user = await this.userRepository.findById(_id, { password: 0 })
+      const user = await this.userRepository.findById(_id, { password: 0, __v: 0 })
       return {
         message: user
       }

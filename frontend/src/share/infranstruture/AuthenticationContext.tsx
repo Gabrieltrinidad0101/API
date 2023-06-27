@@ -21,14 +21,15 @@ const AuthContext = React.createContext<IUserState>({
 })
 
 const AuthenticationProvider = (): JSX.Element => {
-  const [user, setUser] = useState<IUser | undefined>(userInitialState)
+  const [user, setUser] = useState<IUser>(userInitialState)
   const navigation = useNavigate()
 
   const verifyAuthentication = async (): Promise<boolean> => {
     try {
       const result = await customFecth.get<IHttpResult<IUser>>('/user/verifyAuthentication')
-      if (isEmptyNullOrUndefined(result?.message)) return true
-      setUser(result?.message)
+      if (result?.message === undefined || isEmptyNullOrUndefined(result?.message)) return true
+      setUser(result.message)
+      console.log(result)
       return false
     } catch (error) {
       console.log(error)

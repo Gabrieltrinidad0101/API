@@ -16,6 +16,7 @@ export default class UserControl {
 
   update = async (req: Request, res: Response): Promise<IHttpStatusCode> => {
     const newUser = req.body as IUser
+    newUser._id = req.headers.userId?.toString()
     const response = this.userControl.update(newUser)
     return await response
   }

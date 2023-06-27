@@ -22,3 +22,8 @@ body {
 .d-block {
     display: block !important;
 }
+
+.outline-border-none{
+    outline: none;
+    border: none;
+}

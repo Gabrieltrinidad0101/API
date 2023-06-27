@@ -9,5 +9,5 @@ export interface IUserApp {
   userRepository: IUserRepository
   userSignUpValidator: TypeValidation
   userSignInValidator: TypeValidation
-  updateUserValidator: TypeValidation
+  userUpdateValidator: TypeValidation
 }

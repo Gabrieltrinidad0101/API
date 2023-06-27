@@ -1,4 +1,4 @@
-import { Avatar, Modal } from '@mui/material'
+import { Avatar, Box, Modal } from '@mui/material'
 import React, { useState } from 'react'
 import { useDashboardContext } from '../../Dashboard'
 import HeaderCss from './Header.module.css'
@@ -6,6 +6,8 @@ import { useAuthenticationContext } from '../../../../../share/infranstruture/Au
 import UserComponent from '../../../../user/insfratructure/User'
 import type IUser from '../../../../../../../share/domain/user'
 import { type IIAvatar } from '../../../domian/Dashboard'
+import { updateUser } from '../../../../../screens/authentication/application/Auth'
+import { getUserTools } from '../../../../../screens/authentication/infranstructure/dependecies'
 
 const AvatarComponent = (avatar: IIAvatar): JSX.Element => {
   const name = avatar.name
@@ -20,7 +22,7 @@ export default function HeaderDashboard (): JSX.Element {
       hideMenu: !(dashboardState.hideMenu ?? false)
     })
   }
-  const { user } = useAuthenticationContext()
+  const { user, setUser } = useAuthenticationContext()
   if (user === undefined) return <p> Error loading </p>
   const showEditUser = (): void => {
     setModalOpen(true)
@@ -28,6 +30,11 @@ export default function HeaderDashboard (): JSX.Element {
 
   const closeModal = (): void => {
     setModalOpen(false)
+  }
+
+  const onSubmit = async (user: IUser): Promise<void> => {
+    const userTools = getUserTools(user, setUser)
+    await updateUser(userTools)
   }
 
   return (
@@ -45,15 +52,20 @@ export default function HeaderDashboard (): JSX.Element {
         aria-describedby="modal-modal-description"
         className={HeaderCss.containerUser}
       >
-        <UserComponent
-          logo={<AvatarComponent width={75} height={75} name={user.name} />}
-          onSubmit={async (user: IUser): Promise<void> => { }}
-          submitButtonName="Save"
-          user={user}
-          hidenInputs={{
-            password: true
-          }}
-        />
+        <Box className="outline-border-none">
+          <UserComponent
+            logo={<AvatarComponent width={75} height={75} name={user.name} />}
+            onSubmit={onSubmit}
+            submitButtonName="Save"
+            user={user}
+            hidenInputs={{
+              password: true
+            }}
+            footer={
+              <p className={HeaderCss.changePassword} >Change Password</p>
+            }
+          />
+        </Box>
       </Modal >
     </div >
   )
