@@ -8,3 +8,13 @@ export const getUserDto = (user: IUser): IUser => {
     email: user.email
   }
 }
+
+export const getUserUpdateDto = (user: IUser): IUser => {
+  return {
+    name: user.name,
+    password: user.password,
+    cellPhone: user.cellPhone,
+    email: user.email,
+    _id: user._id
+  }
+}

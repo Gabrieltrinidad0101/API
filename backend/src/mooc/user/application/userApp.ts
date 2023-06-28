@@ -5,7 +5,7 @@ import type IEncrypt from '../domain/encrypt'
 import { type IUserApp } from '../domain/user'
 import type IUser from '../../../../../share/domain/user'
 import { type TypeValidation } from '../../share/domain/Validator'
-import { getUserDto } from './dto'
+import { getUserDto, getUserUpdateDto } from './dto'
 
 export default class UserApp {
   private readonly token: IToken
@@ -65,12 +65,13 @@ export default class UserApp {
     }
     return {
       message: 'The email or password is incorrect',
-      statusCode: 404
+      statusCode: 422
     }
   }
 
   async update (user: IUser): Promise<IHttpStatusCode> {
-    const error = this.userUpdateValidator(user)
+    const userDto = getUserUpdateDto(user)
+    const error = this.userUpdateValidator(userDto)
     if (error !== undefined) {
       return {
         error,
@@ -78,14 +79,14 @@ export default class UserApp {
         message: 'Complete all the data is required'
       }
     }
-    const userExist = await this.userRepository.findByEmail(user.name)
+    const userExist = await this.userRepository.findByEmail(userDto.name)
     if (userExist !== null) {
       return {
         message: 'The user exists',
         statusCode: 409
       }
     }
-    await this.userRepository.update(user)
+    await this.userRepository.update(userDto)
 
     return {
       message: 'User is updated successfully'
