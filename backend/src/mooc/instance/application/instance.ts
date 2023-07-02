@@ -88,10 +88,19 @@ export default class Instance {
     if (isEmptyNullOrUndefined(token)) {
       return {
         statusCode: 422,
-        error: 'Invalid token'
+        error: 'Token cannot be empty or undefined ',
+        message: 'Invalid instance'
       }
     }
+
     const qrAndStatus = await this.instanceRepository.getQrAndStatus(_id, token)
+    if (isEmptyNullOrUndefined(qrAndStatus)) {
+      return {
+        statusCode: 422,
+        error: 'instance id or token is invalid',
+        message: 'Invalid instance'
+      }
+    }
     return {
       statusCode: 200,
       message: qrAndStatus

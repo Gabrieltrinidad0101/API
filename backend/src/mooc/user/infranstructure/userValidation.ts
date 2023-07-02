@@ -18,7 +18,6 @@ const userSignInSchema = Joi.object({
 const userUpdateSchema = Joi.object({
   _id: Joi.string().required(),
   name: Joi.string().required(),
-  password: Joi.string().required(),
   email: Joi.string().email().required(),
   cellPhone: Joi.string().required()
 })

@@ -79,8 +79,8 @@ export default class UserApp {
         message: 'Complete all the data is required'
       }
     }
-    const userExist = await this.userRepository.findByEmail(userDto.name)
-    if (userExist !== null) {
+    const userExist = await this.userRepository.findByEmail(userDto.email)
+    if (userExist !== null && userExist?._id?.toString() !== userDto._id) {
       return {
         message: 'The user exists',
         statusCode: 409

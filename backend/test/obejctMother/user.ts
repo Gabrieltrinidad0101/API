@@ -27,13 +27,23 @@ export const User = ({
   }
 }
 
-export const pedroUser = User(
-  {
-    name: 'pedro',
-    email: 'pedro@gmail.com',
-    password: 'pedro123',
-    _id: '122@34'
-  })
+export const pedroUser: IUser =
+{
+  name: 'pedro',
+  email: 'pedro@gmail.com',
+  password: 'pedro123',
+  cellPhone: '11111111111',
+  _id: '122@34'
+}
+
+export const pedroUserModify: IUser =
+{
+  name: 'pedroModify',
+  email: 'pedroModify@gmail.com',
+  password: 'pedro123',
+  cellPhone: '12222222222',
+  _id: '122@34Modify'
+}
 
 export const joseUser = User(
   {

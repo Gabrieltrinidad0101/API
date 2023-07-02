@@ -1,6 +1,7 @@
 import type IUserRepository from '../../domain/IUserRepository'
 import { UserModel } from './userSchema'
 import type IUser from '../../../../../../share/domain/user'
+import { type IUpdateUser } from '../../domain/user'
 
 export default class UserRepository implements IUserRepository {
   async insert (user: IUser): Promise<IUser | null> {
@@ -16,7 +17,7 @@ export default class UserRepository implements IUserRepository {
     return userSave
   }
 
-  async update (user: IUser): Promise<void> {
+  async update (user: IUpdateUser): Promise<void> {
     await UserModel.updateOne({ _id: user._id }, {
       name: user.name,
       cellPhone: user.cellPhone,

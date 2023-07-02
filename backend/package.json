@@ -9,7 +9,7 @@
     "start": "node ./dist/backend/src/index.js",
     "eslint": "eslint --ignore-path .gitignore . --ext .ts, src/",
     "eslint-fix": "eslint . --ext .ts --fix",
-    "test": "node ./mongodb/dropInstancesTest.js && DB=chatPlusTest npx jest"
+    "test": "node ./mongodb/dropInstancesTest.js && DB=chatPlusTest npx jest ./test/instance.spec.ts"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
@@ -29,6 +29,7 @@
     "eslint-plugin-promise": "^6.0.0",
     "jest": "^29.5.0",
     "mongoose-typescript": "^2.4.0",
+    "qrcode-terminal": "^0.12.0",
     "supertest": "^6.3.3",
     "ts-jest": "^29.0.5",
     "ts-node": "^10.9.1",

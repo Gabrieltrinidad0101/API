@@ -7,6 +7,7 @@ import sendReceiveMessage from './sendReceiveMessage'
 import { type TypeInstanceStart } from '../../../../../share/domain/instance'
 import type ISend from '../../../../../share/domain/Send'
 import getMessageMediaExtension from './getMediaFileExtension'
+import { getClientId } from './getClientId'
 const clients = new Map<string, Client>()
 export default class WhatsAppController implements IWhatsAppController {
   constructor (private readonly instanceRepository: IInstanceRepository) { }
@@ -66,7 +67,6 @@ export default class WhatsAppController implements IWhatsAppController {
 
   onScreenLoad = async (client: Client, instance: IInstance): Promise<void> => {
     for (let i = 0; (i < 10 || client.pupPage === null); i++) await wait(1000)
-    console.log('Screen ready')
     client.pupPage?.on('close', (): void => {
       this.start(instance, 'windowClose')
         .catch(() => {
@@ -102,16 +102,8 @@ export default class WhatsAppController implements IWhatsAppController {
     })
   }
 
-  getClientId = (instance: IInstance): string | undefined => {
-    const id = instance._id
-    const token = instance.token
-    if (id === undefined || token === undefined) return
-    const clientId = `${id}${token}`
-    return clientId
-  }
-
   restart = async (instance: IInstance): Promise<void> => {
-    const clientId = this.getClientId(instance)
+    const clientId = getClientId(instance)
     if (clientId === undefined) return
     await this.destroy(clientId)
   }
@@ -148,11 +140,20 @@ export default class WhatsAppController implements IWhatsAppController {
     }
   }
 
+  waitInstanceStatus = async (instance: IInstance, status: WAState): Promise<WAState | undefined> => {
+    const clientId = getClientId(instance)
+    if (clientId === undefined) return
+    const getInstanceStatus = async (): Promise<WAState | undefined> => await this.getStatus(clientId)
+    for (let i = 0; i < 20 || await getInstanceStatus() !== status; i++) { await wait(1000) }
+    const instanceStatus = await getInstanceStatus()
+    return instanceStatus
+  }
+
   start = async (instance: IInstance, instanceStart: TypeInstanceStart): Promise<void> => {
     try {
       const { _id } = instance
       if (_id === undefined) return
-      const clientId = this.getClientId(instance)
+      const clientId = getClientId(instance)
       if (clientId === undefined) return
       await this.instanceRepository.updateStatus(_id, 'initial')
       const status = await this.getStatus(clientId)
@@ -160,7 +161,7 @@ export default class WhatsAppController implements IWhatsAppController {
       const client = new Client({
         authStrategy: new LocalAuth({ clientId }),
         puppeteer: {
-          headless: true
+          headless: false
         }
       })
       await this.destroy(clientId)
