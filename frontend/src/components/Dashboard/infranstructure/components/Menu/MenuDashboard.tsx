@@ -24,17 +24,9 @@ export default function MenuDashboard (): JSX.Element {
         </Link>
       </Nav>
       <Nav text='Instance' icon={<i className={'fa-solid fa-layer-group'}></i>}>
-        <Link to="#">
-          <i className="fa-solid fa-arrow-right-from-bracket ml-5"></i>
-          WhatsApp Logout
-        </Link>
-        <Link to="#">
-          <i className="fa-solid fa-rotate ml-5"></i>
-          Restart
-        </Link>
-        <Link to="#">
-          <i className="fa-solid fa-qrcode ml-5"></i>
-          Qr
+        <Link to="/docs/instanceTools">
+          <i className="fa-solid fa-screwdriver-wrench ml-5"></i>
+          Instance Tools
         </Link>
       </Nav>
       <Nav text='Sign out' onClick={session} to='/login' icon={<i className={'fa-solid fa-right-from-bracket'}></i>}>

@@ -11,6 +11,7 @@ import Dashboard from './components/Dashboard/infranstructure/Dashboard'
 import Documentation from './screens/docs/infranstructure/Documentation'
 import SendFile from './screens/docs/infranstructure/components/sendFile/SendFile'
 import SendMessage from './screens/docs/infranstructure/components/sendMessage/sendMessage'
+import InstanceTools from './screens/docs/infranstructure/components/instanceTools/InstanceTools'
 
 export default function App (): JSX.Element {
   return (
@@ -25,6 +26,7 @@ export default function App (): JSX.Element {
             <Route path="/docs" element={<Documentation/>}>
               <Route path="sendFile" element={<SendFile/>} ></Route>
               <Route path="sendMessage" element={<SendMessage/>} ></Route>
+              <Route path="instanceTools" element={<InstanceTools/>} ></Route>
             </Route>
           </Route>
         </Route>

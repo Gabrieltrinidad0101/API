@@ -10,7 +10,7 @@
     width: 95%;
     height: 100%;
     display: grid;
-    grid-template-columns: 50px calc(100% - 50px);
+    grid-template-columns: calc(100% - 50px) 50px;
     grid-template-rows: 100%;
     justify-content: flex-end;
     align-items: center;

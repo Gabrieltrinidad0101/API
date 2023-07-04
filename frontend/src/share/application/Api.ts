@@ -7,6 +7,7 @@ const APIURL = {
   sendMessage: (instanceId: string) => `/${instanceId}/messages/chat`,
   sendDocument: (instanceId: string) => `/${instanceId}/messages/document`,
   saveWebhookUrl: (instanceId: string) => `/${instanceId}/instance/webhookUrl`,
+  getQr: (instanceId: string) => `/${instanceId}/instance/qr`,
   updateUser: '/user/update',
   authentication: '/user/authentication'
 }

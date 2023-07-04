@@ -40,10 +40,10 @@ export default function HeaderDashboard (): JSX.Element {
   return (
     <div className={HeaderCss.header}>
       <div className={HeaderCss.container}>
-        <i className={`fa-solid fa-bars cursor-p ${HeaderCss.menu}`} onClick={hideMenu}></i>
         <div className={HeaderCss.containerAvata}>
           {<AvatarComponent name={user.name} onClick={showEditUser} />}
         </div>
+        <i className={`fa-solid fa-bars cursor-p ${HeaderCss.menu}`} onClick={hideMenu}></i>
       </div>
       <Modal
         open={modalOpen}

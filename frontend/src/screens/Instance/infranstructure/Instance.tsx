@@ -11,6 +11,7 @@ import { instanceApp } from './dependencies'
 import { isEmptyNullOrUndefined } from '../../../../../share/application/isEmptyNullUndefiner'
 import InstanceName from './components/instanceName/InstanceName'
 import InstanceStateControl from './components/instanceStateControl/InstanceStateControl'
+import APIURL from '../../../share/application/Api'
 const initialState: IInstance = {
   _id: '',
   status: 'pending',
@@ -35,7 +36,8 @@ export default function Instance (): JSX.Element {
 
   const getQr = async ({ _id }: IInstance): Promise<void> => {
     while (window.location.pathname === '/instance') {
-      const res = await customFecth.get<IHttpResult<IInstanceQRStatus>>(`${_id}/instance/qr`, {
+      const url = APIURL.getQr(_id)
+      const res = await customFecth.get<IHttpResult<IInstanceQRStatus>>(url, {
         token: instanceState?.token
       })
       const { status, qr } = res?.message ?? { status: 'pending' }

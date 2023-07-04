@@ -50,15 +50,14 @@ describe('Instance', () => {
     expect(status).toBe('pending')
   })
 
-  test('initial instance', async () => {
+  test('send message', async () => {
     await wait(15000)
-    const response = await request(app).get(`/${instance._id}/instance/qr`)
-      .set({
-        token: instance.token
+    const response = await request(app).post(`/${instance._id}/messages/chat`)
+      .send({
+        token: instance.token,
+        to: '18094436276',
+        body: 'hello world'
       })
-      .send()
-    const { status } = response.body.message
-    expect(response.statusCode).toBe(200)
-    expect(status).toBe('initial')
+    expect(response.body.message).toBe('success')
   }, 30000)
 })
