@@ -1,6 +1,6 @@
 export interface IPropSend {
-  _id?: string
-  token?: string
+  _id: string
+  token: string
   messagePlaceHolder: string
   title: string
   multiline: boolean

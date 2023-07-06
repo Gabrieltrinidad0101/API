@@ -1,7 +1,7 @@
 import { type Request, type Response, type Router } from 'express'
 import { type IHttpStatusCode } from '../../../../../share/domain/httpResult'
 
-type typeCallBack = (req: Request, res: Response, next?: () => void) => Promise<IHttpStatusCode | undefined>
+type typeCallBack = (req: Request, next?: () => void) => Promise<IHttpStatusCode | undefined>
 type typeMethods = 'post' | 'get' | 'put' | 'delete'
 
 export default class RouterManager {
@@ -40,7 +40,7 @@ export default class RouterManager {
             console.log(error)
           })
       }
-      const response = await callBack(req, res, next)
+      const response = await callBack(req, next)
       if (response === undefined) return
       res.status(response.statusCode ?? 200).send(response)
     } catch (error) {

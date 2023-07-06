@@ -1,6 +1,6 @@
 import { Client, LocalAuth, MessageMedia, WAState, type Message } from 'whatsapp-web.js'
 import type IInstance from '../../../../../share/domain/instance'
-import type IInstanceRepository from '../../instance/domian/InstanceRepository'
+import type IInstanceRepository from '../../routes/instance/domian/InstanceRepository'
 import type IWhatsAppController from '../domian/whatsAppController'
 import wait from '../../../../../share/application/wait'
 import sendReceiveMessage from './sendReceiveMessage'

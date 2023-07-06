@@ -1,4 +1,4 @@
-import InstanceRepository from '../../instance/infranstructure/Database/instanceRepository'
+import InstanceRepository from '../../routes/instance/infranstructure/Database/instanceRepository'
 import { initialInstance } from './initialInstances'
 import WhatsAppController from './whatsApp'
 const instanceRepository = new InstanceRepository()

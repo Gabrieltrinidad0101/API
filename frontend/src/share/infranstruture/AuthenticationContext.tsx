@@ -29,7 +29,6 @@ const AuthenticationProvider = (): JSX.Element => {
       const result = await customFecth.get<IHttpResult<IUser>>('/user/verifyAuthentication')
       if (result?.message === undefined || isEmptyNullOrUndefined(result?.message)) return true
       setUser(result.message)
-      console.log(result)
       return false
     } catch (error) {
       console.log(error)
