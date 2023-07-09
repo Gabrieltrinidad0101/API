@@ -7,8 +7,9 @@ import sendReceiveMessage from './sendReceiveMessage'
 import { type TypeInstanceStart } from '../../../../../share/domain/instance'
 import type ISend from '../../../../../share/domain/Send'
 import getMessageMediaExtension from './getMediaFileExtension'
-import { getClientId } from './getClientId'
+import { getScreenId } from './getScreenId'
 const clients = new Map<string, Client>()
+
 export default class WhatsAppController implements IWhatsAppController {
   constructor (private readonly instanceRepository: IInstanceRepository) { }
 
@@ -29,13 +30,14 @@ export default class WhatsAppController implements IWhatsAppController {
     }
   }
 
+  private readonly onQrAsync = async (qr: string, id: string): Promise<void> => {
+    await this.instanceRepository.updateStatus(id, 'pending')
+    await this.instanceRepository.updateQr(id, qr)
+  }
+
   onQr = (client: Client, id: string): void => {
     client.on('qr', (qr: string) => {
-      this.instanceRepository.updateStatus(id, 'pending')
-        .catch(err => {
-          console.log(err)
-        })
-      this.instanceRepository.updateQr(id, qr)
+      this.onQrAsync(qr, id)
         .catch(error => {
           console.log(error)
         })
@@ -102,15 +104,14 @@ export default class WhatsAppController implements IWhatsAppController {
     })
   }
 
-  restart = async (instance: IInstance): Promise<void> => {
-    const clientId = getClientId(instance)
-    if (clientId === undefined) return
-    await this.destroy(clientId)
+  restart = async (screenId: string | undefined): Promise<void> => {
+    if (screenId === undefined) return
+    await this.destroy(screenId)
   }
 
-  destroy = async (clientId: string): Promise<void> => {
+  destroy = async (screenId: string): Promise<void> => {
     try {
-      const client = clients.get(clientId)
+      const client = clients.get(screenId)
       if (client === undefined) return
       await client.destroy()
     } catch {
@@ -118,9 +119,9 @@ export default class WhatsAppController implements IWhatsAppController {
     }
   }
 
-  getStatus = async (clientId: string): Promise<WAState | undefined> => {
+  getStatus = async (screenId: string): Promise<WAState | undefined> => {
     try {
-      const client = clients.get(clientId)
+      const client = clients.get(screenId)
       if (client === undefined) return
       const status = await client.getState()
       const screenIsOpen = client.pupPage !== undefined ? WAState.OPENING : undefined
@@ -141,9 +142,9 @@ export default class WhatsAppController implements IWhatsAppController {
   }
 
   waitInstanceStatus = async (instance: IInstance, status: WAState): Promise<WAState | undefined> => {
-    const clientId = getClientId(instance)
-    if (clientId === undefined) return
-    const getInstanceStatus = async (): Promise<WAState | undefined> => await this.getStatus(clientId)
+    const screenId = getScreenId(instance)
+    if (screenId === undefined) return
+    const getInstanceStatus = async (): Promise<WAState | undefined> => await this.getStatus(screenId)
     for (let i = 0; i < 20 || await getInstanceStatus() !== status; i++) { await wait(1000) }
     const instanceStatus = await getInstanceStatus()
     return instanceStatus
@@ -153,19 +154,19 @@ export default class WhatsAppController implements IWhatsAppController {
     try {
       const { _id } = instance
       if (_id === undefined) return
-      const clientId = getClientId(instance)
-      if (clientId === undefined) return
+      const screenId = getScreenId(instance)
+      if (screenId === undefined) return
       await this.instanceRepository.updateStatus(_id, 'initial')
-      const status = await this.getStatus(clientId)
+      const status = await this.getStatus(screenId)
       if (status === WAState.CONNECTED || status === WAState.OPENING) return
       const client = new Client({
-        authStrategy: new LocalAuth({ clientId }),
+        authStrategy: new LocalAuth({ clientId: screenId }),
         puppeteer: {
           headless: false
         }
       })
-      await this.destroy(clientId)
-      clients.set(clientId, client)
+      await this.destroy(screenId)
+      clients.set(screenId, client)
       this.onMessage(client, instance)
       this.onQr(client, _id)
       this.onAuthenticated(client, _id)

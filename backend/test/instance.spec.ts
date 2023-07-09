@@ -6,7 +6,7 @@ import { Instance1 } from './obejctMother/instance'
 import type IInstance from '../../share/domain/instance'
 import wait from '../../share/application/wait'
 import { whatsAppController } from '../src/mooc/whatsAppControl/infranstructure/dependencies'
-import { getClientId } from '../src/mooc/whatsAppControl/infranstructure/getClientId'
+import { getScreenId } from '../src/mooc/whatsAppControl/infranstructure/getScreenId'
 import { WAState } from 'whatsapp-web.js'
 import TestServer from '../testServer/testServer'
 
@@ -35,7 +35,7 @@ describe('Instance', () => {
   })
 
   test('Instance is open', async () => {
-    const clientId = getClientId(instance)
+    const clientId = getScreenId(instance)
     expect(clientId).toBeTruthy()
     const instanceStatus = await whatsAppController.waitInstanceStatus(instance, WAState.OPENING)
     if (clientId === undefined) return

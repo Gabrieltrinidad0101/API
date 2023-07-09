@@ -6,6 +6,7 @@ import type IInstanceRepository from '../domian/InstanceRepository'
 import { type TypeValidation } from '../../../share/domain/Validator'
 import type IWhatsAppController from '../../../whatsAppControl/domian/whatsAppController'
 import type IInstanceContructor from '../domian/instance'
+import { getScreenId } from '../../../whatsAppControl/infranstructure/getScreenId'
 
 export default class Instance {
   private readonly instanceRepository: IInstanceRepository
@@ -93,14 +94,20 @@ export default class Instance {
       }
     }
 
+    const screenId = getScreenId({ _id, token })
     const qrAndStatus = await this.instanceRepository.getQrAndStatus(_id, token)
-    if (isEmptyNullOrUndefined(qrAndStatus)) {
+
+    if (isEmptyNullOrUndefined(qrAndStatus, screenId) || screenId === undefined) {
       return {
         statusCode: 422,
         error: 'instance id or token is invalid',
         message: 'Invalid instance'
       }
     }
+
+    const screenStatus = this.whatsAppController.getStatus(screenId)
+    if (screenStatus === undefined) { await this.whatsAppController.restart(screenId) }
+
     return {
       statusCode: 200,
       message: qrAndStatus
@@ -150,8 +157,8 @@ export default class Instance {
         error: 'Instance does not exist'
       }
     }
-
-    await this.whatsAppController.restart(instance)
+    const screenId = getScreenId(instance)
+    await this.whatsAppController.restart(screenId)
     return {
       statusCode: 200,
       message: 'Instance restarted successfully'
