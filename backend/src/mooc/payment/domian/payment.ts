@@ -3,6 +3,7 @@ export interface IProduct {
   description: string
   type: string
   category: string
+  image_url?: string
 }
 
 export interface IPlan {

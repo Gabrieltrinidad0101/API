@@ -7,8 +7,8 @@ import { paymentRouter } from './mooc/routes/payment/infranstructure/paymentRout
 import cors from 'cors'
 import morgan from 'morgan'
 import './database'
-
 dotenv.config()
+
 const app = express()
 
 app.use(express.urlencoded({ extended: true }))

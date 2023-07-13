@@ -8,15 +8,20 @@ import { type TypeInstanceStart } from '../../../../../share/domain/instance'
 import type ISend from '../../../../../share/domain/Send'
 import getMessageMediaExtension from './getMediaFileExtension'
 import { getScreenId } from './getScreenId'
-const clients = new Map<string, Client>()
+
+const screens = new Map<string, Client>()
 
 export default class WhatsAppController implements IWhatsAppController {
   constructor (private readonly instanceRepository: IInstanceRepository) { }
 
   async send (send: ISend): Promise<void> {
     try {
-      const instanceKey = `${send._id}${send.token}`
-      const client = clients.get(instanceKey)
+      const screenId = getScreenId({
+        _id: send._id,
+        token: send.token
+      })
+      if (screenId === undefined) return
+      const client = screens.get(screenId)
       if (send.body !== undefined && send.to !== undefined) {
         await client?.sendMessage(`${send.to}@c.us`, send.body)
       } else if (send.document !== undefined) {
@@ -111,7 +116,7 @@ export default class WhatsAppController implements IWhatsAppController {
 
   destroy = async (screenId: string): Promise<void> => {
     try {
-      const client = clients.get(screenId)
+      const client = screens.get(screenId)
       if (client === undefined) return
       await client.destroy()
     } catch {
@@ -121,7 +126,7 @@ export default class WhatsAppController implements IWhatsAppController {
 
   getStatus = async (screenId: string): Promise<WAState | undefined> => {
     try {
-      const client = clients.get(screenId)
+      const client = screens.get(screenId)
       if (client === undefined) return
       const status = await client.getState()
       const screenIsOpen = client.pupPage !== undefined ? WAState.OPENING : undefined
@@ -134,7 +139,7 @@ export default class WhatsAppController implements IWhatsAppController {
   logout = async (instanceId: string, token: string): Promise<void> => {
     try {
       await this.instanceRepository.updateStatus(instanceId, 'pending')
-      const client = clients.get(`${instanceId}${token}`)
+      const client = screens.get(`${instanceId}${token}`)
       await client?.logout()
     } catch {
 
@@ -166,7 +171,7 @@ export default class WhatsAppController implements IWhatsAppController {
         }
       })
       await this.destroy(screenId)
-      clients.set(screenId, client)
+      screens.set(screenId, client)
       this.onMessage(client, instance)
       this.onQr(client, _id)
       this.onAuthenticated(client, _id)

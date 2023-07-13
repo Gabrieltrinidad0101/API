@@ -1,17 +1,18 @@
 import { type IPlan, type IProduct, type ISubscription } from '../domian/payment'
 
-export const createPaymentProduct = (): IProduct => {
+export const generateObjectPaymentProduct = (): IProduct => {
   return {
-    name: 'Instance',
-    description: 'Instance to send messages via WhatsApp',
+    name: 'Subscripcion Youtube',
+    description: 'Subscripcion a un canal de Youtube se cobra mensualmente',
+    type: 'SERVICE',
     category: 'SOFTWARE',
-    type: 'SERVICE'
+    image_url: 'https://avatars.githubusercontent.com/u/15802366?s=460&u=ac6cc646599f2ed6c4699a74b15192a29177f85a&v=4'
   }
 }
 
-export const createPlan = (): IPlan => {
+export const generateObjectPlan = (): IPlan => {
   return {
-    name: 'PLAN mensual',
+    name: 'Instance',
     product_id: '',
     status: 'ACTIVE',
     billing_cycles: [
@@ -36,7 +37,7 @@ export const createPlan = (): IPlan => {
 
 export const subscription = (planId: string): ISubscription => ({
   plan_id: planId,
-  start_time: '2021-11-01T00:00:00Z',
+  start_time: Date.now().toString(),
   quantity: 1,
   subscriber: {
     name: {

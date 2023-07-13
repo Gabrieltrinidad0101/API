@@ -26,8 +26,8 @@ export default function App (): JSX.Element {
             <Route path="/docs" element={<Documentation/>}>
               <Route path="sendFile" element={<SendFile/>} ></Route>
               <Route path="sendMessage" element={<SendMessage/>} ></Route>
-              <Route path="instanceTools" element={<InstanceTools/>} ></Route>
             </Route>
+            <Route path="instanceTools" element={<InstanceTools/>} ></Route>
           </Route>
         </Route>
       </Routes>

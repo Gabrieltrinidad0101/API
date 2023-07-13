@@ -1,11 +1,23 @@
+import { type IConstantes } from '../domain/constantes'
 
-export const HOST = process.env.SERVER_URL ?? 'http://localhost'
-export const port = process.env.PORT !== undefined ? Number(process.env.PORT) : 4000
-export const serverUrl = `${HOST}:${port}`
-export const companyName = 'Chat Plus'
-export const paymentUrl = process.env.PAYMENT_URL
-export const paymentSecret = process.env.PAYMENT_SECRET
-export const paymentProductUrl = (): string => {
-  if (paymentUrl === undefined) return ''
-  return `${paymentUrl}/v1/catalogs/products`
+const HOST = process.env.SERVER_URL ?? 'http://localhost'
+const PORT = process.env.PORT !== undefined ? Number(process.env.PORT) : 4000
+const SERVERURL = `${HOST}:${PORT}`
+const COMPANYNAME = 'Chat Plus'
+const PAYMENTURL = process.env.PAYMENT_URL
+const PAYMENTSECRET = process.env.PAYMENT_SECRET
+const PAYMENTPRODUCTURL = `${PAYMENTURL ?? ''}/v1/catalogs/products`
+const CLIENTPAYMENTID = process.env.CLIENT_PAYMENT_ID
+
+const constantes: IConstantes = {
+  HOST,
+  PORT,
+  SERVERURL,
+  COMPANYNAME,
+  PAYMENTURL,
+  PAYMENTSECRET,
+  PAYMENTPRODUCTURL,
+  CLIENTPAYMENTID
 }
+
+export default constantes
