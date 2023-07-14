@@ -1,6 +1,6 @@
 import app from './app'
-import { port } from './mooc/share/infranstructure/Constantes'
+import constantes from './mooc/share/infranstructure/Constantes'
 
-app.listen(port, () => {
-  console.log('Server listening on port 4000')
+app.listen(constantes.PORT, () => {
+  console.log(`Server listening on port ${constantes.PORT ?? 'Error'}`)
 })

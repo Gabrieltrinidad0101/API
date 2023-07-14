@@ -10,7 +10,6 @@ export default class PaymentControl {
 
   createProduct = async (req: Request): Promise<IHttpStatusCode> => {
     const product = generateObjectPaymentProduct()
-    await this.paymentApp.createProduct(product)
-    return {}
+    return await this.paymentApp.createProduct(product)
   }
 }

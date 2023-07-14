@@ -2,11 +2,10 @@ import { type IPlan, type IProduct, type ISubscription } from '../domian/payment
 
 export const generateObjectPaymentProduct = (): IProduct => {
   return {
-    name: 'Subscripcion Youtube',
-    description: 'Subscripcion a un canal de Youtube se cobra mensualmente',
+    name: 'Instance',
+    description: 'Instance to send and get messages via WhatsApp',
     type: 'SERVICE',
-    category: 'SOFTWARE',
-    image_url: 'https://avatars.githubusercontent.com/u/15802366?s=460&u=ac6cc646599f2ed6c4699a74b15192a29177f85a&v=4'
+    category: 'SOFTWARE'
   }
 }
 

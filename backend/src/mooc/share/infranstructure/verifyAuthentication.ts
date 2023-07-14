@@ -17,6 +17,7 @@ export default class VerifyAuthentication {
       }
       const userId = this.token.verify<IUserId>(token)
       req.headers.userId = userId?._id
+
       next?.()
     } catch (error) {
       console.error(error)

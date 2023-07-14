@@ -6,6 +6,11 @@ export interface IProductFromApi {
   links?: ILink[]
 }
 
+export interface IPaymentRepository {
+  saveProduct: (product: IProductFromApi) => Promise<void>
+  findById: (id: number) => Promise<IProductFromApi>
+}
+
 interface ILink {
   href?: string
   rel?: string

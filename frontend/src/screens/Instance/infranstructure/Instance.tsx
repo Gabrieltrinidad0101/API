@@ -12,6 +12,9 @@ import { isEmptyNullOrUndefined } from '../../../../../share/application/isEmpty
 import InstanceName from './components/instanceName/InstanceName'
 import InstanceStateControl from './components/instanceStateControl/InstanceStateControl'
 import APIURL from '../../../share/application/Api'
+import { Button } from '@mui/material'
+import { useNavigate } from 'react-router-dom'
+
 const initialState: IInstance = {
   _id: '',
   status: 'pending',
@@ -23,8 +26,9 @@ const initialState: IInstance = {
 export default function Instance (): JSX.Element {
   const instanceId = new URLSearchParams(window.location.search).get('id') ?? ''
   const [instanceState, setInstanceState] = useState<IInstance>(initialState)
-
+  const [instanceIsNotFound, setInstanceIsNotFound] = useState<boolean>(false)
   const qrRef = useRef<HTMLDivElement>(null)
+  const navigation = useNavigate()
 
   const createQr = async (qr: string): Promise<void> => {
     const res = await QRCode.toCanvas(qr)
@@ -32,6 +36,10 @@ export default function Instance (): JSX.Element {
     const qrOld = qrRef.current.firstChild
     if (qrOld !== null) qrRef.current.removeChild(qrOld)
     qrRef.current.appendChild(res)
+  }
+
+  const goToHome = (): void => {
+    navigation('/home')
   }
 
   const getQr = async ({ _id }: IInstance): Promise<void> => {
@@ -55,7 +63,10 @@ export default function Instance (): JSX.Element {
   useEffect((): void => {
     instanceApp.findById(instanceId)
       .then(async (res) => {
-        if (res === undefined) return
+        if (res === undefined) {
+          setInstanceIsNotFound(true)
+          return
+        }
         setInstanceState(res)
         await getQr(res)
       })
@@ -64,17 +75,23 @@ export default function Instance (): JSX.Element {
       })
   }, [])
 
+  if (instanceIsNotFound) {
+    return <div className='center-screen'>
+    <Button variant='contained' onClick={goToHome} >Go To Home</Button>
+  </div>
+  }
+
   if (instanceState._id === '') { return <h1>Loading</h1> }
 
   return (
     <>
       <div className={InstanceCss.container}>
         <div className={InstanceCss.section1}>
-          <InstanceName Prop={instanceState}/>
+          <InstanceName Prop={instanceState} />
           <InstanceTools Prop={instanceState} />
         </div>
         <InstanceUrlData Prop={instanceState} />
-        <InstanceStateControl Prop={ { instance: instanceState, qrRef } } />
+        <InstanceStateControl Prop={{ instance: instanceState, qrRef }} />
       </div>
     </>
   )

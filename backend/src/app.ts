@@ -1,4 +1,4 @@
-import * as dotenv from 'dotenv'
+import './conf'
 import express from 'express'
 import { authRouter } from './mooc/routes/user/infranstructure/userRouter'
 import { instanceRouter } from './mooc/routes/instance/infranstructure/instanceRouter'
@@ -7,7 +7,6 @@ import { paymentRouter } from './mooc/routes/payment/infranstructure/paymentRout
 import cors from 'cors'
 import morgan from 'morgan'
 import './database'
-dotenv.config()
 
 const app = express()
 

@@ -11,7 +11,7 @@ export default function Home (): JSX.Element {
 
   useEffect(() => {
     document.title = 'Home'
-    instanceApp.get({ limit: 10, skip: 0, search: '' })
+    instanceApp.get({ limit: 10000, skip: 0, search: '' })
       .then(instances => {
         if (isEmptyNullOrUndefined(instances) || instances === undefined) return
         setInstancesData(instances)
