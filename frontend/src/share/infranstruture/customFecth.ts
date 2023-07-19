@@ -1,8 +1,8 @@
 import axios, { AxiosError } from 'axios'
 import type ICustomFecth from '../domian/customFecth'
 import type BaseHttp from '../domian/baseHttp'
-import { Toast, serverUrl } from './dependencies'
-import { isEmptyNullOrUndefined } from '../../../../share/application/isEmptyNullUndefiner'
+import { Toast, serverUrl, loaderAnimation } from './dependencies'
+import { type IOptionsFetch } from '../domian/customFecth'
 
 class CustomFecth implements ICustomFecth {
   private readonly customFecth = axios.create({
@@ -18,11 +18,12 @@ class CustomFecth implements ICustomFecth {
     })
   }
 
-  async get<T>(url: string, headers?: object | undefined): Promise<T | undefined> {
+  async get<T>(url: string, headers?: object | undefined, optionsFetch?: IOptionsFetch): Promise<T | undefined> {
     const response = await this.baseHttp<T>({
       url,
       headers,
-      method: 'get'
+      method: 'get',
+      optionsFetch
     })
     return response
   }
@@ -47,32 +48,25 @@ class CustomFecth implements ICustomFecth {
   }
 
   async baseHttp<T>(baseHttp: BaseHttp): Promise<T | undefined> {
-    let showNoAlert = false
     try {
       const token = localStorage.getItem('token')
       baseHttp.headers = { ...baseHttp.headers, token }
-      setTimeout(() => {
-        if (showNoAlert) return
-        document.getElementById('LoadingFetch')?.setAttribute('style', 'display:flex')
-      }, 500)
+      if (baseHttp.optionsFetch?.showLoader === false) loaderAnimation.showAfter(500)
       const result = await this.customFecth.request(baseHttp)
-      document.getElementById('LoadingFetch')?.setAttribute('style', 'display:none')
-      showNoAlert = true
+      loaderAnimation.hide()
       return result.data as T
     } catch (error: unknown) {
       console.log(error)
-      showNoAlert = true
-      document.getElementById('LoadingFetch')?.setAttribute('style', 'display:none')
+      loaderAnimation.hide()
+      if (baseHttp.optionsFetch?.showErrors === false) return
+      let errorMsg: string = 'Internal error try later'
       if (error instanceof AxiosError) {
-        let errorMsg: string = 'Internal error try later'
         const response = error.response
-        if (!isEmptyNullOrUndefined(response?.data) && !isEmptyNullOrUndefined(response?.data.message)) {
-          errorMsg = response?.data.message ?? errorMsg
-        }
+        errorMsg = response?.data?.message ?? errorMsg
         Toast.error(errorMsg)
         return
       }
-      Toast.error('Internal error try later')
+      Toast.error(errorMsg)
     }
   }
 }

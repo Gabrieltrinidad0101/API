@@ -1,13 +1,12 @@
 import { CustomFetchError } from '../../../share/domian/customFecth'
 import { type IAuthentication } from '../domian/IAuthenticaction'
-import type IHttpResult from '../../../../../share/domain/httpResult'
 import { isEmptyNullOrUndefined } from '../../../../../share/application/isEmptyNullUndefiner'
 import type IUser from '../../../../../share/domain/user'
 import APIURL from '../../../share/application/Api'
 
 const isInvalidUser = (user: IUser): string | undefined => {
   if (isEmptyNullOrUndefined(user.email, user.password)) return 'All The Inputs Are Required'
-  if (user.isRegister === undefined || !user.isRegister) return
+  if (user.typeAuthentication === 'Login') return
   if (isEmptyNullOrUndefined(user.name, user.cellPhone)) return 'All The Inputs Are Required'
   const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   if (!pattern.test(user.email)) {
@@ -27,7 +26,7 @@ const Auth = async (authenticaction: IAuthentication): Promise<void> => {
     if (isInvalid !== undefined) {
       authenticaction.toast.error(isInvalid); return
     }
-    const httpResult = await authenticaction.customFecth.post<IHttpResult<string>>(APIURL.authentication, authenticaction.user)
+    const httpResult = await authenticaction.customFecth.post<string>(APIURL.authentication, authenticaction.user)
     if (httpResult == null) return
     localStorage.setItem('token', httpResult.message ?? '')
     authenticaction.toast.sucess(`Welcome ${authenticaction.user.name ?? ''}`)
@@ -45,7 +44,7 @@ const updateUser = async (authenticaction: IAuthentication): Promise<void> => {
     if (isInvalid !== undefined) {
       authenticaction.toast.error(isInvalid); return
     }
-    const httpResult = await authenticaction.customFecth.put<IHttpResult<string>>(APIURL.updateUser, authenticaction.user)
+    const httpResult = await authenticaction.customFecth.put<string>(APIURL.updateUser, authenticaction.user)
     if (httpResult == null) return
     authenticaction.setUser(authenticaction.user)
     if (!isEmptyNullOrUndefined(httpResult.message) && httpResult.message !== undefined) { authenticaction.toast.sucess(httpResult.message) }

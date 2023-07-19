@@ -20,28 +20,28 @@ describe('POST /authentication', () => {
   })
 
   test('authentication register pedro user ', async () => {
-    const newUser = User({ ...pedroUser, isRegister: true })
+    const newUser = User({ ...pedroUser, typeAuthentication: 'register' })
     const response = await request(app).post('/user/authentication').send(newUser)
     expect(response.body.message).toBeTruthy()
     expect(response.statusCode).toBe(200)
   })
 
   test('authentication register carlos user', async () => {
-    const registerUser = User({ ...carlosUser, isRegister: true })
+    const registerUser = User({ ...carlosUser, typeAuthentication: 'register' })
     const response = await request(app).post('/user/authentication').send(registerUser)
     expect(response.body.message).toBeTruthy()
     expect(response.statusCode).toBe(200)
   })
 
   test('authentication register user exist', async () => {
-    const newUser = User({ ...pedroUser, isRegister: true })
+    const newUser = User({ ...pedroUser, typeAuthentication: 'register' })
     const response = await request(app).post('/user/authentication').send(newUser)
     expect(response.statusCode).toBe(409)
     expect(response.body.message).toBeTruthy()
   })
 
   test('authentication login user exist', async () => {
-    const newUser = User({ ...pedroUser, isRegister: false })
+    const newUser = User(pedroUser)
     const response = await request(app).post('/user/authentication').send(newUser)
     Tokens.pedroToken = response.body.message as string
     expect(response.statusCode).toBe(200)

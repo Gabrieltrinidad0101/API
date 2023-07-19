@@ -10,10 +10,11 @@ export interface IPlan {
   name: string
   product_id: string
   status: string
-  billing_cycles: BillingCycle[]
+  billing_cycles: IBillingCycle[]
+  payment_preferences: IPaymentPreferences
 }
 
-interface BillingCycle {
+interface IBillingCycle {
   frequency: {
     interval_unit: string
     interval_count: number
@@ -29,6 +30,16 @@ interface BillingCycle {
   }
 }
 
+interface IPaymentPreferences {
+  auto_bill_outstanding: boolean
+  setup_fee: {
+    value: string
+    currency_code: string
+  }
+  setup_fee_failure_action: string
+  payment_failure_threshold: number
+}
+
 export interface ISubscription {
   plan_id: string
   start_time: string
@@ -38,12 +49,14 @@ export interface ISubscription {
   cancel_url: string
 }
 
+interface ISubscriber {
+  name: ISubscriberName
+  email_address: string
+}
+
 interface ISubscriberName {
   given_name: string
   surname: string
 }
 
-interface ISubscriber {
-  name: ISubscriberName
-  email_address: string
-}
+export type TCreateSubscription = ISubscription | IPlan | IProduct

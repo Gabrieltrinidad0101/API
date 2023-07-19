@@ -6,6 +6,7 @@ import { type IUserApp } from '../domain/user'
 import type IUser from '../../../../../../share/domain/user'
 import { type TypeValidation } from '../../../share/domain/Validator'
 import { getUserDto, getUserUpdateDto } from './dto'
+import { type TypeRol } from '../../../../../../share/domain/user'
 
 export default class UserApp {
   private readonly token: IToken
@@ -94,22 +95,29 @@ export default class UserApp {
   }
 
   async searchUserById (_id: string | undefined): Promise<IHttpStatusCode> {
-    try {
-      if (_id === undefined) {
-        return {
-          message: "Error User's ID is undefined",
-          statusCode: 500
-        }
-      }
-      const user = await this.userRepository.findById(_id, { password: 0, __v: 0 })
+    if (_id === undefined) {
       return {
-        message: user
-      }
-    } catch (ex) {
-      return {
-        message: 'Error try later',
+        message: "Error User's ID is undefined",
         statusCode: 500
       }
+    }
+
+    const user = await this.userRepository.findById(_id, { password: 0, __v: 0 })
+    return {
+      message: user
+    }
+  }
+
+  getUsers = async (rol: TypeRol): Promise<IHttpStatusCode> => {
+    if (rol !== 'admin') {
+      return {
+        message: []
+      }
+    }
+
+    const user = await this.userRepository.find({}, { password: 0, __v: 0 })
+    return {
+      message: user
     }
   }
 }

@@ -35,14 +35,14 @@ export default class WhatsAppController implements IWhatsAppController {
     }
   }
 
-  private readonly onQrAsync = async (qr: string, id: string): Promise<void> => {
+  private readonly onQrAsync = async (qr: string, id: string, screenId: string): Promise<void> => {
     await this.instanceRepository.updateStatus(id, 'pending')
     await this.instanceRepository.updateQr(id, qr)
   }
 
-  onQr = (client: Client, id: string): void => {
+  onQr = (client: Client, id: string, screenId: string): void => {
     client.on('qr', (qr: string) => {
-      this.onQrAsync(qr, id)
+      this.onQrAsync(qr, id, screenId)
         .catch(error => {
           console.log(error)
         })
@@ -132,7 +132,7 @@ export default class WhatsAppController implements IWhatsAppController {
       const screenIsOpen = client.pupPage !== undefined ? WAState.OPENING : undefined
       return status ?? screenIsOpen
     } catch (error) {
-      return undefined
+
     }
   }
 
@@ -173,7 +173,7 @@ export default class WhatsAppController implements IWhatsAppController {
       await this.destroy(screenId)
       screens.set(screenId, client)
       this.onMessage(client, instance)
-      this.onQr(client, _id)
+      this.onQr(client, _id, screenId)
       this.onAuthenticated(client, _id)
       this.onDisconnected(client, instance)
       this.onScreenLoad(client, instance)
@@ -182,6 +182,7 @@ export default class WhatsAppController implements IWhatsAppController {
         })
       await client.initialize()
     } catch (error: any) {
+      await this.destroy(getScreenId(instance) ?? '')
       await wait(10000)
       await this.start(instance, 'error')
     }

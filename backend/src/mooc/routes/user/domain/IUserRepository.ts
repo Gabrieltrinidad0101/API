@@ -5,4 +5,5 @@ export default interface IUserRepository {
   update: (user: IUpdateUser) => Promise<void>
   findByEmail: (email: string) => Promise<IUser | null>
   findById: (id: string, filter?: object) => Promise<IUser | null>
+  find: (search: object, filter: object | undefined) => Promise<IUser[] | null>
 }

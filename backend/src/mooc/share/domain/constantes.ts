@@ -1,10 +1,12 @@
 export interface IConstantes {
-  readonly HOST?: string
-  readonly PORT?: number
-  readonly SERVERURL?: string
-  readonly COMPANYNAME?: string
-  readonly PAYMENTURL?: string
-  readonly PAYMENTSECRET?: string
-  readonly PAYMENTPRODUCTURL?: string
-  readonly CLIENTPAYMENTID?: string
+  readonly HOST: string | undefined
+  readonly PORT: number | undefined
+  readonly SERVERURL: string | undefined
+  readonly COMPANYNAME: string | undefined
+  readonly PAYMENTURL: string | undefined
+  readonly PAYMENTSECRET: string | undefined
+  readonly PAYMENTPRODUCTURL: string | undefined
+  readonly CLIENTPAYMENTID: string | undefined
+  readonly PAYMENTPLANURL: string | undefined
+  readonly PAYMENTSUBSCRIPTIONSURL: string | undefined
 }

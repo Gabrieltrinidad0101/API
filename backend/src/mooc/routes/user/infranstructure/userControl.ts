@@ -1,6 +1,7 @@
 import { type Request } from 'express'
 import { type IHttpStatusCode } from '../../../../../../share/domain/httpResult'
 import type IUser from '../../../../../../share/domain/user'
+import { type TypeRol } from '../../../../../../share/domain/user'
 import type Authentication from '../application/userApp'
 
 export default class UserControl {
@@ -8,7 +9,7 @@ export default class UserControl {
 
   authentication = async (req: Request): Promise<IHttpStatusCode> => {
     const newUser = req.body as IUser
-    const response = (newUser.isRegister ?? false)
+    const response = (newUser.typeAuthentication === 'Register')
       ? await this.userControl.register(newUser)
       : await this.userControl.login(newUser)
     return response
@@ -17,8 +18,12 @@ export default class UserControl {
   update = async (req: Request): Promise<IHttpStatusCode> => {
     const newUser = req.body as IUser
     newUser._id = req.headers.userId?.toString()
-    const response = this.userControl.update(newUser)
-    return await response
+    return await this.userControl.update(newUser)
+  }
+
+  getUsers = async (req: Request): Promise<IHttpStatusCode> => {
+    const rol = req.headers.userRol as TypeRol
+    return await this.userControl.getUsers(rol)
   }
 
   verifyAuthentication = async (req: Request): Promise<IHttpStatusCode> => {

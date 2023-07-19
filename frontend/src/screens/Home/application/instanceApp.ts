@@ -3,13 +3,11 @@ import { type ISearchInstance } from '../../../../../share/domain/instance'
 import type IInstance from '../../../../../share/domain/instance'
 import type IHttpResult from '../../../../../share/domain/httpResult'
 import type ICustomFecth from '../../../share/domian/customFecth'
-import type IToast from '../../../share/domian/IToast'
 import type InstanceApp from '../../Instance/application/instanceApp'
 
 export default class InstancesApp {
   constructor (
     private readonly instanceApp: InstanceApp,
-    private readonly toast: IToast,
     private readonly customFecth: ICustomFecth
   ) { }
 
@@ -23,7 +21,7 @@ export default class InstancesApp {
 
   get = async ({ skip, limit, search }: ISearchInstance): Promise<IInstance[] | undefined> => {
     const url = `/get?skip=${skip}&limit=${limit}&search=${search}`
-    const reponseHttp = await this.customFecth.get<IHttpResult<IInstance[]>>(url)
+    const reponseHttp = await this.customFecth.get<IInstance[]>(url)
     if (isEmptyNullOrUndefined(reponseHttp?.message) || reponseHttp?.message === undefined) return
     return reponseHttp?.message
   }

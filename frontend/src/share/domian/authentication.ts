@@ -1,3 +1,5 @@
+import { type TypeAuthentication } from '../../../../share/domain/user'
+
 export default interface IAuthenticationPage {
-  isRegister: boolean
+  typeAuthentication: TypeAuthentication
 }

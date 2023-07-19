@@ -47,6 +47,9 @@ export default function Instance (): JSX.Element {
       const url = APIURL.getQr(_id)
       const res = await customFecth.get<IHttpResult<IInstanceQRStatus>>(url, {
         token: instanceState?.token
+      }, {
+        showErrors: false,
+        showLoader: false
       })
       const { status, qr } = res?.message ?? { status: 'pending' }
       setInstanceState(prevState => ({ ...prevState, status }))
@@ -77,8 +80,8 @@ export default function Instance (): JSX.Element {
 
   if (instanceIsNotFound) {
     return <div className='center-screen'>
-    <Button variant='contained' onClick={goToHome} >Go To Home</Button>
-  </div>
+      <Button variant='contained' onClick={goToHome} >Go To Home</Button>
+    </div>
   }
 
   if (instanceState._id === '') { return <h1>Loading</h1> }

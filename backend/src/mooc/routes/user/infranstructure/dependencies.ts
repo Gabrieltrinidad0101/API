@@ -6,7 +6,7 @@ import Encrypt from './encrypt'
 import { userSignUpValidator, userSignInValidator, userUpdateValidator } from './userValidation'
 const jwt = new JWT()
 const encrypt = new Encrypt()
-const userRepository = new UserRepository()
+export const userRepository = new UserRepository()
 const user = new User({
   token: jwt,
   encrypt,

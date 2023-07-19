@@ -28,8 +28,9 @@ export default interface IInstance  extends IInstanceAuthentication,IInstanceQRS
     webhookUrl?: string
 }
 
-export interface SaveInstance extends IHttpStatusCode {
+export interface ISaveInstance {
     instance?: IInstance
+    info: string
 }
 
 export interface ISearchInstance {

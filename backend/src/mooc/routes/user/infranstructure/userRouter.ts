@@ -9,5 +9,6 @@ const router = new RouterManager(authRouter)
 router.post('/authentication', userControl.authentication)
 router.get('/verifyAuthentication', verifyAuthentication.verify, userControl.verifyAuthentication)
 router.put('/update', verifyAuthentication.verify, userControl.update)
+router.get('/get', verifyAuthentication.verify, userControl.getUsers)
 
 export { authRouter }

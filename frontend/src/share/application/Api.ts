@@ -9,6 +9,7 @@ const APIURL = {
   saveWebhookUrl: (instanceId: string) => `/${instanceId}/instance/webhookUrl`,
   getQr: (instanceId: string) => `/${instanceId}/instance/qr`,
   updateUser: '/user/update',
+  getUsers: 'user/get',
   authentication: '/user/authentication'
 }
 

@@ -6,7 +6,8 @@ export const getUserDto = (user: IUser): IUser => {
     name: user.name,
     password: user.password,
     cellPhone: user.cellPhone,
-    email: user.email
+    email: user.email,
+    rol: 'user'
   }
 }
 

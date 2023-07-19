@@ -6,6 +6,7 @@ import './App.css'
 import { AuthenticationProvider } from './share/infranstruture/AuthenticationContext'
 import Loading from './components/loading/Loading'
 import Home from './screens/Home/infranstructure/Home'
+import Users from './screens/users/infranstructure/Users'
 import Instance from './screens/Instance/infranstructure/Instance'
 import Dashboard from './components/Dashboard/infranstructure/Dashboard'
 import Documentation from './screens/docs/infranstructure/Documentation'
@@ -17,8 +18,8 @@ export default function App (): JSX.Element {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/register" element={<Authentication isRegister={true} />}></Route>
-        <Route path="/login" element={<Authentication isRegister={false} />}></Route>
+        <Route path="/register" element={<Authentication typeAuthentication='Register' />}></Route>
+        <Route path="/login" element={<Authentication typeAuthentication='Login' />}></Route>
         <Route element={<AuthenticationProvider />} >
           <Route element={<Dashboard />}>
             <Route path='/home' element={<Home />} />
@@ -28,6 +29,7 @@ export default function App (): JSX.Element {
               <Route path="sendMessage" element={<SendMessage/>} ></Route>
             </Route>
             <Route path="instanceTools" element={<InstanceTools/>} ></Route>
+            <Route path="/users" element={<Users/>} ></Route>
           </Route>
         </Route>
       </Routes>

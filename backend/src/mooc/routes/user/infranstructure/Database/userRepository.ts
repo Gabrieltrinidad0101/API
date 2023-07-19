@@ -12,7 +12,8 @@ export default class UserRepository implements IUserRepository {
       password: newUser.password,
       _id: newUser._id as string,
       cellPhone: newUser.cellPhone,
-      email: newUser.email
+      email: newUser.email,
+      rol: 'user'
     }
     return userSave
   }
@@ -33,5 +34,9 @@ export default class UserRepository implements IUserRepository {
   async findById (_id: string, filter?: object): Promise<IUser | null> {
     const user = await UserModel.findById<IUser>(_id, filter)
     return user
+  }
+
+  find = async (search: object, filter: object | undefined): Promise<IUser[] | null> => {
+    return await UserModel.find<IUser>(search, filter)
   }
 }

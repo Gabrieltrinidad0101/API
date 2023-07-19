@@ -9,10 +9,10 @@ export const generateObjectPaymentProduct = (): IProduct => {
   }
 }
 
-export const generateObjectPlan = (): IPlan => {
+export const generateObjectPaymentPlan = (productId: string): IPlan => {
   return {
     name: 'Instance',
-    product_id: '',
+    product_id: productId,
     status: 'ACTIVE',
     billing_cycles: [
       {
@@ -30,13 +30,22 @@ export const generateObjectPlan = (): IPlan => {
           }
         }
       }
-    ]
+    ],
+    payment_preferences: {
+      auto_bill_outstanding: true,
+      setup_fee: {
+        value: '25',
+        currency_code: 'USD'
+      },
+      setup_fee_failure_action: 'CONTINUE',
+      payment_failure_threshold: 0
+    }
   }
 }
 
-export const subscription = (planId: string): ISubscription => ({
+export const generateObjectSubscription = (planId: string): ISubscription => ({
   plan_id: planId,
-  start_time: Date.now().toString(),
+  start_time: '2023-08-16T00:00:00Z',
   quantity: 1,
   subscriber: {
     name: {
@@ -45,6 +54,6 @@ export const subscription = (planId: string): ISubscription => ({
     },
     email_address: 'customer@example.com'
   },
-  return_url: 'http://localhost/gracias',
-  cancel_url: 'http://localhost/fallo'
+  return_url: 'http://localhost:4000/payment/sucess',
+  cancel_url: 'http://localhost:4000/payment/cancel'
 })

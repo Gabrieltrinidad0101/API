@@ -9,20 +9,21 @@ import { Link, useNavigate } from 'react-router-dom'
 import type IUser from '../../../../../../share/domain/user'
 import { useAuthenticationContext } from '../../../../share/infranstruture/AuthenticationContext'
 import UserComponent from '../../../../components/user/insfratructure/User'
+import { type TypeAuthentication } from '../../../../../../share/domain/user'
 
-const Footer = ({ Prop: isRegister }: Prop<boolean>): JSX.Element => {
-  return <Link to={isRegister ? '/login' : '/register'}>
-    {isRegister ? 'Login' : 'Register'}
+const Footer = ({ Prop: authentication }: Prop<TypeAuthentication>): JSX.Element => {
+  return <Link to={authentication === 'Login' ? '/register' : '/login'}>
+    {authentication === 'Login' ? 'Register' : 'Login'}
   </Link>
 }
 
 export default function AuthComponent ({ Prop: authenticationComponent }: Prop<IAuthenticationComponent>): JSX.Element {
-  const isRegister = authenticationComponent.isRegister
+  const typeAuthentication = authenticationComponent.typeAuthentication
   const navigation = useNavigate()
   const { user, setUser } = useAuthenticationContext()
 
   const clickAuth = async (user: IUser): Promise<void> => {
-    const _user: IUser = { ...user, isRegister: authenticationComponent.isRegister }
+    const _user: IUser = { ...user, typeAuthentication }
     const authentication: IAuthentication = {
       user: _user,
       toast: Toast,
@@ -33,21 +34,19 @@ export default function AuthComponent ({ Prop: authenticationComponent }: Prop<I
     await authenticationComponent.onSubmit(authentication)
   }
 
-  const typeOfAuthentication = isRegister ? 'Register' : 'Login'
   const logo = <img src={imagesContainer.logo} alt="designCreate" />
-  const submitButtonName = typeOfAuthentication
 
   return <UserComponent
     logo={logo}
-    submitButtonName={submitButtonName}
+    submitButtonName={typeAuthentication}
     user={user}
     hidenInputs={
       {
-        cellPhone: !isRegister,
-        username: !isRegister
+        cellPhone: typeAuthentication === 'Login',
+        username: typeAuthentication === 'Login'
       }
     }
     onSubmit={clickAuth}
-    footer={<Footer Prop={isRegister} />}
+    footer={<Footer Prop={typeAuthentication} />}
   />
 }

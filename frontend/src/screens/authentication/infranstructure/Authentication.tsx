@@ -5,18 +5,14 @@ import 'react-toastify/dist/ReactToastify.css'
 import type IAuthenticationComponent from '../domian/IAuthenticaction'
 import type IAuthenticationPage from '../../../share/domian/authentication'
 import AuthenticationCss from './Authentication.module.css'
-export default function Authentication ({ isRegister }: IAuthenticationPage): JSX.Element {
+export default function Authentication ({ typeAuthentication }: IAuthenticationPage): JSX.Element {
   const authenticationComponent: IAuthenticationComponent = {
     onSubmit: Auth,
-    isRegister,
-    hidenInputs: {
-      cellPhone: !isRegister,
-      username: !isRegister
-    }
+    typeAuthentication
   }
 
   useEffect(() => {
-    document.title = isRegister ? 'Register' : 'Login'
+    document.title = typeAuthentication
   })
 
   return (

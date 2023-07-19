@@ -8,8 +8,20 @@ const paymentProductSchema = new Schema({
   links: String
 })
 
+const paymentPlanSchema = new Schema({
+  id: String,
+  product_id: String,
+  name: String,
+  status: String,
+  usage_type: String,
+  create_time: String,
+  links: String
+})
+
 const PaymentProductModal = model('paymentProduct', paymentProductSchema)
+const PaymentPlanModal = model('paymentPlan', paymentPlanSchema)
 
 export {
-  PaymentProductModal
+  PaymentProductModal,
+  PaymentPlanModal
 }

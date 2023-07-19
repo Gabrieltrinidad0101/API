@@ -1,5 +1,5 @@
 import { isEmptyNullOrUndefined } from '../../../../../../share/application/isEmptyNullUndefiner'
-import { type ISearchInstance, type SaveInstance } from '../../../../../../share/domain/instance'
+import { type ISearchInstance } from '../../../../../../share/domain/instance'
 import type IInstance from '../../../../../../share/domain/instance'
 import { type IHttpStatusCode } from '../../../../../../share/domain/httpResult'
 import type IInstanceRepository from '../domian/InstanceRepository'
@@ -28,7 +28,7 @@ export default class Instance {
       isEmptyNullOrUndefined(searchHttp.limit)
   }
 
-  async save (instance: IInstance): Promise<SaveInstance> {
+  async save (instance: IInstance): Promise<IHttpStatusCode> {
     const error = this.instanceValidator(instance)
     if (error !== undefined) {
       return {
@@ -43,8 +43,10 @@ export default class Instance {
       })
     return {
       statusCode: 200,
-      message: 'Instance saved successfully',
-      instance: instanceSaved
+      message: {
+        message: instanceSaved,
+        info: 'Instance saved successfully'
+      }
     }
   }
 
@@ -175,7 +177,8 @@ export default class Instance {
     const instance = await this.instanceRepository.findByIdAndToken(_id, token)
     if (instance?.status === 'pending') {
       return {
-        error: 'Instance is not authenticated',
+        error: `Instance is not authenticated ${_id}`,
+        message: 'You can not restart instance is not authenticated',
         statusCode: 403
       }
     }

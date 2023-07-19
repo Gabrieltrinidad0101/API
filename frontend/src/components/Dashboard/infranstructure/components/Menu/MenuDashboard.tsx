@@ -29,6 +29,7 @@ export default function MenuDashboard (): JSX.Element {
           Instance Tools
         </Link>
       </Nav>
+      <Nav text='Users' to='/users' icon={<i className={'fa-solid fa-user'}></i>}></Nav>
       <Nav text='Sign out' onClick={session} to='/login' icon={<i className={'fa-solid fa-right-from-bracket'}></i>}>
       </Nav>
     </Menu>
