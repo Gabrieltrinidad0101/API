@@ -3,10 +3,9 @@ import type IUserRepository from '../domain/IUserRepository'
 import type IToken from '../domain/token'
 import type IEncrypt from '../domain/encrypt'
 import { type IUserApp } from '../domain/user'
-import type IUser from '../../../../../../share/domain/user'
 import { type TypeValidation } from '../../../share/domain/Validator'
-import { getUserDto, getUserUpdateDto } from './dto'
-import { type TypeRol } from '../../../../../../share/domain/user'
+import { dtoUserLogin, dtoUserRegister, dtoUserUpdate } from './dto'
+import { type IUserLogin, type IUserRegister, type IUserUpdate, type TypeRol } from '../../../../../../share/domain/user'
 
 export default class UserApp {
   private readonly token: IToken
@@ -24,8 +23,8 @@ export default class UserApp {
     this.userUpdateValidator = userApp.userUpdateValidator
   }
 
-  async register (user: IUser): Promise<IHttpStatusCode> {
-    const userDto = getUserDto(user)
+  async register (user: IUserRegister): Promise<IHttpStatusCode> {
+    const userDto = dtoUserRegister(user)
     const error = this.userSignUpValidator(userDto)
     if (error !== undefined) {
       return {
@@ -34,7 +33,7 @@ export default class UserApp {
         message: 'Complete all the data is required'
       }
     }
-    const userExist = await this.userRepository.findByEmail(userDto.email)
+    const userExist = await this.userRepository.findOne({ email: userDto.email })
     if (userExist !== null) {
       return {
         message: 'The user exists',
@@ -48,8 +47,8 @@ export default class UserApp {
     }
   }
 
-  async login (user: IUser): Promise<IHttpStatusCode> {
-    const userDto = getUserDto(user)
+  async login (user: IUserLogin): Promise<IHttpStatusCode> {
+    const userDto = dtoUserLogin(user)
     const error = this.userSignInValidator(userDto)
     if (error !== undefined) {
       return {
@@ -57,9 +56,9 @@ export default class UserApp {
         statusCode: 422
       }
     }
-    const userExist = await this.userRepository.findByEmail(user.email)
-    const validateUser = (userExist !== null) && await this.encrypt.validate(user?.password ?? '', userExist?.password ?? '')
-    if (validateUser) {
+    const userExist = await this.userRepository.findOne({ email: user.email })
+    const isValidUser = userExist !== null && await this.encrypt.validate(user.password, userExist?.password ?? '')
+    if (isValidUser) {
       return {
         message: this.token.sign({ _id: userExist._id })
       }
@@ -70,8 +69,8 @@ export default class UserApp {
     }
   }
 
-  async update (user: IUser): Promise<IHttpStatusCode> {
-    const userDto = getUserUpdateDto(user)
+  async update (user: IUserUpdate): Promise<IHttpStatusCode> {
+    const userDto = dtoUserUpdate(user)
     const error = this.userUpdateValidator(userDto)
     if (error !== undefined) {
       return {
@@ -80,8 +79,8 @@ export default class UserApp {
         message: 'Complete all the data is required'
       }
     }
-    const userExist = await this.userRepository.findByEmail(userDto.email)
-    if (userExist !== null && userExist?._id?.toString() !== userDto._id) {
+    const userExist = await this.userRepository.existUserByEmailAndId(userDto.email, userDto._id)
+    if (userExist !== null) {
       return {
         message: 'The user exists',
         statusCode: 409

@@ -1,11 +1,11 @@
 import type IUserRepository from '../../domain/IUserRepository'
 import { UserModel } from './userSchema'
 import type IUser from '../../../../../../../share/domain/user'
-import { type IUpdateUser } from '../../domain/user'
+import { type IUserRegister, type IUserUpdate } from '../../../../../../../share/domain/user'
 
 export default class UserRepository implements IUserRepository {
-  async insert (user: IUser): Promise<IUser | null> {
-    const newUser = new UserModel(user)
+  async insert (user: IUserRegister): Promise<IUser | null> {
+    const newUser = new UserModel({ ...user, rol: 'user' })
     await newUser.save()
     const userSave: IUser = {
       name: newUser.name,
@@ -13,12 +13,12 @@ export default class UserRepository implements IUserRepository {
       _id: newUser._id as string,
       cellPhone: newUser.cellPhone,
       email: newUser.email,
-      rol: 'user'
+      rol: newUser.rol
     }
     return userSave
   }
 
-  async update (user: IUpdateUser): Promise<void> {
+  async update (user: IUserUpdate): Promise<void> {
     await UserModel.updateOne({ _id: user._id }, {
       name: user.name,
       cellPhone: user.cellPhone,
@@ -26,8 +26,8 @@ export default class UserRepository implements IUserRepository {
     })
   }
 
-  async findByEmail (email: string): Promise<IUser | null> {
-    const user = await UserModel.findOne<IUser>({ email })
+  async existUserByEmailAndId (email: string, _id: string): Promise<IUser | null> {
+    const user = await UserModel.findOne<IUser>({ email, _id: { $ne: _id } })
     return user
   }
 
@@ -36,7 +36,11 @@ export default class UserRepository implements IUserRepository {
     return user
   }
 
-  find = async (search: object, filter: object | undefined): Promise<IUser[] | null> => {
+  find = async (search: object, filter?: object): Promise<IUser[] | null> => {
     return await UserModel.find<IUser>(search, filter)
+  }
+
+  findOne = async (search: object, filter?: object): Promise<IUser | null> => {
+    return await UserModel.findOne<IUser>(search, filter)
   }
 }

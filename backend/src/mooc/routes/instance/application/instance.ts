@@ -44,7 +44,7 @@ export default class Instance {
     return {
       statusCode: 200,
       message: {
-        message: instanceSaved,
+        instance: instanceSaved,
         info: 'Instance saved successfully'
       }
     }

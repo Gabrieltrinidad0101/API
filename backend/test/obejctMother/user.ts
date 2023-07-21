@@ -6,7 +6,7 @@ export default interface ITestUser {
   password?: string
   cellPhone?: string
   email?: string
-  typeAuthentication?: 'login' | 'register'
+  typeAuthentication?: 'Login' | 'Register'
   rol?: TypeRol
   _id?: string
 }
@@ -14,7 +14,7 @@ export default interface ITestUser {
 export const User = ({
   name = 'juan',
   password = '1234',
-  typeAuthentication = 'login',
+  typeAuthentication = 'Login',
   cellPhone = '180999999',
   email = 'juan@gmail.com',
   rol = 'user',

@@ -7,7 +7,7 @@ export default class Encrypt implements IEncrypt {
     return await bcrypt.hash(password, salt)
   };
 
-  async validate (text1: string, text2: string): Promise<boolean> {
-    return await bcrypt.compare(text1, text2)
+  async validate (text1: string, text2?: string): Promise<boolean> {
+    return await bcrypt.compare(text1, text2 ?? '')
   }
 }

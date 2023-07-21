@@ -6,14 +6,12 @@ const userSignUpSchema = Joi.object({
   email: Joi.string().email().required(),
   password: Joi.string().required(),
   cellPhone: Joi.string().required(),
-  rol: Joi.valid('user')
+  rol: Joi.string().valid('user')
 })
 
 const userSignInSchema = Joi.object({
-  name: Joi.string().allow(''),
   email: Joi.string().email().required(),
-  password: Joi.string().required(),
-  cellPhone: Joi.string().allow('')
+  password: Joi.string().required()
 })
 
 const userUpdateSchema = Joi.object({

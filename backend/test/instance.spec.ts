@@ -29,9 +29,10 @@ describe('Instance', () => {
       .set({ token: Tokens.pedroToken })
       .send(Instance1)
     expect(response.statusCode).toBe(200)
-    expect(response.body.message).toBe('Instance saved successfully')
-    expect(response.body.instance).toBeTruthy()
-    instance = response.body.instance
+    const message = response.body.message
+    expect(message.info).toBe('Instance saved successfully')
+    expect(message.instance).toBeTruthy()
+    instance = message.instance
   })
 
   test('Instance is open', async () => {

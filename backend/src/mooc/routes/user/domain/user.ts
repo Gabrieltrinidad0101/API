@@ -11,10 +11,3 @@ export interface IUserApp {
   userSignInValidator: TypeValidation
   userUpdateValidator: TypeValidation
 }
-
-export interface IUpdateUser {
-  name: string
-  cellPhone: string
-  email: string
-  _id?: string
-}

@@ -10,3 +10,23 @@ export default interface IUser{
     typeAuthentication?: TypeAuthentication
     _id?: string
 }
+
+export interface IUserRegister{
+    name: string
+    password: string
+    cellPhone: string
+    email: string
+    rol: TypeRol
+}
+
+export interface IUserLogin{
+    password: string
+    email: string
+}
+
+export interface IUserUpdate{
+    name: string
+    cellPhone: string
+    email: string
+    _id: string
+}
