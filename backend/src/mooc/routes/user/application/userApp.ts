@@ -6,6 +6,7 @@ import { type IUserApp } from '../domain/user'
 import { type TypeValidation } from '../../../share/domain/Validator'
 import { dtoUserLogin, dtoUserRegister, dtoUserUpdate } from './dto'
 import { type IUserLogin, type IUserRegister, type IUserUpdate, type TypeRol } from '../../../../../../share/domain/user'
+import constantes from '../../../share/infranstructure/Constantes'
 
 export default class UserApp {
   private readonly token: IToken
@@ -14,6 +15,7 @@ export default class UserApp {
   private readonly userSignUpValidator: TypeValidation
   private readonly userSignInValidator: TypeValidation
   private readonly userUpdateValidator: TypeValidation
+
   constructor (userApp: IUserApp) {
     this.token = userApp.token
     this.encrypt = userApp.encrypt
@@ -118,5 +120,21 @@ export default class UserApp {
     return {
       message: user
     }
+  }
+
+  createUserAdmin = async (): Promise<void> => {
+    const user = await this.userRepository.findOne({
+      email: constantes.EMAILADMIN
+    }, { password: 0, __v: 0 })
+
+    if (user !== null) return
+    const password = await this.encrypt.enCode(constantes.PASSWORDADMIN ?? '')
+    await this.userRepository.insert({
+      name: constantes.USERADMIN ?? '',
+      cellPhone: '111111',
+      email: constantes.EMAILADMIN ?? '',
+      password,
+      rol: 'admin'
+    })
   }
 }

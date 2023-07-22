@@ -1,5 +1,5 @@
 import UserRepository from './Database/userRepository'
-import User from '../application/userApp'
+import UserApp from '../application/userApp'
 import UserControl from './userControl'
 import JWT from './jwt'
 import Encrypt from './encrypt'
@@ -7,7 +7,7 @@ import { userSignUpValidator, userSignInValidator, userUpdateValidator } from '.
 const jwt = new JWT()
 const encrypt = new Encrypt()
 export const userRepository = new UserRepository()
-const user = new User({
+const userApp = new UserApp({
   token: jwt,
   encrypt,
   userRepository,
@@ -15,4 +15,8 @@ const user = new User({
   userSignInValidator,
   userUpdateValidator
 })
-export const userControl = new UserControl(user)
+userApp.createUserAdmin()
+  .catch(error => {
+    console.log(error)
+  })
+export const userControl = new UserControl(userApp)

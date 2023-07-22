@@ -5,7 +5,7 @@ import { type IUserRegister, type IUserUpdate } from '../../../../../../../share
 
 export default class UserRepository implements IUserRepository {
   async insert (user: IUserRegister): Promise<IUser | null> {
-    const newUser = new UserModel({ ...user, rol: 'user' })
+    const newUser = new UserModel({ ...user })
     await newUser.save()
     const userSave: IUser = {
       name: newUser.name,

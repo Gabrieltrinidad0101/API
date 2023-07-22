@@ -10,6 +10,9 @@ const PAYMENTPRODUCTURL = `${PAYMENTURL ?? ''}/v1/catalogs/products`
 const PAYMENTPLANURL = `${PAYMENTURL ?? ''}/v1/billing/plans`
 const PAYMENTSUBSCRIPTIONSURL = `${PAYMENTURL ?? ''}/v1/billing/subscriptions`
 const CLIENTPAYMENTID = process.env.CLIENT_PAYMENT_ID
+const USERADMIN = process.env.USER_ADMIN
+const PASSWORDADMIN = process.env.PASSWORD_ADMIN
+const EMAILADMIN = process.env.EMAIL_ADMIN
 
 const constantes: IConstantes = {
   HOST,
@@ -21,7 +24,10 @@ const constantes: IConstantes = {
   PAYMENTPRODUCTURL,
   CLIENTPAYMENTID,
   PAYMENTPLANURL,
-  PAYMENTSUBSCRIPTIONSURL
+  PAYMENTSUBSCRIPTIONSURL,
+  USERADMIN,
+  PASSWORDADMIN,
+  EMAILADMIN
 }
 
 export default constantes

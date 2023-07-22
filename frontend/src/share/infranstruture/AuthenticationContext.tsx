@@ -9,7 +9,8 @@ import { isEmptyNullOrUndefined } from '../../../../share/application/isEmptyNul
 const userInitialState: IUser = {
   name: '',
   password: '',
-  isRegister: false,
+  typeAuthentication: 'Login',
+  rol: 'user',
   _id: '',
   email: '',
   cellPhone: ''

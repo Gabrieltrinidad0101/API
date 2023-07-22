@@ -9,4 +9,7 @@ export interface IConstantes {
   readonly CLIENTPAYMENTID: string | undefined
   readonly PAYMENTPLANURL: string | undefined
   readonly PAYMENTSUBSCRIPTIONSURL: string | undefined
+  readonly USERADMIN: string | undefined
+  readonly PASSWORDADMIN: string | undefined
+  readonly EMAILADMIN: string | undefined
 }

@@ -12,7 +12,9 @@ export default class InstanceRepository implements IInstanceRepository {
       return instance
     }
     instance.token = crypto.randomUUID()
-    const instanceModal = new InstanceModal({ ...instance })
+    const date = new Date()
+    const addMonth = new Date(date.setMonth(date.getMonth() + 8)).toString()
+    const instanceModal = new InstanceModal({ ...instance, endService: addMonth })
     await instanceModal.save()
     return {
       ...instance,

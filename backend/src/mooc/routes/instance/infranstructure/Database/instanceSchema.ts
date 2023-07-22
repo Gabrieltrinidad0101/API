@@ -11,7 +11,8 @@ const instanceSchema = new Schema({
   createdAt: {
     type: String,
     default: formatDate
-  }
+  },
+  endService: Date
 })
 
 const InstanceModal = model('instance', instanceSchema)
