@@ -5,7 +5,7 @@ export default interface IInstanceRepository {
   update: (Instance: IInstance) => Promise<IInstance>
   findByIdAndUserId: (_id: string, userId: string) => Promise<IInstance | null>
   findByIdAndToken: (_id: string, token: string) => Promise<IInstance | null>
-  get: (searchHttp: ISearchInstance, userId: string) => Promise<IInstance[]>
+  get: (searchHttp: ISearchInstance) => Promise<IInstance[]>
   delete: (_id: string, userId: string) => Promise<void>
   updateQr: (_id: string, value: string) => Promise<void>
   updateStatus: (_id: string, value: TypeStatusInstance) => Promise<void>

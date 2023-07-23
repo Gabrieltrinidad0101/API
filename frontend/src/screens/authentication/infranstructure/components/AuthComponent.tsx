@@ -7,7 +7,7 @@ import { type IAuthentication } from '../../domian/IAuthenticaction'
 import { customFecth } from '../../../../share/infranstruture/dependencies'
 import { Link, useNavigate } from 'react-router-dom'
 import type IUser from '../../../../../../share/domain/user'
-import { useAuthenticationContext } from '../../../../share/infranstruture/AuthenticationContext'
+import { useUserContext } from '../../../../share/infranstruture/AuthenticationContext'
 import UserComponent from '../../../../components/user/insfratructure/User'
 import { type TypeAuthentication } from '../../../../../../share/domain/user'
 
@@ -20,7 +20,7 @@ const Footer = ({ Prop: authentication }: Prop<TypeAuthentication>): JSX.Element
 export default function AuthComponent ({ Prop: authenticationComponent }: Prop<IAuthenticationComponent>): JSX.Element {
   const typeAuthentication = authenticationComponent.typeAuthentication
   const navigation = useNavigate()
-  const { user, setUser } = useAuthenticationContext()
+  const { user, setUser } = useUserContext()
 
   const clickAuth = async (user: IUser): Promise<void> => {
     const _user: IUser = { ...user, typeAuthentication }

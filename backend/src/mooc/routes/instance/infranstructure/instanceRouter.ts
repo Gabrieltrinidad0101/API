@@ -13,6 +13,7 @@ router.post('/:_id/instance/restart', instanceControl.restart)
 router.post('/:_id/instance/logout', instanceControl.logout)
 router.post('/:_id/instance/webhookUrl', verifyAuthentication.verify, instanceControl.saveWebhookUrl)
 router.post('/:_id/instance/name', verifyAuthentication.verify, instanceControl.saveName)
+router.get('/:_id/instance/realStatus', verifyAuthentication.verify, instanceControl.getRealStatus)
 router.post('/save', verifyAuthentication.verify, instanceControl.save)
 router.delete('/delete/:_id', verifyAuthentication.verify, instanceControl.delete)
 export { instanceRouter }

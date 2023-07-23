@@ -2,7 +2,7 @@ import { Avatar, Box, Modal } from '@mui/material'
 import React, { useState } from 'react'
 import { useDashboardContext } from '../../Dashboard'
 import HeaderCss from './Header.module.css'
-import { useAuthenticationContext } from '../../../../../share/infranstruture/AuthenticationContext'
+import { useUserContext } from '../../../../../share/infranstruture/AuthenticationContext'
 import UserComponent from '../../../../user/insfratructure/User'
 import type IUser from '../../../../../../../share/domain/user'
 import { type IIAvatar } from '../../../domian/Dashboard'
@@ -22,7 +22,7 @@ export default function HeaderDashboard (): JSX.Element {
       hideMenu: !(dashboardState.hideMenu ?? false)
     })
   }
-  const { user, setUser } = useAuthenticationContext()
+  const { user, setUser } = useUserContext()
   if (user === undefined) return <p> Error loading </p>
   const showEditUser = (): void => {
     setModalOpen(true)

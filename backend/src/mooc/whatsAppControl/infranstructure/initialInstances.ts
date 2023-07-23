@@ -1,17 +1,19 @@
 import type IInstanceRepository from '../../routes/instance/domian/InstanceRepository'
 import type IWhatsAppController from '../domian/whatsAppController'
 
-export const initialInstance = (instanceRepository: IInstanceRepository, whatsAppController: IWhatsAppController): void => {
-  instanceRepository.getAllInstance()
-    .then(instances => {
-      instances.forEach((instance) => {
-        whatsAppController.start(instance, 'start')
-          .catch(error => {
-            console.log(error)
-          })
-      })
+export const initialInstance = async (
+  instanceRepository: IInstanceRepository,
+  whatsAppController: IWhatsAppController
+): Promise<void> => {
+  try {
+    const instances = await instanceRepository.getAllInstance()
+    instances.forEach((instance) => {
+      whatsAppController.start(instance, 'start')
+        .catch(error => {
+          console.log(error)
+        })
     })
-    .catch(error => {
-      console.log(error)
-    })
+  } catch (error) {
+    console.log(error)
+  }
 }

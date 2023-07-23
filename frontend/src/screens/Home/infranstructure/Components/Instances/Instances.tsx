@@ -1,29 +1,17 @@
 import React from 'react'
 import InstancesCss from './Instances.module.css'
-import { DataGrid, type GridCellParams, type GridColDef } from '@mui/x-data-grid'
+import { DataGrid, type GridColDef } from '@mui/x-data-grid'
 import { type IPropInstance } from '../../../domian/instance'
-import Button from '@mui/material/Button'
 import { useNavigate } from 'react-router-dom'
-
+import { useUserContext } from '../../../../../share/infranstruture/AuthenticationContext'
+import { DataGridColumns } from './DataGridColumns'
 export default function Instances ({ instancesData }: IPropInstance): JSX.Element {
-  const columns: GridColDef[] = [
-    { field: '_id', headerName: 'ID', flex: 1 },
-    { field: 'name', headerName: 'Name', flex: 1 },
-    { field: 'createdAt', headerName: 'Created at', flex: 1 },
-    { field: 'status', headerName: 'Status', flex: 1 },
-    {
-      field: 'actions',
-      headerName: 'Actions',
-      renderCell: (params: GridCellParams) =>
-          <Button variant="contained" onClick={() => { goToInstances(params.id.toString()) }} >Manager</Button>
-    }
-  ]
-
   const navigation = useNavigate()
-  const goToInstances = (idInstance: string | undefined): void => {
-    if (idInstance === undefined) { alert('Error try later'); return }
+  const goToInstances = (idInstance: string): void => {
     navigation(`/instance?id=${idInstance}`)
   }
+  const { user } = useUserContext()
+  const columns: GridColDef[] = DataGridColumns({ userRol: user.rol, onClickManage: goToInstances })
 
   return (
     <div className={InstancesCss.wrapper}>

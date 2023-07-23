@@ -59,7 +59,7 @@ export default function Instance (): JSX.Element {
             console.log(error)
           })
       }
-      await wait(1000)
+      await wait(3000)
     }
   }
 

@@ -8,6 +8,6 @@
 
 .section1{
     display: grid;
-    grid-template-columns: 70% 30%;
+    grid-template-columns: 20% 80%;
     align-items: center;
 }

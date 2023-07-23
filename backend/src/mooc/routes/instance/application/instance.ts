@@ -72,7 +72,7 @@ export default class Instance {
         message: 'Invalid search'
       }
     }
-    const Instance = await this.instanceRepository.get(searchHttp, userId)
+    const Instance = await this.instanceRepository.get(searchHttp)
     return {
       statusCode: 200,
       message: Instance
@@ -167,19 +167,34 @@ export default class Instance {
     }
   }
 
-  async logout (_id: string, token: string): Promise<IHttpStatusCode> {
-    if (isEmptyNullOrUndefined(_id) || isEmptyNullOrUndefined(token)) {
+  async getRealStatus (_id: string, token: string): Promise<IHttpStatusCode> {
+    if (isEmptyNullOrUndefined(token)) {
       return {
-        error: 'instance id and token is required',
-        statusCode: 422
+        statusCode: 422,
+        error: 'Token is required'
       }
     }
     const instance = await this.instanceRepository.findByIdAndToken(_id, token)
-    if (instance?.status === 'pending') {
+    if (isEmptyNullOrUndefined(instance) || instance === null) {
       return {
-        error: `Instance is not authenticated ${_id}`,
-        message: 'You can not restart instance is not authenticated',
-        statusCode: 403
+        statusCode: 404,
+        error: 'Instance does not exist'
+      }
+    }
+    const screenId = getScreenId(instance)
+    const status = await this.whatsAppController.getStatus(screenId ?? '')
+
+    return {
+      statusCode: 200,
+      message: status
+    }
+  }
+
+  async logout (_id: string, token: string): Promise<IHttpStatusCode> {
+    if (isEmptyNullOrUndefined(_id) || isEmptyNullOrUndefined(token)) {
+      return {
+        error: 'instance id and token are required',
+        statusCode: 422
       }
     }
 

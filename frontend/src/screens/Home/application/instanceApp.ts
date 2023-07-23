@@ -1,5 +1,5 @@
 import { isEmptyNullOrUndefined } from '../../../../../share/application/isEmptyNullUndefiner'
-import { type ISearchInstance } from '../../../../../share/domain/instance'
+import { type ILimitSearch } from '../../../../../share/domain/instance'
 import type IInstance from '../../../../../share/domain/instance'
 import type IHttpResult from '../../../../../share/domain/httpResult'
 import type ICustomFecth from '../../../share/domian/customFecth'
@@ -11,15 +11,16 @@ export default class InstancesApp {
     private readonly customFecth: ICustomFecth
   ) { }
 
-  createNewInstance = async (): Promise<IInstance | undefined> => {
+  createNewInstance = async (userName: string): Promise<IInstance | undefined> => {
     const instance = await this.instanceApp.save({
       name: 'Default',
-      status: 'initial'
+      status: 'initial',
+      userName
     }, 'noShowSucessAlter')
     return instance
   }
 
-  get = async ({ skip, limit, search }: ISearchInstance): Promise<IInstance[] | undefined> => {
+  get = async ({ skip, limit, search }: ILimitSearch): Promise<IInstance[] | undefined> => {
     const url = `/get?skip=${skip}&limit=${limit}&search=${search}`
     const reponseHttp = await this.customFecth.get<IInstance[]>(url)
     if (isEmptyNullOrUndefined(reponseHttp?.message) || reponseHttp?.message === undefined) return

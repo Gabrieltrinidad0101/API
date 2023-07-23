@@ -4,8 +4,16 @@ import type IUser from '../../../../../share/domain/user'
 import UserCss from './Users.module.css'
 import { isEmptyNullOrUndefined } from '../../../../../share/application/isEmptyNullUndefiner'
 import { userApp } from './dependencies'
+import { useUserContext } from '../../../share/infranstruture/AuthenticationContext'
+import { useNavigate } from 'react-router-dom'
 
 export default function Users (): JSX.Element {
+  const { user } = useUserContext()
+  const navigation = useNavigate()
+  if (user.rol !== 'admin') {
+    navigation('/404')
+  }
+
   const [users, setUsers] = useState<IUser[]>([])
 
   const columns: GridColDef[] = [

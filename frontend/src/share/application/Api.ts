@@ -10,7 +10,8 @@ const APIURL = {
   getQr: (instanceId: string) => `/${instanceId}/instance/qr`,
   updateUser: '/user/update',
   getUsers: 'user/get',
-  authentication: '/user/authentication'
+  authentication: '/user/authentication',
+  getRealInstanceStatus: (instanceId: string) => `/${instanceId}/instance/realStatus`
 }
 
 export default APIURL

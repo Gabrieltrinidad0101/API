@@ -81,4 +81,11 @@ export default class InstanceApp {
     if (error !== undefined || isEmptyNullOrUndefined(message) || message === undefined) return
     this.fetchAlert.toast.sucess(message)
   }
+
+  getRealStatus = async (id: string, token: string): Promise<void> => {
+    const url = APIURL.getRealInstanceStatus(id)
+    const { error, message } = await this.fetchAlert.customFecth.get<string>(url, { instanceToken: token }) ?? {}
+    if (error !== undefined || isEmptyNullOrUndefined(message) || message === undefined) return
+    this.fetchAlert.toast.sucess(message)
+  }
 }

@@ -4,3 +4,6 @@ import WhatsAppController from './whatsApp'
 const instanceRepository = new InstanceRepository()
 export const whatsAppController = new WhatsAppController(instanceRepository)
 initialInstance(instanceRepository, whatsAppController)
+  .catch(error => {
+    console.log(error)
+  })

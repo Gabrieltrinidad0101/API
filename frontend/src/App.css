@@ -11,11 +11,15 @@ body {
     display: none !important;
 }
 
-.ml-5{
+.mr-5{
     margin-right: 5px;
 }
 
-.ml-3{
+.ml-5{
+    margin-left: 5px;
+}
+
+.ml-10{
     margin-left: 10px !important;
 }
 

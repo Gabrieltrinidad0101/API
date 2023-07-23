@@ -3,7 +3,7 @@ import MenuCss from './Menu.module.css'
 import type INav from '../domian/menu'
 import { useNavigate } from 'react-router-dom'
 import { isEmptyNullOrUndefined } from '../../../../../../../../../share/application/isEmptyNullUndefiner'
-import { useAuthenticationContext } from '../../../../../../../share/infranstruture/AuthenticationContext'
+import { useUserContext } from '../../../../../../../share/infranstruture/AuthenticationContext'
 
 interface PropLogo {
   children: React.ReactNode
@@ -11,7 +11,7 @@ interface PropLogo {
 }
 
 export default function Nav ({ onClick, text, children, icon, to, rol = 'user' }: INav<React.ReactNode>): JSX.Element {
-  const { user } = useAuthenticationContext()
+  const { user } = useUserContext()
   if (rol !== user.rol && user.rol !== 'admin') return <></>
   const [navIsClose, setNavIsClose] = useState<boolean>(true)
   const navigate = useNavigate()

@@ -1,5 +1,4 @@
 import { model, Schema } from 'mongoose'
-import formatDate from '../../../../../../../share/application/date'
 const instanceSchema = new Schema({
   name: String,
   userId: String,
@@ -8,9 +7,10 @@ const instanceSchema = new Schema({
   token: String,
   qr: String,
   webhookUrl: String,
+  userName: String,
   createdAt: {
-    type: String,
-    default: formatDate
+    type: Date,
+    default: Date.now()
   },
   endService: Date
 })

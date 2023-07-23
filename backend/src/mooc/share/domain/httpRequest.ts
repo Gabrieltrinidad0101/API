@@ -1,6 +1,6 @@
 export interface IFormatHttpRequest {
   url: string
-  body: object
+  body: object | string
   auth?: {
     user?: string
     pass?: string

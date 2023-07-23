@@ -1,16 +1,11 @@
 import Joi from 'joi'
-import { type TypeValidation } from '../../../share/domain/Validator'
-
-const validator = (schema: Joi.ObjectSchema<any>): TypeValidation =>
-  (payload: unknown): string | undefined => {
-    const { error } = schema.validate(payload)
-    return JSON.stringify(error?.details)
-  }
+import validator from '../../../share/infranstructure/Validator'
 
 const instanceSchema = Joi.object({
   name: Joi.string().required(),
   status: Joi.string().valid('active', 'pending', 'cancel', 'initial').required(),
-  userId: Joi.string().required()
+  userId: Joi.string().required(),
+  userName: Joi.string().required()
 })
 
 const urlSchema = Joi.object({

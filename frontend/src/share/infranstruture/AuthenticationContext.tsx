@@ -54,7 +54,7 @@ const AuthenticationProvider = (): JSX.Element => {
     isEmptyNullOrUndefined(user?._id) ? <></> : <Outlet />
   }</AuthContext.Provider>
 }
-export const useAuthenticationContext = (): IUserState => {
+export const useUserContext = (): IUserState => {
   return useContext<IUserState>(AuthContext)
 }
 

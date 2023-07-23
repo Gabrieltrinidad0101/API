@@ -3,6 +3,7 @@ import type Instance from '../application/instance'
 import { type Request } from 'express'
 import { type ISearchInstance } from '../../../../../../share/domain/instance'
 import type IInstance from '../../../../../../share/domain/instance'
+import { type TypeRol } from '../../../../../../share/domain/user'
 
 export default class InstanceControl {
   constructor (private readonly Instance: Instance) { }
@@ -11,10 +12,14 @@ export default class InstanceControl {
     const skip = parseInt(req.query.skip?.toString() ?? '0')
     const limit = parseInt(req.query.limit?.toString() ?? '0')
     const search = req.query.search?.toString() ?? ''
+    const userId = req.headers.userId?.toString() ?? ''
+    const userRol = req.headers.userRol?.toString() as TypeRol
     return {
       skip,
       limit,
-      search
+      search,
+      userRol,
+      userId
     }
   }
 
@@ -78,6 +83,13 @@ export default class InstanceControl {
     const _id = req.params._id
     const token = req.body.token
     const result = await this.Instance.restart(_id, token)
+    return result
+  }
+
+  getRealStatus = async (req: Request): Promise<IHttpStatusCode> => {
+    const _id = req.params._id
+    const token = req.headers.instancetoken?.toString() ?? ''
+    const result = await this.Instance.getRealStatus(_id, token)
     return result
   }
 }

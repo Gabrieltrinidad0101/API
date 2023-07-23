@@ -1,8 +1,9 @@
-import { IHttpStatusCode } from "./httpResult"
+import { TypeRol } from "./user"
 
 export interface IInstanceInitial{
     status: TypeStatusInstance
     name: TypeInstanceName
+    userName: string
 }
 
 export interface IInstanceQRStatus{
@@ -26,6 +27,7 @@ export default interface IInstance  extends IInstanceAuthentication,IInstanceQRS
     name: TypeInstanceName
     createdAt?: string
     webhookUrl?: string
+    userName?: string
 }
 
 export interface ISaveInstance {
@@ -33,8 +35,13 @@ export interface ISaveInstance {
     info: string
 }
 
-export interface ISearchInstance {
+export interface ILimitSearch{
     limit: number
     skip: number
     search: string
+}
+
+export interface ISearchInstance extends ILimitSearch {
+    userId: string
+    userRol: TypeRol
 }

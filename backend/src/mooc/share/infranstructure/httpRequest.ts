@@ -4,9 +4,10 @@ import { type IFormatHttpRequest } from '../domain/httpRequest'
 
 export const httpRequet = async (formatHttpRequest: IFormatHttpRequest): Promise<any> =>
   await new Promise((resolve, reject) => {
-    request.post(formatHttpRequest.url, {
+    request(formatHttpRequest.url, {
+      method: formatHttpRequest.method,
       auth: formatHttpRequest.auth,
-      body: formatHttpRequest.body,
+      body: JSON.stringify(formatHttpRequest.body),
       json: true
     }, (err, res) => {
       if (!isEmptyNullOrUndefined(res)) {

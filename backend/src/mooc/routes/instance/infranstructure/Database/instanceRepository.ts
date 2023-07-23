@@ -4,6 +4,8 @@ import type IInstanceRepository from '../../domian/InstanceRepository'
 import InstanceModal from './instanceSchema'
 import crypto from 'crypto'
 import mongoose from 'mongoose'
+import { findInstanceQuery } from './findInstanceQuery'
+import { userRepository } from '../../../user/infranstructure/dependencies'
 
 export default class InstanceRepository implements IInstanceRepository {
   update = async (instance: IInstance): Promise<IInstance> => {
@@ -13,20 +15,21 @@ export default class InstanceRepository implements IInstanceRepository {
     }
     instance.token = crypto.randomUUID()
     const date = new Date()
-    const addMonth = new Date(date.setMonth(date.getMonth() + 8)).toString()
-    const instanceModal = new InstanceModal({ ...instance, endService: addMonth })
+    const addMonth = new Date(date.setMonth(date.getMonth() + 1)).toString()
+    const instanceModal = new InstanceModal({ ...instance, createAt: date, endService: addMonth })
     await instanceModal.save()
     return {
       ...instance,
-      _id: instanceModal._id.toString(),
-      createdAt: instanceModal.createdAt
+      _id: instanceModal._id.toString()
     }
   }
 
   async findByIdAndUserId (_id: string, userId: string): Promise<IInstance | null> {
     const isValid = mongoose.Types.ObjectId.isValid(_id)
     if (!isValid) return null
-    const instanceModal = await InstanceModal.findOne<IInstance>({ _id, userId }, { userId: 0 })
+    const user = await userRepository.findOne({ _id: userId })
+    const query = user?.rol === 'admin' ? {} : { _id, userId }
+    const instanceModal = await InstanceModal.findOne<IInstance>(query, { userId: 0 })
     return instanceModal
   }
 
@@ -37,29 +40,11 @@ export default class InstanceRepository implements IInstanceRepository {
     return instanceModal
   }
 
-  get = async (searchHttp: ISearchInstance, userId: string): Promise<IInstance[]> => {
-    const instanceModal = await InstanceModal.find<IInstance>({ userId }, { content: 0 })
+  get = async (searchHttp: ISearchInstance): Promise<IInstance[]> => {
+    const instanceModal = await InstanceModal.find<IInstance>(findInstanceQuery(searchHttp))
       .skip(searchHttp.skip)
       .sort({ _id: -1 })
       .limit(searchHttp.limit)
-      .find(
-        searchHttp.search === ''
-          ? {}
-          : { name: { $regex: searchHttp.search } }
-      )
-    return instanceModal
-  }
-
-  getAll = async (searchHttp: ISearchInstance, userId: string): Promise<IInstance[]> => {
-    const instanceModal = await InstanceModal.find<IInstance>({ userId: { $ne: userId } }, { content: 0 })
-      .skip(searchHttp.skip)
-      .sort({ _id: -1 })
-      .limit(searchHttp.limit)
-      .find(
-        searchHttp.search === ''
-          ? {}
-          : { name: { $regex: searchHttp.search } }
-      )
     return instanceModal
   }
 

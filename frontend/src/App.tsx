@@ -13,7 +13,7 @@ import Documentation from './screens/docs/infranstructure/Documentation'
 import SendFile from './screens/docs/infranstructure/components/sendFile/SendFile'
 import SendMessage from './screens/docs/infranstructure/components/sendMessage/sendMessage'
 import InstanceTools from './screens/docs/infranstructure/components/instanceTools/InstanceTools'
-
+import Page404 from './screens/404/Page404'
 export default function App (): JSX.Element {
   return (
     <BrowserRouter>
@@ -32,6 +32,7 @@ export default function App (): JSX.Element {
             <Route path="/users" element={<Users/>} ></Route>
           </Route>
         </Route>
+        <Route path="/*" element={<Page404 />}></Route>
       </Routes>
       <ToastContainer />
       <Loading />

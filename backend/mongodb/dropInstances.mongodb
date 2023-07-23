@@ -1,4 +1,0 @@
-use("chatPlus")
-
-db.instances.drop();
-db.users.drop();
