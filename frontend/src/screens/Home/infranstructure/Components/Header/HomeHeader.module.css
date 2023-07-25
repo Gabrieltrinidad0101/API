@@ -46,27 +46,16 @@
     padding: 7px 16px;
     min-height: 36px;
     min-width: 36px;
-    color: #ffffff;
-    background: #008060;
     border-radius: 4px;
     font-size: 16px;
     font-weight: 500;
+    color: #ffffff;
+    background: #008060;
     box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 0px 0px, rgba(0, 0, 0, 0.2) 0px -1px 0px 0px inset;
 }
 
 .searchButton{
     justify-self: center;
-}
-
-.newProject a {
-    text-decoration: none;
-    background: transparent;
-    white-space: nowrap;
-}
-
-.newProject:hover {
-    box-shadow: rgba(80, 63, 205, 0.5) 0 1px 5px;
-    transition-duration: .1s;
 }
 
 
@@ -85,25 +74,29 @@
         grid-template-columns: 100%;
     }
 
-    .newProject {
+    .newInstance {
         position: fixed;
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-        left: calc(100% - 90px);
-        top: calc(100% - 6rem - 80px );
-    }
-
-    .newProject{
+        width: 0px;
+        height: 0px;
+        left: 5px;
+        top: calc(100% - 10px - 50px );
+        z-index: 10;
+        background: transparent;
+        box-shadow: none;
         color: transparent;
     }
-
-    .newProject::after{
+    
+    .newInstance::after{
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
         content: "+";
-        font-size: 70px;
-        color: wheat;
+        font-size: 45px;
         display: block;
-        margin-top: -40px;
+        margin-top: -45px;
+        color: #ffffff;
+        background: #008060;
+        box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 0px 0px, rgba(0, 0, 0, 0.2) 0px -1px 0px 0px inset;
     }
 
 }

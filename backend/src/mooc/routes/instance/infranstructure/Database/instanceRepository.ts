@@ -15,11 +15,13 @@ export default class InstanceRepository implements IInstanceRepository {
     }
     instance.token = crypto.randomUUID()
     const date = new Date()
-    const addMonth = new Date(date.setMonth(date.getMonth() + 1)).toString()
-    const instanceModal = new InstanceModal({ ...instance, createAt: date, endService: addMonth })
+    const addMonth = new Date(date.setMonth(date.getMonth() + 1))
+    const instanceModal = new InstanceModal({ ...instance, createdAt: date, endService: addMonth })
     await instanceModal.save()
     return {
       ...instance,
+      createdAt: date,
+      endService: addMonth,
       _id: instanceModal._id.toString()
     }
   }
@@ -28,7 +30,7 @@ export default class InstanceRepository implements IInstanceRepository {
     const isValid = mongoose.Types.ObjectId.isValid(_id)
     if (!isValid) return null
     const user = await userRepository.findOne({ _id: userId })
-    const query = user?.rol === 'admin' ? {} : { _id, userId }
+    const query = user?.rol === 'admin' ? { _id } : { _id, userId }
     const instanceModal = await InstanceModal.findOne<IInstance>(query, { userId: 0 })
     return instanceModal
   }

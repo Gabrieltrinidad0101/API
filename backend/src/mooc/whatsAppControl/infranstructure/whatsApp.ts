@@ -8,6 +8,7 @@ import { type TypeInstanceStart } from '../../../../../share/domain/instance'
 import type ISend from '../../../../../share/domain/Send'
 import getMessageMediaExtension from './getMediaFileExtension'
 import { getScreenId } from './getScreenId'
+import { Logs } from '../../../logs'
 
 const screens = new Map<string, Client>()
 
@@ -20,7 +21,11 @@ export default class WhatsAppController implements IWhatsAppController {
         _id: send._id,
         token: send.token
       })
-      if (screenId === undefined) return
+
+      if (screenId === undefined) {
+        Logs.Error(`screenId is null ${JSON.stringify(send)}`)
+        return
+      }
       const client = screens.get(screenId)
       if (send.body !== undefined && send.to !== undefined) {
         await client?.sendMessage(`${send.to}@c.us`, send.body)
@@ -31,7 +36,7 @@ export default class WhatsAppController implements IWhatsAppController {
         await client?.sendMessage(`${send.to ?? ''}@c.us`, media)
       }
     } catch (error: any) {
-      console.log(error)
+      Logs.Error(error)
     }
   }
 
@@ -44,7 +49,7 @@ export default class WhatsAppController implements IWhatsAppController {
     client.on('qr', (qr: string) => {
       this.onQrAsync(qr, id, screenId)
         .catch(error => {
-          console.log(error)
+          Logs.Exception(error)
         })
     })
   }
@@ -53,7 +58,7 @@ export default class WhatsAppController implements IWhatsAppController {
     client.on('authenticated', (session) => {
       this.instanceRepository.updateStatus(id, 'authenticated')
         .catch(error => {
-          console.log(error)
+          Logs.Exception(error)
         })
     })
   }
@@ -66,8 +71,8 @@ export default class WhatsAppController implements IWhatsAppController {
           .catch(err => {
             console.log(err)
           })
-      } catch (ex) {
-        console.log(ex)
+      } catch (error) {
+        Logs.Exception(error)
       }
     })
   }
@@ -76,35 +81,37 @@ export default class WhatsAppController implements IWhatsAppController {
     for (let i = 0; (i < 10 || client.pupPage === null); i++) await wait(1000)
     client.pupPage?.on('close', (): void => {
       this.start(instance, 'windowClose')
-        .catch(() => {
-          console.log('ok')
+        .catch((error) => {
+          Logs.Exception(error)
         })
     })
   }
 
-  onAuthfailure = (client: Client): void => {
+  onAuthfailure = (client: Client, instance: IInstance): void => {
     client.on('auth_failure', (): void => {
-      console.log('Error')
+      Logs.Error(`Auth failure ${instance._id}`)
     })
+  }
+
+  onMessageAsnyc = async (instance: IInstance, message: Message): Promise<void> => {
+    const { _id, userId } = instance
+    if (_id === undefined || userId === undefined) {
+      Logs.Warning('On message with instance without id and userId')
+      return
+    }
+    const instanceDb = await this.instanceRepository.findByIdAndUserId(_id, userId)
+    if (instanceDb === null) {
+      Logs.Warning(`On message to instance not found in db id = ${_id} userId = ${userId}`)
+      return
+    }
+    await sendReceiveMessage(message, instance)
   }
 
   onMessage = (client: Client, instance: IInstance): void => {
     client.on('message', (message: Message) => {
-      const { _id, userId } = instance
-      if (_id === undefined || userId === undefined) return
-      this.instanceRepository.findByIdAndUserId(_id, userId)
-        .then(instance => {
-          if (instance === null) {
-            console.log('On message to instance not found')
-            return
-          }
-          sendReceiveMessage(message, instance)
-            .catch(() => {
-              console.log('error')
-            })
-        })
+      this.onMessageAsnyc(instance, message)
         .catch(error => {
-          console.log(error)
+          Logs.Exception(error)
         })
     })
   }
@@ -174,12 +181,10 @@ export default class WhatsAppController implements IWhatsAppController {
       screens.set(screenId, client)
       this.onMessage(client, instance)
       this.onQr(client, _id, screenId)
+      this.onAuthfailure(client, instance)
       this.onAuthenticated(client, _id)
       this.onDisconnected(client, instance)
-      this.onScreenLoad(client, instance)
-        .catch(error => {
-          console.log(error)
-        })
+      await this.onScreenLoad(client, instance)
       await client.initialize()
     } catch (error: any) {
       await this.destroy(getScreenId(instance) ?? '')

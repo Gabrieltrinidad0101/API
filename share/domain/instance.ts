@@ -25,7 +25,8 @@ export interface IInstanceAuthentication{
 export default interface IInstance  extends IInstanceAuthentication,IInstanceQRStatus{
     userId?: string
     name: TypeInstanceName
-    createdAt?: string
+    createdAt?: Date
+    endService?: Date
     webhookUrl?: string
     userName?: string
 }

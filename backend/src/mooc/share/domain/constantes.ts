@@ -12,4 +12,7 @@ export interface IConstantes {
   readonly USERADMIN: string | undefined
   readonly PASSWORDADMIN: string | undefined
   readonly EMAILADMIN: string | undefined
+  readonly SENTRYDNS: string | undefined
 }
+
+export type TypekeyOfIConstantes = keyof IConstantes

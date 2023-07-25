@@ -74,7 +74,7 @@ export default class InstanceControl {
 
   saveName = async (req: Request): Promise<IHttpStatusCode> => {
     const _id = req.params._id
-    const name = req.body.name
+    const name = req.body.name as string | undefined
     const result = await this.Instance.saveName(_id, name)
     return result
   }

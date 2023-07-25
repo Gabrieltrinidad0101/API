@@ -10,14 +10,17 @@ import { useUserContext } from '../../../share/infranstruture/AuthenticationCont
 export default function Home (): JSX.Element {
   const [instancesData, setInstancesData] = useState<IInstance[]>([])
   const { user } = useUserContext()
+  const [search, setSearch] = useState<string>('')
+
+  const getInstance = async (): Promise<void> => {
+    const instances = await instanceApp.get({ limit: 10000, skip: 0, search })
+    if (isEmptyNullOrUndefined(instances) || instances === undefined) return
+    setInstancesData(instances)
+  }
 
   useEffect(() => {
     document.title = 'Home'
-    instanceApp.get({ limit: 10000, skip: 0, search: '' })
-      .then(instances => {
-        if (isEmptyNullOrUndefined(instances) || instances === undefined) return
-        setInstancesData(instances)
-      })
+    getInstance()
       .catch(error => {
         console.log(error)
       })
@@ -34,9 +37,9 @@ export default function Home (): JSX.Element {
       <HomeHeader Prop={
         {
           createNewInstance,
-          searchInstance: '',
-          setSearchInstance: (searchInstance: string) => { },
-          search: () => { }
+          searchInstance: search,
+          setSearchInstance: (searchInstance: string) => { setSearch(searchInstance) },
+          search: () => { getInstance().catch(error => { console.log(error) }) }
         }
       } />
       <Instances instancesData={instancesData} />

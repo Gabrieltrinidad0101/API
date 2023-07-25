@@ -131,11 +131,12 @@ export default class Instance {
     }
   }
 
-  async saveName (_id: string, name: string): Promise<IHttpStatusCode> {
-    if (name === undefined || name === null) {
+  async saveName (_id: string, name?: string): Promise<IHttpStatusCode> {
+    if (isEmptyNullOrUndefined(name) || name === undefined) {
       return {
         statusCode: 422,
-        error: 'Invalid name'
+        error: 'Name cannot be empty or undefined',
+        message: 'Invalid name'
       }
     }
     await this.instanceRepository.saveName(_id, name)
@@ -182,8 +183,8 @@ export default class Instance {
       }
     }
     const screenId = getScreenId(instance)
-    const status = await this.whatsAppController.getStatus(screenId ?? '')
 
+    const status = await this.whatsAppController.getStatus(screenId ?? '')
     return {
       statusCode: 200,
       message: status
