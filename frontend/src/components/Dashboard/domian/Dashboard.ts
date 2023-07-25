@@ -24,3 +24,7 @@ export interface IIAvatar {
   height?: number
   onClick?: () => void
 }
+
+export interface IChangePassword {
+  goBack: () => void
+}

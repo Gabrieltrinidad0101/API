@@ -5,7 +5,7 @@ export interface IPropIUserComponent<Component> {
 }
 
 export default interface IUserComponent<Component> {
-  user: IUser
+  user?: IUser
   onSubmit: (authenticatio: IUser) => Promise<void>
   hidenInputs?: IhidenInputs
   logo: Component
@@ -18,4 +18,5 @@ export interface IhidenInputs {
   cellPhone?: boolean
   email?: boolean
   password?: boolean
+  repeatPassword?: boolean
 }

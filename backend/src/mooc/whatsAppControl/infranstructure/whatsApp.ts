@@ -184,7 +184,10 @@ export default class WhatsAppController implements IWhatsAppController {
       this.onAuthfailure(client, instance)
       this.onAuthenticated(client, _id)
       this.onDisconnected(client, instance)
-      await this.onScreenLoad(client, instance)
+      this.onScreenLoad(client, instance)
+        .catch(error => {
+          Logs.Exception(error)
+        })
       await client.initialize()
     } catch (error: any) {
       await this.destroy(getScreenId(instance) ?? '')

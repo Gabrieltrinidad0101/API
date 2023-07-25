@@ -6,6 +6,7 @@ export default interface IUser{
     password: string
     cellPhone: string
     email: string
+    repeatedPassword?: string
     rol: TypeRol
     typeAuthentication?: TypeAuthentication
     _id?: string
