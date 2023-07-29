@@ -13,10 +13,14 @@ export default class PaymentRepository implements IPaymentRepository {
     await paymentProductModal.save()
   }
 
-  findById = async (_id: number): Promise<IProductFromApi | undefined> => {
-    const paymentProduct = await PaymentProductModal.findById<IProductFromApi>({ _id })
-    if (paymentProduct === null) return
+  findOneProduct = async (filter: object): Promise<IProductFromApi | null> => {
+    const paymentProduct = await PaymentProductModal.findOne<IProductFromApi>(filter)
     return paymentProduct
+  }
+
+  findLastPlan = async (): Promise<IPlanFromApi> => {
+    const plan = await PaymentPlanModal.find<IPlanFromApi>({}).sort({ _id: -1 }).limit(1)
+    return plan[0]
   }
 
   savePlan = async (plan: IPlanFromApi): Promise<void> => {

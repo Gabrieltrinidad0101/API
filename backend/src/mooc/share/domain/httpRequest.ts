@@ -1,3 +1,6 @@
+import { type IHttpStatusCode } from '../../../../../share/domain/httpResult'
+import type IUser from '../../../../../share/domain/user'
+
 export interface IFormatHttpRequest {
   url: string
   body: object | string
@@ -9,3 +12,8 @@ export interface IFormatHttpRequest {
 }
 
 export type IHttpRequest = (formatHttpRequest: IFormatHttpRequest) => Promise<any>
+
+export interface IBaseAuthentication {
+  user?: IUser
+  httpStatusCode?: IHttpStatusCode
+}

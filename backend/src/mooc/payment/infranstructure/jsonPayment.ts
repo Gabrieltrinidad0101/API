@@ -9,10 +9,10 @@ export const generateObjectPaymentProduct = (): IProduct => {
   }
 }
 
-export const generateObjectPaymentPlan = (productId: string): IPlan => {
+export const generateObjectPaymentPlan = (): IPlan => {
   return {
     name: 'Instance',
-    product_id: productId,
+    product_id: '',
     status: 'ACTIVE',
     billing_cycles: [
       {

@@ -9,8 +9,9 @@ export interface IProductFromApi {
 
 export interface IPaymentRepository {
   saveProduct: (product: IProductFromApi) => Promise<void>
-  findById: (id: number) => Promise<IProductFromApi | undefined>
+  findOneProduct: (filter: object) => Promise<IProductFromApi | null>
   savePlan: (plan: IPlanFromApi) => Promise<void>
+  findLastPlan: () => Promise<IPlanFromApi>
 }
 
 interface ILink {

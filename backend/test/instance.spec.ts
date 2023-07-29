@@ -28,8 +28,9 @@ describe('Instance', () => {
     const response = await request(app).post('/save')
       .set({ token: Tokens.pedroToken })
       .send(Instance1)
-    expect(response.statusCode).toBe(200)
+    expect(response.body.error).toBeUndefined()
     const message = response.body.message
+    expect(response.statusCode).toBe(200)
     expect(message.info).toBe('Instance saved successfully')
     expect(message.instance).toBeTruthy()
     instance = message.instance

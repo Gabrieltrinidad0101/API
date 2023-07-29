@@ -15,6 +15,8 @@ import SendMessage from './screens/docs/infranstructure/components/sendMessage/s
 import InstanceTools from './screens/docs/infranstructure/components/instanceTools/InstanceTools'
 import ChangePassword from './screens/changePassword/infranstructure/ChangePassword'
 import Page404 from './screens/404/Page404'
+import JsonView from './screens/jsonViews/infranstructure/JsonView'
+
 export default function App (): JSX.Element {
   return (
     <BrowserRouter>
@@ -31,6 +33,7 @@ export default function App (): JSX.Element {
             </Route>
             <Route path="instanceTools" element={<InstanceTools/>} ></Route>
             <Route path="/users" element={<Users/>} ></Route>
+            <Route path="/jsonViews" element={<JsonView/>} ></Route>
           </Route>
         </Route>
         <Route element={<ChangePassword />} path="changePassword" />

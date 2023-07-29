@@ -12,7 +12,8 @@ const APIURL = {
   getUsers: 'user/get',
   authentication: '/user/authentication',
   getRealInstanceStatus: (instanceId: string) => `/${instanceId}/instance/realStatus`,
-  updatePassword: '/user/updatePassword'
+  updatePassword: '/user/updatePassword',
+  listPlan: '/payment/listPlan'
 }
 
 export default APIURL

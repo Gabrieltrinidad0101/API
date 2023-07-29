@@ -10,6 +10,7 @@ const PAYMENTSECRET = process.env.PAYMENT_SECRET ?? ''
 const PAYMENTPRODUCTURL = `${PAYMENTURL ?? ''}/v1/catalogs/products`
 const PAYMENTPLANURL = `${PAYMENTURL ?? ''}/v1/billing/plans`
 const PAYMENTSUBSCRIPTIONSURL = `${PAYMENTURL ?? ''}/v1/billing/subscriptions`
+const LISTPLANSURL = `${PAYMENTURL ?? ''}/v1/billing/plans`
 const CLIENTPAYMENTID = process.env.CLIENT_PAYMENT_ID ?? ''
 const USERADMIN = process.env.USER_ADMIN ?? ''
 const PASSWORDADMIN = process.env.PASSWORD_ADMIN ?? ''
@@ -40,7 +41,8 @@ const constantes: IConstantes = {
   SERVEREMAIL,
   SERVEREMAILPASSWORD,
   ENCRYPTTOKEN,
-  COMPANYLOGO
+  COMPANYLOGO,
+  LISTPLANSURL
 }
 
 // If any property is undefined stop the server

@@ -59,4 +59,4 @@ interface ISubscriberName {
   surname: string
 }
 
-export type TCreateSubscription = ISubscription | IPlan | IProduct
+export type TCreateSubscription = ISubscription | IPlan | IProduct | null

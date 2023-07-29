@@ -9,6 +9,7 @@ export interface IConstantes {
   readonly CLIENTPAYMENTID: string
   readonly PAYMENTPLANURL: string
   readonly PAYMENTSUBSCRIPTIONSURL: string
+  readonly LISTPLANSURL: string
   readonly USERADMIN: string
   readonly PASSWORDADMIN: string
   readonly EMAILADMIN: string

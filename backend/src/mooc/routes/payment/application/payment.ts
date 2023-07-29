@@ -17,9 +17,9 @@ export class PaymentApp {
     }
 
     const response = await this.httpRequest({
-      method: 'POST',
+      method: productoToCreate === null ? 'GET' : 'POST',
       url,
-      body: productoToCreate,
+      body: productoToCreate ?? {},
       auth: {
         user: this.constantes.CLIENTPAYMENTID,
         pass: this.constantes.PAYMENTSECRET
@@ -28,30 +28,53 @@ export class PaymentApp {
     return response.body
   }
 
-  createProduct = async (productoToCreate: IProduct): Promise<IHttpStatusCode> => {
-    const productFromApi = await this.makeHttpRequest(productoToCreate, this.constantes.PAYMENTPRODUCTURL) as IProductFromApi
-    if (productFromApi === undefined) { throw new Error('Error creating payment product API return undefined') }
-    await this.paymentRepository.saveProduct(productFromApi)
-    return {
-      message: 'Product created successfully'
+  configurationPayment = async (productoToCreate: IProduct, planToCreate: IPlan): Promise<IHttpStatusCode> => {
+    const product = await this.paymentRepository.findOneProduct({})
+    if (product !== null) {
+      return {
+        statusCode: 201,
+        message: 'Product was created'
+      }
     }
-  }
+    const productFromApi = await this.makeHttpRequest(productoToCreate, this.constantes.PAYMENTPRODUCTURL) as IProductFromApi
+    if (productFromApi === undefined) {
+      return {
+        statusCode: 500,
+        error: 'Error creating payment product API return undefined',
+        message: 'Error creating product'
+      }
+    }
+    await this.paymentRepository.saveProduct(productFromApi)
 
-  createPlan = async (planToCreate: IPlan): Promise<IHttpStatusCode> => {
+    planToCreate.product_id = productFromApi._id ?? ''
     const result = await this.makeHttpRequest(planToCreate, this.constantes.PAYMENTPLANURL) as IPlanFromApi
-    if (result === undefined) { throw new Error('Error creating subscription API return undefined') }
+    if (result === undefined) {
+      return {
+        statusCode: 500,
+        error: 'Error creating plan API return undefined',
+        message: 'Error creating plan'
+      }
+    }
     await this.paymentRepository.savePlan(result)
     return {
-      message: 'Plan created successfully'
+      message: 'Plan and Product created successfully'
     }
   }
 
   createSubscription = async (subscriptionToCreate: ISubscription): Promise<IHttpStatusCode> => {
+    const plan = await this.paymentRepository.findLastPlan()
+    subscriptionToCreate.plan_id = plan.id
     const result = await this.makeHttpRequest(subscriptionToCreate, this.constantes.PAYMENTSUBSCRIPTIONSURL) as ISubscription
     if (result === undefined) { throw new Error('Error creating subscription API return undefined') }
-    console.log(result)
     return {
       message: 'Plan created successfully'
+    }
+  }
+
+  listOfPlans = async (): Promise<IHttpStatusCode> => {
+    const result = await this.makeHttpRequest(null, this.constantes.LISTPLANSURL)
+    return {
+      message: result
     }
   }
 }
