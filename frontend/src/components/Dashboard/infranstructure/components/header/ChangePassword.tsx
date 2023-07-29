@@ -6,13 +6,17 @@ import UserComponent from '../../../../user/insfratructure/User'
 import type IUser from '../../../../../../../share/domain/user'
 import { Toast } from '../../../../../share/infranstruture/toast'
 import { useUserContext } from '../../../../../share/infranstruture/AuthenticationContext'
+import { userApp } from '../../../../../screens/users/infranstructure/dependencies'
 
 export const ChangePassword = ({ goBack }: IChangePassword): JSX.Element => {
   const { user } = useUserContext()
+
   const onSubmitChangePassword = async (user: IUser): Promise<void> => {
-    if (user.password !== user.repeatedPassword) {
+    if (user.password !== user.repeatPassword) {
       Toast.error('The passwords are not the same')
+      return
     }
+    await userApp.updatePassword(user.password)
   }
 
   return (

@@ -20,7 +20,8 @@ const initialState: IInstance = {
   status: 'pending',
   token: '',
   userId: '',
-  name: ''
+  name: '',
+  initialDate: new Date()
 }
 
 export default function Instance (): JSX.Element {
@@ -42,14 +43,15 @@ export default function Instance (): JSX.Element {
     navigation('/home')
   }
 
-  const getQr = async ({ _id }: IInstance): Promise<void> => {
+  const getQr = async ({ _id, token }: IInstance): Promise<void> => {
     while (window.location.pathname === '/instance') {
       const url = APIURL.getQr(_id)
       const res = await customFecth.get<IHttpResult<IInstanceQRStatus>>(url, {
-        token: instanceState?.token
+        token
       }, {
         showErrors: false,
-        showLoader: false
+        showLoader: false,
+        removeDefaultHeaders: true
       })
       const { status, qr } = res?.message ?? { status: 'pending' }
       setInstanceState(prevState => ({ ...prevState, status }))

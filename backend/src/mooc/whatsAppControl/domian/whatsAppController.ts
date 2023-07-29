@@ -5,13 +5,15 @@ import type ISend from '../../../../../share/domain/Send'
 
 export default interface IWhatsAppController {
   start: (instance: IInstance, instanceStart: TypeInstanceStart) => Promise<void>
-  restart: (screenId: string | undefined) => Promise<void>
+  restart: (screenId: IInstance) => Promise<void>
   logout: (instanceId: string, token: string) => Promise<void>
   send: (send: ISend) => Promise<void>
-  getStatus: (screenId: string) => Promise<WAState | undefined>
+  getStatus: (screenId: string) => Promise<WAState | TypeOpenWithError | undefined>
 }
 
 export interface IIdTokenWhatsApp {
   _id: string
   token: string
 }
+
+export type TypeOpenWithError = 'openWithError'

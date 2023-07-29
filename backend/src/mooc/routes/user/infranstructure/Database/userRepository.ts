@@ -43,4 +43,8 @@ export default class UserRepository implements IUserRepository {
   findOne = async (search: object, filter?: object): Promise<IUser | null> => {
     return await UserModel.findOne<IUser>(search, filter)
   }
+
+  updatePassword = async (filter: object, newPassword: string): Promise<void> => {
+    await UserModel.updateOne({ filter }, { password: newPassword })
+  }
 }

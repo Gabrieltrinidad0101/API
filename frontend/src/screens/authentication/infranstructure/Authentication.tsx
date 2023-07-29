@@ -16,7 +16,7 @@ export default function Authentication ({ typeAuthentication }: IAuthenticationP
   })
 
   return (
-    <div className={AuthenticationCss.loginScreen}>
+    <div className={`${AuthenticationCss.loginScreen} background-blue`}>
       <AuthComponent Prop={authenticationComponent} />
     </div>
   )

@@ -8,7 +8,8 @@ const instanceSchema = new Schema({
   qr: String,
   webhookUrl: String,
   userName: String,
-  createdAt: {
+  initialDate: Date,
+  createdIn: {
     type: Date,
     default: Date.now()
   },

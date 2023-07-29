@@ -3,7 +3,7 @@ import { type IHttpStatusCode } from '../../../../../share/domain/httpResult'
 import { Logs } from '../../../logs'
 
 type typeCallBack = (req: Request, next?: () => void) => Promise<IHttpStatusCode | undefined>
-type typeMethods = 'post' | 'get' | 'put' | 'delete'
+type typeMethods = 'post' | 'get' | 'put' | 'delete' | 'patch'
 
 export default class RouterManager {
   constructor (private readonly router: Router) { }
@@ -21,6 +21,10 @@ export default class RouterManager {
 
   put = (path: string, ...callBacks: typeCallBack[]): void => {
     this.baseMethod('put', path, ...callBacks)
+  }
+
+  patch = (path: string, ...callBacks: typeCallBack[]): void => {
+    this.baseMethod('patch', path, ...callBacks)
   }
 
   private readonly baseMethod = (method: typeMethods, path: string, ...callBacks: typeCallBack[]): void => {

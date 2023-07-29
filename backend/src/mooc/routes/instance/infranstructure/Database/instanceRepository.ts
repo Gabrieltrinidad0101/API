@@ -16,12 +16,18 @@ export default class InstanceRepository implements IInstanceRepository {
     instance.token = crypto.randomUUID()
     const date = new Date()
     const addMonth = new Date(date.setMonth(date.getMonth() + 1))
-    const instanceModal = new InstanceModal({ ...instance, createdAt: date, endService: addMonth })
+    const instanceModal = new InstanceModal({
+      ...instance,
+      createdIn: date,
+      endService: addMonth,
+      initialDate: date
+    })
     await instanceModal.save()
     return {
       ...instance,
-      createdAt: date,
+      createdIn: date,
       endService: addMonth,
+      initialDate: date,
       _id: instanceModal._id.toString()
     }
   }
@@ -60,6 +66,7 @@ export default class InstanceRepository implements IInstanceRepository {
 
   updateStatus = async (_id: string, value: TypeStatusInstance): Promise<void> => {
     await this.updateInstance(_id, 'status', value)
+    if (value === 'initial') await this.updateInstance(_id, 'initialDate', new Date())
   }
 
   saveWebhookUrl = async (_id: string, webhookUrl: string): Promise<void> => {

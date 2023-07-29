@@ -9,6 +9,7 @@ import type ISend from '../../../../../share/domain/Send'
 import getMessageMediaExtension from './getMediaFileExtension'
 import { getScreenId } from './getScreenId'
 import { Logs } from '../../../logs'
+import { type TypeOpenWithError } from '../domian/whatsAppController'
 
 const screens = new Map<string, Client>()
 
@@ -40,14 +41,14 @@ export default class WhatsAppController implements IWhatsAppController {
     }
   }
 
-  private readonly onQrAsync = async (qr: string, id: string, screenId: string): Promise<void> => {
+  private readonly onQrAsync = async (qr: string, id: string): Promise<void> => {
     await this.instanceRepository.updateStatus(id, 'pending')
     await this.instanceRepository.updateQr(id, qr)
   }
 
-  onQr = (client: Client, id: string, screenId: string): void => {
+  onQr = (client: Client, id: string): void => {
     client.on('qr', (qr: string) => {
-      this.onQrAsync(qr, id, screenId)
+      this.onQrAsync(qr, id)
         .catch(error => {
           Logs.Exception(error)
         })
@@ -116,8 +117,10 @@ export default class WhatsAppController implements IWhatsAppController {
     })
   }
 
-  restart = async (screenId: string | undefined): Promise<void> => {
-    if (screenId === undefined) return
+  // when instance is destroy automatically restart
+  // only when a instance was not paymented is destroyed
+  restart = async (instance: IInstance): Promise<void> => {
+    const screenId = getScreenId(instance)
     await this.destroy(screenId)
   }
 
@@ -153,10 +156,10 @@ export default class WhatsAppController implements IWhatsAppController {
     }
   }
 
-  waitInstanceStatus = async (instance: IInstance, status: WAState): Promise<WAState | undefined> => {
+  waitInstanceStatus = async (instance: IInstance, status: WAState): Promise<WAState | TypeOpenWithError | undefined> => {
     const screenId = getScreenId(instance)
     if (screenId === undefined) return
-    const getInstanceStatus = async (): Promise<WAState | undefined> => await this.getStatus(screenId)
+    const getInstanceStatus = async (): Promise<WAState | TypeOpenWithError | undefined> => await this.getStatus(screenId)
     for (let i = 0; i < 20 || await getInstanceStatus() !== status; i++) { await wait(1000) }
     const instanceStatus = await getInstanceStatus()
     return instanceStatus
@@ -168,19 +171,20 @@ export default class WhatsAppController implements IWhatsAppController {
       if (_id === undefined) return
       const screenId = getScreenId(instance)
       if (screenId === undefined) return
-      await this.instanceRepository.updateStatus(_id, 'initial')
       const status = await this.getStatus(screenId)
       if (status === WAState.CONNECTED || status === WAState.OPENING) return
+      Logs.Info(`Start instance id = ${_id}, start by ${instanceStart}`)
       const client = new Client({
         authStrategy: new LocalAuth({ clientId: screenId }),
         puppeteer: {
           headless: false
         }
       })
+      await this.instanceRepository.updateStatus(_id, 'initial')
       await this.destroy(screenId)
       screens.set(screenId, client)
       this.onMessage(client, instance)
-      this.onQr(client, _id, screenId)
+      this.onQr(client, _id)
       this.onAuthfailure(client, instance)
       this.onAuthenticated(client, _id)
       this.onDisconnected(client, instance)
@@ -190,6 +194,7 @@ export default class WhatsAppController implements IWhatsAppController {
         })
       await client.initialize()
     } catch (error: any) {
+      Logs.Exception(error)
       await this.destroy(getScreenId(instance) ?? '')
       await wait(10000)
       await this.start(instance, 'error')

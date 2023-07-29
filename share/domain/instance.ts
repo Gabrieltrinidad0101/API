@@ -11,7 +11,7 @@ export interface IInstanceQRStatus{
     status: TypeStatusInstance
 }
 
-export type TypeInstanceStart = "start" | "error" | "windowClose"
+export type TypeInstanceStart = "start" | "restart" | "error" | "windowClose"
 
 export type TypeStatusInstance = "pending" | "initial" | "authenticated"
 
@@ -25,7 +25,8 @@ export interface IInstanceAuthentication{
 export default interface IInstance  extends IInstanceAuthentication,IInstanceQRStatus{
     userId?: string
     name: TypeInstanceName
-    createdAt?: Date
+    initialDate: Date
+    createdIn?: Date
     endService?: Date
     webhookUrl?: string
     userName?: string

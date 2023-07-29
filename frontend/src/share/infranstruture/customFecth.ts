@@ -47,16 +47,26 @@ class CustomFecth implements ICustomFecth {
     return response
   }
 
+  async patch<T>(url: string, data: object = {}, headers?: object | undefined): Promise<T | undefined> {
+    const response = await this.baseHttp<T>({
+      url,
+      data,
+      headers,
+      method: 'patch'
+    })
+    return response
+  }
+
   async baseHttp<T>(baseHttp: BaseHttp): Promise<T | undefined> {
     try {
       const token = localStorage.getItem('token')
-      baseHttp.headers = { ...baseHttp.headers, token }
-      if (baseHttp.optionsFetch?.showLoader === false) loaderAnimation.showAfter(500)
+      const { removeDefaultHeaders, showLoader } = baseHttp.optionsFetch ?? {}
+      if (removeDefaultHeaders !== true) baseHttp.headers = { ...baseHttp.headers, token }
+      if (showLoader === false) loaderAnimation.showAfter(500)
       const result = await this.customFecth.request(baseHttp)
       loaderAnimation.hide()
       return result.data as T
     } catch (error: unknown) {
-      console.log(error)
       loaderAnimation.hide()
       if (baseHttp.optionsFetch?.showErrors === false) return
       let errorMsg: string = 'Internal error try later'

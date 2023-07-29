@@ -43,7 +43,8 @@ export default function AuthComponent ({ Prop: authenticationComponent }: Prop<I
     hidenInputs={
       {
         cellPhone: typeAuthentication === 'Login',
-        username: typeAuthentication === 'Login'
+        username: typeAuthentication === 'Login',
+        repeatPassword: true
       }
     }
     onSubmit={clickAuth}

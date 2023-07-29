@@ -15,11 +15,11 @@ export default function MenuDashboard (): JSX.Element {
       <Nav text="Home" to='/home' icon={<i className={'fas fa-home'}></i>} />
       <Nav text='Message' icon={<i className={'fa-solid fa-message'}></i>}>
         <Link to="/docs/sendMessage">
-          <i className="fa-regular fa-message ml-5"></i>
+          <i className="fa-regular fa-message mr-5"></i>
           Send Message
         </Link>
         <Link to="/docs/sendFile" >
-          <i className="fa-regular fa-file ml-5"></i>
+          <i className="fa-regular fa-file mr-5"></i>
           Send File
         </Link>
       </Nav>

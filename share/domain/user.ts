@@ -1,18 +1,18 @@
-export type TypeRol = "admin" | "user" 
-export type TypeAuthentication = "Login" | "Register" 
+export type TypeRol = "admin" | "user"
+export type TypeAuthentication = "Login" | "Register"
 
-export default interface IUser{
+export default interface IUser {
     name: string
     password: string
     cellPhone: string
     email: string
-    repeatedPassword?: string
+    repeatPassword?: string
     rol: TypeRol
     typeAuthentication?: TypeAuthentication
     _id?: string
 }
 
-export interface IUserRegister{
+export interface IUserRegister {
     name: string
     password: string
     cellPhone: string
@@ -20,12 +20,12 @@ export interface IUserRegister{
     rol: TypeRol
 }
 
-export interface IUserLogin{
+export interface IUserLogin {
     password: string
     email: string
 }
 
-export interface IUserUpdate{
+export interface IUserUpdate {
     name: string
     cellPhone: string
     email: string

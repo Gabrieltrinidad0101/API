@@ -32,4 +32,18 @@ export default class UserControl {
     const httpResult = await this.userControl.searchUserById(_id)
     return httpResult
   }
+
+  updatePassword = async (req: Request): Promise<IHttpStatusCode> => {
+    const newPassword = req.body.newPassword?.toString()
+    const _id = req.headers.userId?.toString() ?? ''
+    const httpResult = await this.userControl.updatePassword(_id, newPassword)
+    return httpResult
+  }
+
+  sendResetPassword = async (req: Request): Promise<IHttpStatusCode> => {
+    await this.userControl.sendResetPassword('gabrielqwes123@gmail.com')
+    return {
+      message: 'Reset Password'
+    }
+  }
 }

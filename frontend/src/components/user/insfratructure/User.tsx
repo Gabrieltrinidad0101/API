@@ -44,8 +44,8 @@ export default function UserComponent (userComponent: IUserComponent<JSX.Element
       {isHiden(hidenInputs.username) && <TextField id="standard-basic" onChange={inputChange} value={user?.name} name="name" label="Username" variant="standard" />}
       {isHiden(hidenInputs.email) && <TextField id="standard-basic" onChange={inputChange} value={user?.email} name="email" type="email" label="Email" variant="standard" />}
       {isHiden(hidenInputs.cellPhone) && <TextField id="standard-basic" onChange ={inputChange} value={user?.cellPhone} name="cellPhone" type="number" label="Cell Phone  " variant="standard" />}
-      {isHiden(hidenInputs.password) && <TextField id="standard-basic" onChange={inputChange} value={user?.password} name="password" type="password" label="Password" variant="standard" />}
-      {isHiden(hidenInputs.repeatPassword) && <TextField id="standard-basic" onChange={inputChange} value={user?.repeatedPassword} name="repeatPassword" type="password" label="Repeat Password" variant="standard" />}
+      {isHiden(hidenInputs.password) && <TextField id="standard-basic" onChange={inputChange} value={user?.password} name="password" type="password" label="Password" variant="standard" autoComplete='off' />}
+      {isHiden(hidenInputs.repeatPassword) && <TextField id="standard-basic" onChange={inputChange} value={user?.repeatPassword} name="repeatPassword" type="password" label="Repeat Password" variant="standard" />}
       <Button onClick={onClick} variant='contained'>{userComponent.submitButtonName}</Button>
       {
         userComponent.footer

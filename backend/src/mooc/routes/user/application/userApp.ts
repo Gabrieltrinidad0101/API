@@ -2,11 +2,14 @@ import { type IHttpStatusCode } from '../../../../../../share/domain/httpResult'
 import type IUserRepository from '../domain/IUserRepository'
 import type IToken from '../domain/token'
 import type IEncrypt from '../domain/encrypt'
-import { type IUserApp } from '../domain/user'
+import { type IUserForgotPassword, type IUserApp } from '../domain/user'
 import { type TypeValidation } from '../../../share/domain/Validator'
 import { dtoUserLogin, dtoUserRegister, dtoUserUpdate } from './dto'
 import { type IUserLogin, type IUserRegister, type IUserUpdate, type TypeRol } from '../../../../../../share/domain/user'
 import constantes from '../../../share/infranstructure/Constantes'
+import { isEmptyNullOrUndefined } from '../../../../../../share/application/isEmptyNullUndefiner'
+import { type IEmail } from '../../../share/domain/email'
+import { getResetPasswordTemplate } from '../../../share/infranstructure/sendEmail/templates'
 
 export default class UserApp {
   private readonly token: IToken
@@ -15,6 +18,7 @@ export default class UserApp {
   private readonly userSignUpValidator: TypeValidation
   private readonly userSignInValidator: TypeValidation
   private readonly userUpdateValidator: TypeValidation
+  private readonly email: IEmail
 
   constructor (userApp: IUserApp) {
     this.token = userApp.token
@@ -23,6 +27,7 @@ export default class UserApp {
     this.userSignUpValidator = userApp.userSignUpValidator
     this.userSignInValidator = userApp.userSignInValidator
     this.userUpdateValidator = userApp.userUpdateValidator
+    this.email = userApp.email
   }
 
   async register (user: IUserRegister): Promise<IHttpStatusCode> {
@@ -136,5 +141,58 @@ export default class UserApp {
       password,
       rol: 'admin'
     })
+  }
+
+  updatePassword = async (_id: string, newPassword: string | undefined): Promise<IHttpStatusCode> => {
+    if (isEmptyNullOrUndefined(newPassword) || newPassword === undefined) {
+      return {
+        statusCode: 422,
+        error: `Password cannot be ${typeof newPassword}`,
+        message: 'The new password is required'
+      }
+    }
+    const encryptPassword = await this.encrypt.enCode(newPassword)
+    await this.userRepository.updatePassword({ _id }, encryptPassword)
+    return {
+      message: 'Password changed successfully'
+    }
+  }
+
+  sendResetPassword = async (email: string): Promise<void> => {
+    const token = this.token.sign({ email, time: new Date().getTime() })
+    const { FRONTENDURL, COMPANYLOGO } = constantes
+    const linkResetPassword = `${FRONTENDURL}/changePassword?tokenResetPassword=${token}`
+    const template = getResetPasswordTemplate(COMPANYLOGO, linkResetPassword)
+    await this.email.send({
+      subject: 'Email Reset Password',
+      to: email,
+      template
+    })
+  }
+
+  forgotPassword = async (token: string, newPassword: string): Promise<IHttpStatusCode> => {
+    const userForgotPassword = this.token.verify<IUserForgotPassword>(token)
+    if (userForgotPassword === null) {
+      return {
+        statusCode: 422,
+        error: 'token does not have a correct format',
+        message: 'Token is not valid'
+      }
+    }
+    const timeOfLive = userForgotPassword.time - new Date().getTime()
+    const fiveMinutes = 1000 * 60 * 60
+    if (timeOfLive > fiveMinutes) {
+      return {
+        statusCode: 422,
+        error: 'Token expired',
+        message: 'Token cannot be less than five minutes'
+      }
+    }
+    const encryptPassword = await this.encrypt.enCode(newPassword)
+    await this.userRepository.updatePassword({ email: userForgotPassword.email }, encryptPassword)
+
+    return {
+      message: 'We send you email successfully'
+    }
   }
 }

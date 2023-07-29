@@ -23,7 +23,7 @@ export default function HomeHeader ({ Prop: header }: Prop<IHeader>): JSX.Elemen
   return (
     <header className={HeaderCss.header}>
       <div className={HeaderCss.search}>
-        <input className={HeaderCss.searchInput} onBlur={header.search} onKeyDown={onEnter} value={header.searchInstance} type="text" onChange={changeText} />
+        <input className={HeaderCss.searchInput} name="search" onBlur={header.search} onKeyDown={onEnter} value={header.searchInstance} type="text" onChange={changeText} />
         <i onClick={header.search} className={`${HeaderCss.searchButton} fa-solid fa-magnifying-glass`}></i>
       </div>
       <div className={HeaderCss.containerNewInstance}>

@@ -1,5 +1,5 @@
 import { isEmptyNullOrUndefined } from '../../../../../../share/application/isEmptyNullUndefiner'
-import { type ISearchInstance } from '../../../../../../share/domain/instance'
+import { type IInstanceQRStatus, type ISearchInstance } from '../../../../../../share/domain/instance'
 import type IInstance from '../../../../../../share/domain/instance'
 import { type IHttpStatusCode } from '../../../../../../share/domain/httpResult'
 import type IInstanceRepository from '../domian/InstanceRepository'
@@ -97,9 +97,9 @@ export default class Instance {
     }
 
     const screenId = getScreenId({ _id, token })
-    const qrAndStatus = await this.instanceRepository.getQrAndStatus(_id, token)
+    const instance = await this.instanceRepository.findByIdAndToken(_id, token)
 
-    if (isEmptyNullOrUndefined(qrAndStatus, screenId) || screenId === undefined) {
+    if (isEmptyNullOrUndefined(instance, screenId) || instance === null) {
       return {
         statusCode: 422,
         error: 'instance id or token is invalid',
@@ -107,12 +107,26 @@ export default class Instance {
       }
     }
 
-    const screenStatus = this.whatsAppController.getStatus(screenId)
-    if (screenStatus === undefined) { await this.whatsAppController.restart(screenId) }
+    const screenStatus = await this.whatsAppController.getStatus(screenId)
+
+    // always it try to get the qr and the instance is not active
+    // it will try to restart but only do that after one minute
+    // because when the instance is initial,it is not active
+    const timeFromInitialDate = Math.abs(instance.initialDate.getTime() - new Date().getTime())
+    const minute = 1000 * 60
+
+    if (screenStatus === undefined && timeFromInitialDate < minute) {
+      await this.whatsAppController.restart(instance)
+    }
+
+    const instanceQRStatus: IInstanceQRStatus = {
+      qr: instance.qr,
+      status: instance.status
+    }
 
     return {
       statusCode: 200,
-      message: qrAndStatus
+      message: instanceQRStatus
     }
   }
 
@@ -160,8 +174,8 @@ export default class Instance {
         error: 'Instance does not exist'
       }
     }
-    const screenId = getScreenId(instance)
-    await this.whatsAppController.restart(screenId)
+
+    await this.whatsAppController.restart(instance)
     return {
       statusCode: 200,
       message: 'Instance restarted successfully'
@@ -194,8 +208,8 @@ export default class Instance {
   async logout (_id: string, token: string): Promise<IHttpStatusCode> {
     if (isEmptyNullOrUndefined(_id) || isEmptyNullOrUndefined(token)) {
       return {
-        error: 'instance id and token are required',
-        statusCode: 422
+        statusCode: 422,
+        error: 'instance id and token are required'
       }
     }
 
