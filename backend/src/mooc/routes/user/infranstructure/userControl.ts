@@ -41,7 +41,8 @@ export default class UserControl {
   }
 
   sendResetPassword = async (req: Request): Promise<IHttpStatusCode> => {
-    await this.userControl.sendResetPassword('gabrielqwes123@gmail.com')
+    const { email } = req.body
+    await this.userControl.sendResetPassword(email)
     return {
       message: 'Reset Password'
     }

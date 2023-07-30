@@ -1,3 +1,10 @@
+import { type IHttpStatusCode } from '../../../../../../share/domain/httpResult'
+import { type ISubscription } from '../../../payment/domian/payment'
+
+export interface IPaymentApp {
+  createSubscription: (subscription: ISubscription) => Promise<IHttpStatusCode>
+}
+
 export interface IProductFromApi {
   _id?: string
   name?: string

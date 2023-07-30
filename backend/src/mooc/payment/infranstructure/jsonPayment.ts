@@ -5,7 +5,8 @@ export const generateObjectPaymentProduct = (): IProduct => {
     name: 'Instance',
     description: 'Instance to send and get messages via WhatsApp',
     type: 'SERVICE',
-    category: 'SOFTWARE'
+    category: 'SOFTWARE',
+    image_url: 'https://www.milogo.com'
   }
 }
 
@@ -43,8 +44,8 @@ export const generateObjectPaymentPlan = (): IPlan => {
   }
 }
 
-export const generateObjectSubscription = (planId: string): ISubscription => ({
-  plan_id: planId,
+export const generateObjectSubscription = (): ISubscription => ({
+  plan_id: '',
   start_time: '2023-08-16T00:00:00Z',
   quantity: 1,
   subscriber: {

@@ -7,7 +7,7 @@ export const httpRequet = async (formatHttpRequest: IFormatHttpRequest): Promise
     request(formatHttpRequest.url, {
       method: formatHttpRequest.method,
       auth: formatHttpRequest.auth,
-      body: JSON.stringify(formatHttpRequest.body),
+      body: formatHttpRequest.body,
       json: true
     }, (err, res) => {
       if (!isEmptyNullOrUndefined(res)) {

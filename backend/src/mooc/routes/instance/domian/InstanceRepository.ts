@@ -13,4 +13,5 @@ export default interface IInstanceRepository {
   getAllInstance: () => Promise<IInstance[]>
   saveWebhookUrl: (_id: string, url: string) => Promise<void>
   saveName: (_id: string, name: string) => Promise<void>
+  find: (filter: object) => Promise<IInstance[] | null>
 }

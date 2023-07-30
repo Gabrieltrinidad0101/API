@@ -23,7 +23,7 @@ export default class PaymentControl {
   }
 
   createSubscription = async (req: Request): Promise<IHttpStatusCode> => {
-    const subscription = generateObjectSubscription('P-78K5121934265310HMS2A3JY')
+    const subscription = generateObjectSubscription()
     return await this.paymentApp.createSubscription(subscription)
   }
 

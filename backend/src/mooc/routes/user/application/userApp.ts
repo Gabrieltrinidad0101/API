@@ -158,9 +158,17 @@ export default class UserApp {
     }
   }
 
-  sendResetPassword = async (email: string): Promise<void> => {
+  sendResetPassword = async (email: string): Promise<IHttpStatusCode> => {
     const token = this.token.sign({ email, time: new Date().getTime() })
     const { FRONTENDURL, COMPANYLOGO } = constantes
+    const user = await this.userRepository.find({ email })
+    if (isEmptyNullOrUndefined(user)) {
+      return {
+        statusCode: 422,
+        error: 'The email no found',
+        message: 'The email no exists'
+      }
+    }
     const linkResetPassword = `${FRONTENDURL}/changePassword?tokenResetPassword=${token}`
     const template = getResetPasswordTemplate(COMPANYLOGO, linkResetPassword)
     await this.email.send({
@@ -168,6 +176,9 @@ export default class UserApp {
       to: email,
       template
     })
+    return {
+      message: 'We send email'
+    }
   }
 
   forgotPassword = async (token: string, newPassword: string): Promise<IHttpStatusCode> => {

@@ -2,9 +2,9 @@ import { type IHttpStatusCode } from '../../../../../../share/domain/httpResult'
 import { type IPlan, type ISubscription, type TCreateSubscription, type IProduct } from '../../../payment/domian/payment'
 import { type IConstantes } from '../../../share/domain/constantes'
 import { type IHttpRequest } from '../../../share/domain/httpRequest'
-import { type IPlanFromApi, type IPaymentRepository, type IProductFromApi } from '../domian/payment'
+import { type IPlanFromApi, type IPaymentRepository, type IProductFromApi, type IPaymentApp } from '../domian/payment'
 
-export class PaymentApp {
+export class PaymentApp implements IPaymentApp {
   constructor (
     private readonly httpRequest: IHttpRequest,
     private readonly constantes: IConstantes,
@@ -46,7 +46,7 @@ export class PaymentApp {
     }
     await this.paymentRepository.saveProduct(productFromApi)
 
-    planToCreate.product_id = productFromApi._id ?? ''
+    planToCreate.product_id = productFromApi.id ?? ''
     const result = await this.makeHttpRequest(planToCreate, this.constantes.PAYMENTPLANURL) as IPlanFromApi
     if (result === undefined) {
       return {
@@ -64,10 +64,10 @@ export class PaymentApp {
   createSubscription = async (subscriptionToCreate: ISubscription): Promise<IHttpStatusCode> => {
     const plan = await this.paymentRepository.findLastPlan()
     subscriptionToCreate.plan_id = plan.id
-    const result = await this.makeHttpRequest(subscriptionToCreate, this.constantes.PAYMENTSUBSCRIPTIONSURL) as ISubscription
+    const result = await this.makeHttpRequest(subscriptionToCreate, this.constantes.PAYMENTSUBSCRIPTIONSURL)
     if (result === undefined) { throw new Error('Error creating subscription API return undefined') }
     return {
-      message: 'Plan created successfully'
+      message: result
     }
   }
 

@@ -32,6 +32,11 @@ export default class InstanceRepository implements IInstanceRepository {
     }
   }
 
+  async find (filter: object): Promise<IInstance[] | null> {
+    const instanceModal = await InstanceModal.find<IInstance>(filter)
+    return instanceModal
+  }
+
   async findByIdAndUserId (_id: string, userId: string): Promise<IInstance | null> {
     const isValid = mongoose.Types.ObjectId.isValid(_id)
     if (!isValid) return null
