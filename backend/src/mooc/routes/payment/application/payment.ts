@@ -1,14 +1,17 @@
 import { type IHttpStatusCode } from '../../../../../../share/domain/httpResult'
+import { Logs } from '../../../../logs'
 import { type IPlan, type ISubscription, type TCreateSubscription, type IProduct } from '../../../payment/domian/payment'
 import { type IConstantes } from '../../../share/domain/constantes'
 import { type IHttpRequest } from '../../../share/domain/httpRequest'
+import { type TypeValidation } from '../../../share/domain/Validator'
 import { type IPlanFromApi, type IPaymentRepository, type IProductFromApi, type IPaymentApp } from '../domian/payment'
 
 export class PaymentApp implements IPaymentApp {
   constructor (
     private readonly httpRequest: IHttpRequest,
     private readonly constantes: IConstantes,
-    private readonly paymentRepository: IPaymentRepository
+    private readonly paymentRepository: IPaymentRepository,
+    private readonly paymentProductValidator: TypeValidation
   ) { }
 
   private readonly makeHttpRequest = async (productoToCreate: TCreateSubscription, url: string | undefined): Promise<any> => {
@@ -28,37 +31,23 @@ export class PaymentApp implements IPaymentApp {
     return response.body
   }
 
-  configurationPayment = async (productoToCreate: IProduct, planToCreate: IPlan): Promise<IHttpStatusCode> => {
+  configurationPayment = async (productoToCreate: IProduct, planToCreate: IPlan): Promise<void> => {
     const product = await this.paymentRepository.findOneProduct({})
     if (product !== null) {
-      return {
-        statusCode: 201,
-        message: 'Product was created'
-      }
+      Logs.Info('Payment Product was created')
+      return
     }
     const productFromApi = await this.makeHttpRequest(productoToCreate, this.constantes.PAYMENTPRODUCTURL) as IProductFromApi
-    if (productFromApi === undefined) {
-      return {
-        statusCode: 500,
-        error: 'Error creating payment product API return undefined',
-        message: 'Error creating product'
-      }
+    const error = this.paymentProductValidator(productFromApi)
+    if (error !== undefined) {
+      Logs.Error(`Object =${JSON.stringify(productFromApi)},Error = ${error !== null ? JSON.stringify(error) : 'Empty Object'}`)
+      return
     }
     await this.paymentRepository.saveProduct(productFromApi)
-
     planToCreate.product_id = productFromApi.id ?? ''
     const result = await this.makeHttpRequest(planToCreate, this.constantes.PAYMENTPLANURL) as IPlanFromApi
-    if (result === undefined) {
-      return {
-        statusCode: 500,
-        error: 'Error creating plan API return undefined',
-        message: 'Error creating plan'
-      }
-    }
+
     await this.paymentRepository.savePlan(result)
-    return {
-      message: 'Plan and Product created successfully'
-    }
   }
 
   createSubscription = async (subscriptionToCreate: ISubscription): Promise<IHttpStatusCode> => {

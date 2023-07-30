@@ -16,10 +16,10 @@ export default class PaymentControl {
       })
   }
 
-  configurationPayment = async (req: Request): Promise<IHttpStatusCode> => {
+  configurationPayment = async (req: Request): Promise<void> => {
     const product = generateObjectPaymentProduct()
     const plan = generateObjectPaymentPlan()
-    return await this.paymentApp.configurationPayment(product, plan)
+    await this.paymentApp.configurationPayment(product, plan)
   }
 
   createSubscription = async (req: Request): Promise<IHttpStatusCode> => {
