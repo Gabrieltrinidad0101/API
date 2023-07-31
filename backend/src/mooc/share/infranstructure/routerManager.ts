@@ -29,18 +29,18 @@ export default class RouterManager {
 
   private readonly baseMethod = (method: typeMethods, path: string, ...callBacks: typeCallBack[]): void => {
     this.router[method](path, (req: Request, res: Response) => {
-      this.statckCallback(req, res, callBacks)
+      this.stackCallback(req, res, callBacks)
         .catch(error => {
           console.log(error)
         })
     })
   }
 
-  private readonly statckCallback = async (req: Request, res: Response, callBacks: typeCallBack[], i: number = 0): Promise<void> => {
+  private readonly stackCallback = async (req: Request, res: Response, callBacks: typeCallBack[], i: number = 0): Promise<void> => {
     try {
       const callBack = callBacks[i]
       const next = (): void => {
-        this.statckCallback(req, res, callBacks, ++i)
+        this.stackCallback(req, res, callBacks, ++i)
           .catch(error => {
             console.log(error)
           })

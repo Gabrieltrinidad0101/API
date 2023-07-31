@@ -13,7 +13,7 @@ export interface IInstanceQRStatus{
 
 export type TypeInstanceStart = "start" | "restart" | "error" | "windowClose"
 
-export type TypeStatusInstance = "pending" | "initial" | "authenticated"
+export type TypeStatusInstance = "pending" | "initial" | "authenticated" | "unpayment"
 
 type TypeInstanceName = string
 
@@ -30,6 +30,8 @@ export default interface IInstance  extends IInstanceAuthentication,IInstanceQRS
     endService?: Date
     webhookUrl?: string
     userName?: string
+    paymentLink: string
+    messageLimit: number
 }
 
 export interface ISaveInstance {
@@ -46,4 +48,10 @@ export interface ILimitSearch{
 export interface ISearchInstance extends ILimitSearch {
     userId: string
     userRol: TypeRol
+}
+
+
+export interface IInstanceOrError{
+    instance?: IInstance
+    error?: string
 }

@@ -2,37 +2,24 @@ import type IInstance from '../../../../../../../share/domain/instance'
 import { type TypeStatusInstance, type ISearchInstance, type IInstanceQRStatus } from '../../../../../../../share/domain/instance'
 import type IInstanceRepository from '../../domian/InstanceRepository'
 import InstanceModal from './instanceSchema'
-import crypto from 'crypto'
 import mongoose from 'mongoose'
 import { findInstanceQuery } from './findInstanceQuery'
 import { userRepository } from '../../../user/infranstructure/dependencies'
 
 export default class InstanceRepository implements IInstanceRepository {
-  update = async (instance: IInstance): Promise<IInstance> => {
-    if (instance?._id !== undefined && instance?._id !== '') {
-      await InstanceModal.updateOne({ _id: instance._id }, instance)
-      return instance
-    }
-    instance.token = crypto.randomUUID()
-    const date = new Date()
-    const addMonth = new Date(date.setMonth(date.getMonth() + 1))
+  insert = async (instance: IInstance): Promise<IInstance> => {
     const instanceModal = new InstanceModal({
       ...instance,
-      createdIn: date,
-      endService: addMonth,
-      initialDate: date
+      _id: new mongoose.Types.ObjectId()
     })
-    await instanceModal.save()
+    const instanceSave = await instanceModal.save()
     return {
       ...instance,
-      createdIn: date,
-      endService: addMonth,
-      initialDate: date,
-      _id: instanceModal._id.toString()
+      _id: instanceSave._id.toString()
     }
   }
 
-  async find (filter: object): Promise<IInstance[] | null> {
+  async find (filter: object): Promise<IInstance[]> {
     const instanceModal = await InstanceModal.find<IInstance>(filter)
     return instanceModal
   }
@@ -67,6 +54,10 @@ export default class InstanceRepository implements IInstanceRepository {
 
   updateQr = async (_id: string, value: string): Promise<void> => {
     await this.updateInstance(_id, 'qr', value)
+  }
+
+  updateMessageLimit = async (_id: string, value: number): Promise<void> => {
+    await this.updateInstance(_id, 'messageLimit', value)
   }
 
   updateStatus = async (_id: string, value: TypeStatusInstance): Promise<void> => {

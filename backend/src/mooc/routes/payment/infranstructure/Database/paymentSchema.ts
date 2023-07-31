@@ -1,27 +1,11 @@
 import { model, Schema } from 'mongoose'
 
-const paymentProductSchema = new Schema({
-  id: String,
-  name: String,
-  description: String,
-  create_time: String,
-  links: String
-})
-
-const paymentPlanSchema = new Schema({
-  id: String,
-  product_id: String,
-  name: String,
+const SubscriptionSchema = new Schema({
   status: String,
-  usage_type: String,
-  create_time: String,
+  id: String,
+  create_time: Date,
+  paymentLink: String,
   links: String
 })
 
-const PaymentProductModal = model('paymentProduct', paymentProductSchema)
-const PaymentPlanModal = model('paymentPlan', paymentPlanSchema)
-
-export {
-  PaymentProductModal,
-  PaymentPlanModal
-}
+export const SuscriptionModal = model('subscriptionpayment', SubscriptionSchema)

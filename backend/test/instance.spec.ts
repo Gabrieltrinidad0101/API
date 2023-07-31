@@ -2,7 +2,6 @@ import app from '../src/app'
 import request from 'supertest'
 import './user.spec'
 import Tokens from './helps/tokens'
-import { Instance1 } from './obejctMother/instance'
 import type IInstance from '../../share/domain/instance'
 import wait from '../../share/application/wait'
 import { whatsAppController } from '../src/mooc/whatsAppControl/infranstructure/dependencies'
@@ -16,20 +15,12 @@ const testServer = new TestServer()
 testServer.start()
 
 describe('Instance', () => {
-  test('POST save with error', async () => {
-    const response = await request(app).post('/save')
-      .set({ token: Tokens.pedroToken })
-      .send({})
-    expect(response.statusCode).toBe(422)
-    expect(response.body.error).toBeTruthy()
-  })
-
   test('POST save', async () => {
     const response = await request(app).post('/save')
       .set({ token: Tokens.pedroToken })
-      .send(Instance1)
-    expect(response.body.error).toBeUndefined()
-    const message = response.body.message
+      .send({})
+    const { message, error } = response.body
+    expect(error).toBeUndefined()
     expect(response.statusCode).toBe(200)
     expect(message.info).toBe('Instance saved successfully')
     expect(message.instance).toBeTruthy()

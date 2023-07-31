@@ -20,7 +20,7 @@ export default class VerifyAuthentication {
       }
     }
     const userId = this.token.verify<IUserId>(token)
-    const user = userId === null ? null : await userRepository.findById(userId._id)
+    const user = userId == null ? null : await userRepository.findById(userId._id)
     if (isEmptyNullOrUndefined(user) || user === null) {
       return {
         httpStatusCode: {
@@ -31,6 +31,7 @@ export default class VerifyAuthentication {
     }
     req.headers.userId = user._id
     req.headers.userRol = user.rol
+    req.headers.userEmail = user.email
     return { user }
   }
 
@@ -40,7 +41,6 @@ export default class VerifyAuthentication {
       if (isEmptyNullOrUndefined(res.httpStatusCode)) { next?.() }
       return res.httpStatusCode
     } catch (error) {
-      console.error(error)
       return {
         message: 'No access',
         statusCode: 409
@@ -61,7 +61,6 @@ export default class VerifyAuthentication {
       }
       next?.()
     } catch (error) {
-      console.error(error)
       return {
         message: 'No access',
         statusCode: 409

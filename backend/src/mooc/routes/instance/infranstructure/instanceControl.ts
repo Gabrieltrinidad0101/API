@@ -2,7 +2,6 @@ import { type IHttpStatusCode } from '../../../../../../share/domain/httpResult'
 import type Instance from '../application/instance'
 import { type Request } from 'express'
 import { type ISearchInstance } from '../../../../../../share/domain/instance'
-import type IInstance from '../../../../../../share/domain/instance'
 import { type TypeRol } from '../../../../../../share/domain/user'
 
 export default class InstanceControl {
@@ -31,9 +30,12 @@ export default class InstanceControl {
   }
 
   save = async (req: Request): Promise<IHttpStatusCode> => {
-    const instance = req.body as IInstance
-    instance.userId = req.headers.userId?.toString() ?? ''
-    const result = await this.Instance.save(instance)
+    const { userId, userEmail, userName } = req.headers
+    const result = await this.Instance.save({
+      _id: userId?.toString() ?? '',
+      email: userEmail?.toString() ?? '',
+      name: userName?.toString() ?? ''
+    })
     return result
   }
 

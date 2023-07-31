@@ -1,38 +1,50 @@
-import { type IHttpStatusCode } from '../../../../../../share/domain/httpResult'
-import { type ISubscription } from '../../../payment/domian/payment'
-
 export interface IPaymentApp {
-  createSubscription: (subscription: ISubscription) => Promise<IHttpStatusCode>
-}
-
-export interface IProductFromApi {
-  _id?: string
-  name?: string
-  description?: string
-  create_time?: string
-  links?: ILink[]
-  id?: string
+  generateSubscription: (subscription: IUserSubscriber) => Promise<IPaymentLinkOrError>
 }
 
 export interface IPaymentRepository {
-  saveProduct: (product: IProductFromApi) => Promise<void>
-  findOneProduct: (filter: object) => Promise<IProductFromApi | null>
-  savePlan: (plan: IPlanFromApi) => Promise<void>
-  findLastPlan: () => Promise<IPlanFromApi>
+  saveSubscription: (subscription: ISubscriptionFromApi) => Promise<void>
 }
 
-interface ILink {
-  href?: string
-  rel?: string
-  method?: string
+export interface ISubscription {
+  plan_id: string
+  start_time: string
+  quantity: number
+  subscriber: ISubscriber
+  return_url: string
+  cancel_url: string
 }
 
-export interface IPlanFromApi {
-  id: string
-  product_id: string
+export interface IUserSubscriber {
   name: string
+  email: string
+}
+
+interface ISubscriber {
+  name: ISubscriberName
+  email_address: string
+}
+
+interface ISubscriberName {
+  given_name: string
+  surname: string
+}
+
+export interface ISubscriptionFromApi {
   status: string
-  usage_type: string
-  create_time: string
-  links: string
+  id: string
+  create_time: Date
+  paymentLink: string
+  links: ILinks[]
+}
+
+export interface ILinks {
+  href: string
+  rel: string
+  method: string
+}
+
+export interface IPaymentLinkOrError {
+  paymentLink?: string
+  error?: string
 }

@@ -53,6 +53,7 @@ describe('POST /authentication', () => {
       .set({ token: Tokens.pedroToken })
       .send()
     const user = response.body.message as IUser
+    expect(response.body.error).toBeUndefined()
     expect(response.statusCode).toBe(200)
     expect(user._id).toBeTruthy()
     expect(user.password).toBeUndefined()

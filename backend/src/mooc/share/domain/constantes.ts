@@ -5,11 +5,8 @@ export interface IConstantes {
   readonly COMPANYNAME: string
   readonly PAYMENTURL: string
   readonly PAYMENTSECRET: string
-  readonly PAYMENTPRODUCTURL: string
   readonly CLIENTPAYMENTID: string
-  readonly PAYMENTPLANURL: string
   readonly PAYMENTSUBSCRIPTIONSURL: string
-  readonly LISTPLANSURL: string
   readonly USERADMIN: string
   readonly PASSWORDADMIN: string
   readonly EMAILADMIN: string
@@ -19,6 +16,7 @@ export interface IConstantes {
   readonly SERVEREMAILPASSWORD: string
   readonly ENCRYPTTOKEN: string
   readonly COMPANYLOGO: string
+  readonly PAYMENTPLANID: string
 }
 
 export type TypekeyOfIConstantes = keyof IConstantes

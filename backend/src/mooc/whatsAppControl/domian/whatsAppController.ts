@@ -7,7 +7,7 @@ export default interface IWhatsAppController {
   start: (instance: IInstance, instanceStart: TypeInstanceStart) => Promise<void>
   restart: (screenId: IInstance) => Promise<void>
   logout: (instanceId: string, token: string) => Promise<void>
-  send: (send: ISend) => Promise<void>
+  send: (instance: IInstance, send: ISend) => Promise<string | undefined>
   getStatus: (screenId: string) => Promise<WAState | TypeOpenWithError | undefined>
 }
 

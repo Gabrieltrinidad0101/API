@@ -8,11 +8,10 @@ const paymentProductLink = Joi.object({
 })
 
 const paymentProduct = Joi.object({
-  name: Joi.string().required(),
-  description: Joi.string().required(),
   create_time: Joi.string().required(),
-  links: Joi.array().items(paymentProductLink),
-  id: Joi.string().required()
+  status: Joi.string().required(),
+  id: Joi.string().required(),
+  links: Joi.array().items(paymentProductLink)
 })
 
-export const paymentProuductValidator = validator(paymentProduct)
+export const paymentSubscriptionValidator = validator(paymentProduct)

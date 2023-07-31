@@ -31,3 +31,9 @@ export interface IUserUpdate {
     email: string
     _id: string
 }
+
+export interface IBasicUser {
+    name: string
+    email: string
+    _id: string
+}

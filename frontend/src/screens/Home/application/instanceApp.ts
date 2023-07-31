@@ -11,12 +11,8 @@ export default class InstancesApp {
     private readonly customFecth: ICustomFecth
   ) { }
 
-  createNewInstance = async (userName: string): Promise<IInstance | undefined> => {
-    const instance = await this.instanceApp.save({
-      name: 'Default',
-      status: 'initial',
-      userName
-    }, 'noShowSucessAlter')
+  createNewInstance = async (): Promise<IInstance | undefined> => {
+    const instance = await this.instanceApp.save()
     return instance
   }
 

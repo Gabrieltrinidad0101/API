@@ -16,16 +16,14 @@ const screens = new Map<string, Client>()
 export default class WhatsAppController implements IWhatsAppController {
   constructor (private readonly instanceRepository: IInstanceRepository) { }
 
-  async send (send: ISend): Promise<void> {
+  async send (instance: IInstance, send: ISend): Promise<string | undefined> {
     try {
       const screenId = getScreenId({
         _id: send._id,
         token: send.token
       })
-
-      if (screenId === undefined) {
-        Logs.Error(`screenId is null ${JSON.stringify(send)}`)
-        return
+      if (instance.messageLimit === 0) {
+        return 'you exceeded the limit of messages'
       }
       const client = screens.get(screenId)
       if (send.body !== undefined && send.to !== undefined) {
@@ -36,6 +34,8 @@ export default class WhatsAppController implements IWhatsAppController {
         const media = await MessageMedia.fromUrl(send.document)
         await client?.sendMessage(`${send.to ?? ''}@c.us`, media)
       }
+      const newLimit = instance.messageLimit - 1
+      await this.instanceRepository.updateMessageLimit(instance._id, newLimit)
     } catch (error: any) {
       Logs.Error(error)
     }

@@ -21,14 +21,14 @@ export default class MessagesApp {
     }
     const { _id, token } = send
     const instance = await this.instanceRepository.findByIdAndToken(_id, token)
-    if (isEmptyNullOrUndefined(instance)) {
+    if (isEmptyNullOrUndefined(instance) || instance === null) {
       return {
         statusCode: 422,
         error: `token ${token} or _id ${_id} is invalid`,
         message: 'id or token is invalid'
       }
     }
-    await this.whatsAppController.send(send)
+    await this.whatsAppController.send(instance, send)
     return {
       message: 'success'
     }

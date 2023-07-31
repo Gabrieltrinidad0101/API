@@ -7,10 +7,7 @@ const SERVERURL = `${HOST}:${PORT}`
 const COMPANYNAME = 'Chat Plus'
 const PAYMENTURL = process.env.PAYMENT_URL ?? ''
 const PAYMENTSECRET = process.env.PAYMENT_SECRET ?? ''
-const PAYMENTPRODUCTURL = `${PAYMENTURL ?? ''}/v1/catalogs/products`
-const PAYMENTPLANURL = `${PAYMENTURL ?? ''}/v1/billing/plans`
 const PAYMENTSUBSCRIPTIONSURL = `${PAYMENTURL ?? ''}/v1/billing/subscriptions`
-const LISTPLANSURL = `${PAYMENTURL ?? ''}/v1/billing/plans`
 const CLIENTPAYMENTID = process.env.CLIENT_PAYMENT_ID ?? ''
 const USERADMIN = process.env.USER_ADMIN ?? ''
 const PASSWORDADMIN = process.env.PASSWORD_ADMIN ?? ''
@@ -21,17 +18,16 @@ const SERVEREMAIL = process.env.SERVER_EMAIL ?? ''
 const SERVEREMAILPASSWORD = process.env.SERVER_EMAIL_PASSWORD ?? ''
 const ENCRYPTTOKEN = process.env.ENCRYPT_TOKEN ?? ''
 const COMPANYLOGO = process.env.COMPANY_LOGO ?? ''
+const PAYMENTPLANID = process.env.PAYMENT_PLAN_ID ?? ''
 
 const constantes: IConstantes = {
   HOST,
   PORT,
   SERVERURL,
   COMPANYNAME,
-  PAYMENTPRODUCTURL,
   PAYMENTURL,
   PAYMENTSECRET,
   CLIENTPAYMENTID,
-  PAYMENTPLANURL,
   PAYMENTSUBSCRIPTIONSURL,
   USERADMIN,
   PASSWORDADMIN,
@@ -42,17 +38,17 @@ const constantes: IConstantes = {
   SERVEREMAILPASSWORD,
   ENCRYPTTOKEN,
   COMPANYLOGO,
-  LISTPLANSURL
+  PAYMENTPLANID
 }
 
 // If any property is undefined stop the server
-if (Object.values(constantes).some(constante => constante === undefined)) {
+if (Object.values(constantes).some(constante => isEmptyNullOrUndefined(constante))) {
   const keys = Object.keys(constantes) as TypekeyOfIConstantes[]
   const listOfValuesNoExist = keys.filter(key => isEmptyNullOrUndefined(constantes[key])).join(',')
   console.log('Obejct: ')
   console.log(constantes)
   console.log(`Values not found: [${listOfValuesNoExist}]`)
-  throw new Error('Error incomplete data')
+  process.exit(1)
 }
 
 export default constantes

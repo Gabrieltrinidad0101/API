@@ -2,8 +2,13 @@ import WhatsAppController from '../../../whatsAppControl/infranstructure/whatsAp
 import Instance from '../application/instance'
 import InstanceRepository from './Database/instanceRepository'
 import InstanceControl from './instanceControl'
-import { instanceValidator, urlValidator } from './instanceValidation'
+import { paymentApp } from '../../payment/infranstructure/dependecies'
+
 export const instanceRepository = new InstanceRepository()
 const whatsAppController = new WhatsAppController(instanceRepository)
-const instance = new Instance({ instanceRepository, instanceValidator, urlValidator, whatsAppController })
+const instance = new Instance({
+  instanceRepository,
+  whatsAppController,
+  paymentApp
+})
 export const instanceControl = new InstanceControl(instance)

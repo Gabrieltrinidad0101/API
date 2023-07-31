@@ -1,28 +1,23 @@
-import { type IHttpStatusCode } from '../../../../../../share/domain/httpResult'
 import { Logs } from '../../../../logs'
-import { type IPlan, type ISubscription, type TCreateSubscription, type IProduct } from '../../../payment/domian/payment'
 import { type IConstantes } from '../../../share/domain/constantes'
 import { type IHttpRequest } from '../../../share/domain/httpRequest'
 import { type TypeValidation } from '../../../share/domain/Validator'
-import { type IPlanFromApi, type IPaymentRepository, type IProductFromApi, type IPaymentApp } from '../domian/payment'
+import { type IPaymentLinkOrError, type IPaymentRepository, type ISubscription, type ISubscriptionFromApi, type IUserSubscriber, type IPaymentApp } from '../domian/payment'
+import { generateObjectSubscription } from './jsonPayment'
 
 export class PaymentApp implements IPaymentApp {
   constructor (
     private readonly httpRequest: IHttpRequest,
     private readonly constantes: IConstantes,
     private readonly paymentRepository: IPaymentRepository,
-    private readonly paymentProductValidator: TypeValidation
+    private readonly paymentSubscriptionValidator: TypeValidation
   ) { }
 
-  private readonly makeHttpRequest = async (productoToCreate: TCreateSubscription, url: string | undefined): Promise<any> => {
-    if (url === undefined) {
-      throw new Error('Payment url not specified')
-    }
-
+  private readonly makeHttpRequest = async (url: string, productoToCreate: ISubscription): Promise<any> => {
     const response = await this.httpRequest({
-      method: productoToCreate === null ? 'GET' : 'POST',
+      method: 'POST',
       url,
-      body: productoToCreate ?? {},
+      body: productoToCreate,
       auth: {
         user: this.constantes.CLIENTPAYMENTID,
         pass: this.constantes.PAYMENTSECRET
@@ -31,39 +26,25 @@ export class PaymentApp implements IPaymentApp {
     return response.body
   }
 
-  configurationPayment = async (productoToCreate: IProduct, planToCreate: IPlan): Promise<void> => {
-    const product = await this.paymentRepository.findOneProduct({})
-    if (product !== null) {
-      Logs.Info('Payment Product was created')
-      return
-    }
-    const productFromApi = await this.makeHttpRequest(productoToCreate, this.constantes.PAYMENTPRODUCTURL) as IProductFromApi
-    const error = this.paymentProductValidator(productFromApi)
+  generateSubscription = async (userSubscriber: IUserSubscriber): Promise<IPaymentLinkOrError> => {
+    const subscription = generateObjectSubscription(userSubscriber)
+    return await this.createSubscription(subscription)
+  }
+
+  createSubscription = async (subscriptionToCreate: ISubscription): Promise<IPaymentLinkOrError> => {
+    const { PAYMENTPLANID, PAYMENTSUBSCRIPTIONSURL } = this.constantes
+    subscriptionToCreate.plan_id = PAYMENTPLANID
+    const result = await this.makeHttpRequest(PAYMENTSUBSCRIPTIONSURL, subscriptionToCreate) as ISubscriptionFromApi
+    const error = this.paymentSubscriptionValidator(result)
     if (error !== undefined) {
-      Logs.Error(`Object =${JSON.stringify(productFromApi)},Error = ${error !== null ? JSON.stringify(error) : 'Empty Object'}`)
-      return
+      Logs.Error(`Error creating susbscription ${JSON.stringify(error)}`)
+      return {
+        error: 'Error creating susbscription'
+      }
     }
-    await this.paymentRepository.saveProduct(productFromApi)
-    planToCreate.product_id = productFromApi.id ?? ''
-    const result = await this.makeHttpRequest(planToCreate, this.constantes.PAYMENTPLANURL) as IPlanFromApi
-
-    await this.paymentRepository.savePlan(result)
-  }
-
-  createSubscription = async (subscriptionToCreate: ISubscription): Promise<IHttpStatusCode> => {
-    const plan = await this.paymentRepository.findLastPlan()
-    subscriptionToCreate.plan_id = plan.id
-    const result = await this.makeHttpRequest(subscriptionToCreate, this.constantes.PAYMENTSUBSCRIPTIONSURL)
-    if (result === undefined) { throw new Error('Error creating subscription API return undefined') }
+    await this.paymentRepository.saveSubscription(result)
     return {
-      message: result
-    }
-  }
-
-  listOfPlans = async (): Promise<IHttpStatusCode> => {
-    const result = await this.makeHttpRequest(null, this.constantes.LISTPLANSURL)
-    return {
-      message: result
+      paymentLink: result.links[0].href
     }
   }
 }

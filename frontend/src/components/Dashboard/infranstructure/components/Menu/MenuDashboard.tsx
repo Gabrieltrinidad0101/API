@@ -30,8 +30,6 @@ export default function MenuDashboard (): JSX.Element {
         </Link>
       </Nav>
       <Nav text='Users' rol="admin" to='/users' icon={<i className={'fa-solid fa-user'}></i>}></Nav>
-      <Nav text='Json Views' rol="admin" to="jsonViews" icon={<i className="fa-solid fa-diagram-project"></i>}>
-      </Nav>
       <Nav text='Sign out' onClick={session} to='/login' icon={<i className={'fa-solid fa-right-from-bracket'}></i>} />
     </Menu>
   )

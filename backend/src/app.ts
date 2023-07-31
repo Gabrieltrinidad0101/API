@@ -3,7 +3,6 @@ import express from 'express'
 import { authRouter } from './mooc/routes/user/infranstructure/userRouter'
 import { instanceRouter } from './mooc/routes/instance/infranstructure/instanceRouter'
 import { messageRouter } from './mooc/routes/messages/infranstructure/messagesRouter'
-import { paymentRouter } from './mooc/routes/payment/infranstructure/paymentRouter'
 import * as Sentry from '@sentry/node'
 import cors from 'cors'
 import morgan from 'morgan'
@@ -22,7 +21,6 @@ app.use(morgan('dev'))
 app.use('/user', authRouter)
 app.use(instanceRouter)
 app.use(messageRouter)
-app.use(paymentRouter)
 
 // The error handler must be registered before any other error middleware and after all controllers
 app.use(Sentry.Handlers.errorHandler())

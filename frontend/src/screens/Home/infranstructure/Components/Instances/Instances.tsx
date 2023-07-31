@@ -11,7 +11,7 @@ export default function Instances ({ instancesData }: IPropInstance): JSX.Elemen
     navigation(`/instance?id=${idInstance}`)
   }
   const { user } = useUserContext()
-
+  console.log(instancesData)
   return (
     <div className={InstancesCss.wrapper}>
       <DataGrid

@@ -9,6 +9,8 @@ const instanceSchema = new Schema({
   webhookUrl: String,
   userName: String,
   initialDate: Date,
+  paymentLink: String,
+  messageLimit: Number,
   createdIn: {
     type: Date,
     default: Date.now()

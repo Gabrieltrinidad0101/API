@@ -1,26 +1,26 @@
 import { isEmptyNullOrUndefined } from '../../../../../../share/application/isEmptyNullUndefiner'
-import { type IInstanceQRStatus, type ISearchInstance } from '../../../../../../share/domain/instance'
+import { type IInstanceOrError, type TypeStatusInstance, type IInstanceQRStatus, type ISearchInstance } from '../../../../../../share/domain/instance'
 import type IInstance from '../../../../../../share/domain/instance'
 import { type IHttpStatusCode } from '../../../../../../share/domain/httpResult'
 import type IInstanceRepository from '../domian/InstanceRepository'
-import { type TypeValidation } from '../../../share/domain/Validator'
 import type IWhatsAppController from '../../../whatsAppControl/domian/whatsAppController'
 import type IInstanceContructor from '../domian/instance'
 import { getScreenId } from '../../../whatsAppControl/infranstructure/getScreenId'
+import { type IPaymentApp, type IPaymentLinkOrError } from '../../payment/domian/payment'
+import { type IBasicUser } from '../../../../../../share/domain/user'
+import crypto from 'crypto'
 
 export default class Instance {
   private readonly instanceRepository: IInstanceRepository
-  private readonly instanceValidator: TypeValidation
-  private readonly urlValidator: TypeValidation
   private readonly whatsAppController: IWhatsAppController
+  private readonly paymentApp: IPaymentApp
 
   constructor (
-    { instanceRepository, instanceValidator, urlValidator, whatsAppController }: IInstanceContructor
+    iInstanceContructor: IInstanceContructor
   ) {
-    this.instanceRepository = instanceRepository
-    this.instanceValidator = instanceValidator
-    this.urlValidator = urlValidator
-    this.whatsAppController = whatsAppController
+    this.instanceRepository = iInstanceContructor.instanceRepository
+    this.whatsAppController = iInstanceContructor.whatsAppController
+    this.paymentApp = iInstanceContructor.paymentApp
   }
 
   private validateSearchHttp (searchHttp: ISearchInstance): boolean {
@@ -28,19 +28,59 @@ export default class Instance {
       isEmptyNullOrUndefined(searchHttp.limit)
   }
 
-  async save (instance: IInstance): Promise<IHttpStatusCode> {
-    const error = this.instanceValidator(instance)
-    if (error !== undefined) {
+  private readonly generateSubscription = async (user: IBasicUser): Promise<IPaymentLinkOrError> => {
+    const instances = await this.instanceRepository.find({ userId: user._id })
+    if (instances?.length <= 0) { return {} }
+    const response = await this.paymentApp.generateSubscription({
+      name: user.name,
+      email: user.email
+    })
+    return response
+  }
+
+  private readonly createInstance = async (user: IBasicUser): Promise<IInstanceOrError> => {
+    const { error, paymentLink } = await this.generateSubscription(user)
+    if (!isEmptyNullOrUndefined(error)) {
       return {
-        statusCode: 422,
         error
       }
     }
-    const instanceSaved = await this.instanceRepository.update(instance)
-    this.whatsAppController.start(instanceSaved, 'start')
-      .catch(error => {
-        console.log(error)
-      })
+
+    const date = new Date()
+    const endService = new Date(date.setMonth(date.getMonth() + 1))
+    const messageLimit = isEmptyNullOrUndefined(paymentLink) ? 100 : Infinity
+    const status: TypeStatusInstance = isEmptyNullOrUndefined(paymentLink) ? 'pending' : 'unpayment'
+    const instance: IInstance = {
+      token: crypto.randomUUID(),
+      createdIn: date,
+      endService,
+      initialDate: date,
+      messageLimit,
+      paymentLink: paymentLink ?? '',
+      status,
+      userId: user._id,
+      name: 'Default',
+      userName: user.name,
+      _id: ''
+    }
+    return { instance }
+  }
+
+  async save (user: IBasicUser): Promise<IHttpStatusCode> {
+    const { error, instance } = await this.createInstance(user)
+    if (error !== undefined || instance === undefined) {
+      return {
+        statusCode: 500,
+        error
+      }
+    }
+    const instanceSaved = await this.instanceRepository.insert(instance)
+    if (instanceSaved.status === 'pending') {
+      this.whatsAppController.start(instanceSaved, 'start')
+        .catch(error => {
+          console.log(error)
+        })
+    }
     return {
       statusCode: 200,
       message: {
@@ -131,11 +171,11 @@ export default class Instance {
   }
 
   async saveWebhookUrl (_id: string, webhookUrl: string): Promise<IHttpStatusCode> {
-    const error = this.urlValidator({ webhookUrl })
-    if (error !== undefined) {
+    if (isEmptyNullOrUndefined(webhookUrl)) {
       return {
         statusCode: 422,
-        error
+        error: 'Webhook cannot be empty,null or undefined',
+        message: 'Invalid webhook'
       }
     }
     await this.instanceRepository.saveWebhookUrl(_id, webhookUrl)

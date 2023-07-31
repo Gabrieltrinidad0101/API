@@ -1,5 +1,5 @@
 import { CustomFetchError, type IFecthAlert } from '../../../share/domian/customFecth'
-import { type IInstanceInitial, type ISaveInstance } from '../../../../../share/domain/instance'
+import { type ISaveInstance } from '../../../../../share/domain/instance'
 import type IInstance from '../../../../../share/domain/instance'
 import type ISendMessage from '../../../../../share/domain/Send'
 import { isEmptyNullOrUndefined } from '../../../../../share/application/isEmptyNullUndefiner'
@@ -8,13 +8,10 @@ import APIURL from '../../../share/application/Api'
 export default class InstanceApp {
   constructor (private readonly fetchAlert: IFecthAlert) {}
 
-  save = async (InstanceBasic: IInstanceInitial, showSucessAlter?: 'noShowSucessAlter'): Promise<IInstance | undefined> => {
+  save = async (): Promise<IInstance | undefined> => {
     try {
-      const responseHttp = await this.fetchAlert.customFecth.post<ISaveInstance>('/save', {
-        ...InstanceBasic
-      })
+      const responseHttp = await this.fetchAlert.customFecth.post<ISaveInstance>('/save', {})
       if (responseHttp === undefined) return
-      if (showSucessAlter !== 'noShowSucessAlter') this.fetchAlert.toast.sucess(responseHttp?.message?.info ?? '')
       return responseHttp?.message?.instance
     } catch (error) {
       const errorToShow = error instanceof CustomFetchError ? error.message : 'Internal error try later'
