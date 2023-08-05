@@ -32,6 +32,7 @@ export default class VerifyAuthentication {
     req.headers.userId = user._id
     req.headers.userRol = user.rol
     req.headers.userEmail = user.email
+    req.headers.userName = user.name
     return { user }
   }
 
@@ -42,6 +43,7 @@ export default class VerifyAuthentication {
       return res.httpStatusCode
     } catch (error) {
       return {
+        error: 'Error authenticating',
         message: 'No access',
         statusCode: 409
       }
@@ -55,13 +57,15 @@ export default class VerifyAuthentication {
 
       if (res.user?.rol !== 'admin') {
         return {
-          message: 'User admin',
+          error: 'User admin',
+          message: 'No access',
           statusCode: 404
         }
       }
       next?.()
     } catch (error) {
       return {
+        error: 'Error authenticating',
         message: 'No access',
         statusCode: 409
       }

@@ -23,11 +23,7 @@ export default function MenuDashboard (): JSX.Element {
           Send File
         </Link>
       </Nav>
-      <Nav text='Instance' icon={<i className={'fa-solid fa-layer-group'}></i>}>
-        <Link to="/docs/instanceTools">
-          <i className="fa-solid fa-screwdriver-wrench ml-5"></i>
-          Instance Tools
-        </Link>
+      <Nav text='Documention' to='/Docs' icon={<i className={'fa-solid fa-layer-group'}></i>}>
       </Nav>
       <Nav text='Users' rol="admin" to='/users' icon={<i className={'fa-solid fa-user'}></i>}></Nav>
       <Nav text='Sign out' onClick={session} to='/login' icon={<i className={'fa-solid fa-right-from-bracket'}></i>} />

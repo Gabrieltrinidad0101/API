@@ -24,6 +24,11 @@ export default class InstanceRepository implements IInstanceRepository {
     return instanceModal
   }
 
+  async findOne (filter: object): Promise<IInstance | null> {
+    const instanceModal = await InstanceModal.findOne<IInstance>(filter)
+    return instanceModal
+  }
+
   async findByIdAndUserId (_id: string, userId: string): Promise<IInstance | null> {
     const isValid = mongoose.Types.ObjectId.isValid(_id)
     if (!isValid) return null
@@ -80,10 +85,5 @@ export default class InstanceRepository implements IInstanceRepository {
   getQrAndStatus = async (_id: string, token: string): Promise<IInstanceQRStatus | undefined | null> => {
     const instance = await InstanceModal.findById<IInstanceQRStatus>({ _id, token }, { qr: 1, status: 1, _id: 0 })
     return instance
-  }
-
-  getAllInstance = async (): Promise<IInstance[]> => {
-    const instances = await InstanceModal.find<IInstance>({})
-    return instances
   }
 }

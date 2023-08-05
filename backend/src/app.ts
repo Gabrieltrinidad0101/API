@@ -8,6 +8,7 @@ import cors from 'cors'
 import morgan from 'morgan'
 import './database'
 import { InititalLogs } from './logs'
+import { paymentRouter } from './mooc/routes/payment/infranstructure/paymentRouter'
 
 const app = express()
 
@@ -21,6 +22,7 @@ app.use(morgan('dev'))
 app.use('/user', authRouter)
 app.use(instanceRouter)
 app.use(messageRouter)
+app.use('/payment', paymentRouter)
 
 // The error handler must be registered before any other error middleware and after all controllers
 app.use(Sentry.Handlers.errorHandler())

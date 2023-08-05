@@ -6,7 +6,7 @@ export const initialInstance = async (
   whatsAppController: IWhatsAppController
 ): Promise<void> => {
   try {
-    const instances = await instanceRepository.getAllInstance()
+    const instances = await instanceRepository.find({ status: { $ne: 'unpayment' } })
     instances.forEach((instance) => {
       whatsAppController.start(instance, 'start')
         .catch(error => {

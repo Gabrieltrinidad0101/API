@@ -1,9 +1,10 @@
 export interface IPaymentApp {
-  generateSubscription: (subscription: IUserSubscriber) => Promise<IPaymentLinkOrError>
+  generateSubscription: (subscription: IUserSubscriber) => Promise<ISubscriptionFromApi>
 }
 
 export interface IPaymentRepository {
   saveSubscription: (subscription: ISubscriptionFromApi) => Promise<void>
+  findOneSubscription: (filter: object) => Promise<ISubscriptionFromApi | null>
 }
 
 export interface ISubscription {
@@ -11,6 +12,10 @@ export interface ISubscription {
   start_time: string
   quantity: number
   subscriber: ISubscriber
+  application_context: IAppContext
+}
+
+interface IAppContext {
   return_url: string
   cancel_url: string
 }
@@ -42,9 +47,4 @@ export interface ILinks {
   href: string
   rel: string
   method: string
-}
-
-export interface IPaymentLinkOrError {
-  paymentLink?: string
-  error?: string
 }

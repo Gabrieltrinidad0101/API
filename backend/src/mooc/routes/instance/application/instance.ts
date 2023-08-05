@@ -1,14 +1,15 @@
 import { isEmptyNullOrUndefined } from '../../../../../../share/application/isEmptyNullUndefiner'
-import { type IInstanceOrError, type TypeStatusInstance, type IInstanceQRStatus, type ISearchInstance } from '../../../../../../share/domain/instance'
+import { type TypeStatusInstance, type IInstanceQRStatus, type ISearchInstance } from '../../../../../../share/domain/instance'
 import type IInstance from '../../../../../../share/domain/instance'
 import { type IHttpStatusCode } from '../../../../../../share/domain/httpResult'
 import type IInstanceRepository from '../domian/InstanceRepository'
 import type IWhatsAppController from '../../../whatsAppControl/domian/whatsAppController'
 import type IInstanceContructor from '../domian/instance'
 import { getScreenId } from '../../../whatsAppControl/infranstructure/getScreenId'
-import { type IPaymentApp, type IPaymentLinkOrError } from '../../payment/domian/payment'
+import { type ISubscriptionFromApi, type IPaymentApp } from '../../payment/domian/payment'
 import { type IBasicUser } from '../../../../../../share/domain/user'
 import crypto from 'crypto'
+import { Logs } from '../../../../logs'
 
 export default class Instance {
   private readonly instanceRepository: IInstanceRepository
@@ -28,9 +29,7 @@ export default class Instance {
       isEmptyNullOrUndefined(searchHttp.limit)
   }
 
-  private readonly generateSubscription = async (user: IBasicUser): Promise<IPaymentLinkOrError> => {
-    const instances = await this.instanceRepository.find({ userId: user._id })
-    if (instances?.length <= 0) { return {} }
+  private readonly generateSubscription = async (user: IBasicUser): Promise<ISubscriptionFromApi> => {
     const response = await this.paymentApp.generateSubscription({
       name: user.name,
       email: user.email
@@ -38,44 +37,45 @@ export default class Instance {
     return response
   }
 
-  private readonly createInstance = async (user: IBasicUser): Promise<IInstanceOrError> => {
-    const { error, paymentLink } = await this.generateSubscription(user)
-    if (!isEmptyNullOrUndefined(error)) {
-      return {
-        error
-      }
-    }
-
+  private readonly createInstance = async (user: IBasicUser): Promise<IInstance> => {
+    const instances = await this.instanceRepository.find({ userId: user._id })
+    const isFirstInstane = instances.length <= 0
+    const subscriptionFromApi = isFirstInstane ? null : await this.generateSubscription(user)
     const date = new Date()
-    const endService = new Date(date.setMonth(date.getMonth() + 1))
-    const messageLimit = isEmptyNullOrUndefined(paymentLink) ? 100 : Infinity
-    const status: TypeStatusInstance = isEmptyNullOrUndefined(paymentLink) ? 'pending' : 'unpayment'
+    const endService = isFirstInstane ? new Date(date.setMonth(date.getMonth() + 1)) : undefined
+    const messageLimit = isFirstInstane ? 100 : Infinity
+    const status: TypeStatusInstance = isFirstInstane ? 'initial' : 'unpayment'
     const instance: IInstance = {
       token: crypto.randomUUID(),
-      createdIn: date,
+      createdIn: isFirstInstane ? date : undefined,
       endService,
       initialDate: date,
       messageLimit,
-      paymentLink: paymentLink ?? '',
+      paymentLink: subscriptionFromApi?.links[0].href ?? '',
       status,
       userId: user._id,
       name: 'Default',
       userName: user.name,
-      _id: ''
+      _id: '',
+      subscriptionId: subscriptionFromApi?.id
     }
-    return { instance }
+    return instance
   }
 
   async save (user: IBasicUser): Promise<IHttpStatusCode> {
-    const { error, instance } = await this.createInstance(user)
-    if (error !== undefined || instance === undefined) {
+    const instancesUnpayment = await this.instanceRepository.find(
+      { status: 'unpayment', userId: user._id }
+    )
+    if (instancesUnpayment.length > 0) {
       return {
-        statusCode: 500,
-        error
+        statusCode: 422,
+        error: 'Cannot create an instance with unpaid instances',
+        message: 'First it is necessary to pay non-payment of instance'
       }
     }
+    const instance = await this.createInstance(user)
     const instanceSaved = await this.instanceRepository.insert(instance)
-    if (instanceSaved.status === 'pending') {
+    if (instanceSaved.status === 'initial') {
       this.whatsAppController.start(instanceSaved, 'start')
         .catch(error => {
           console.log(error)
@@ -147,17 +147,21 @@ export default class Instance {
       }
     }
 
-    const screenStatus = await this.whatsAppController.getStatus(screenId)
-
     // always it try to get the qr and the instance is not active
     // it will try to restart but only do that after one minute
     // because when the instance is initial,it is not active
-    const timeFromInitialDate = Math.abs(instance.initialDate.getTime() - new Date().getTime())
-    const minute = 1000 * 60
+    this.whatsAppController.getStatus(screenId)
+      .then(async (screenStatus): Promise<void> => {
+        const timeFromInitialDate = Math.abs(instance.initialDate.getTime() - new Date().getTime())
+        const minute = 1000 * 60
 
-    if (screenStatus === undefined && timeFromInitialDate < minute) {
-      await this.whatsAppController.restart(instance)
-    }
+        if (screenStatus === undefined && timeFromInitialDate > minute) {
+          await this.whatsAppController.restart(instance)
+        }
+      })
+      .catch(error => {
+        Logs.Exception(error)
+      })
 
     const instanceQRStatus: IInstanceQRStatus = {
       qr: instance.qr,

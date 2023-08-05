@@ -5,7 +5,7 @@ import type IEncrypt from '../domain/encrypt'
 import { type IUserForgotPassword, type IUserApp } from '../domain/user'
 import { type TypeValidation } from '../../../share/domain/Validator'
 import { dtoUserLogin, dtoUserRegister, dtoUserUpdate } from './dto'
-import { type IUserLogin, type IUserRegister, type IUserUpdate, type TypeRol } from '../../../../../../share/domain/user'
+import { type IUserLogin, type IUserRegister, type IUserUpdate } from '../../../../../../share/domain/user'
 import constantes from '../../../share/infranstructure/Constantes'
 import { isEmptyNullOrUndefined } from '../../../../../../share/application/isEmptyNullUndefiner'
 import { type IEmail } from '../../../share/domain/email'
@@ -94,7 +94,6 @@ export default class UserApp {
       }
     }
     await this.userRepository.update(userDto)
-
     return {
       message: 'User is updated successfully'
     }
@@ -103,6 +102,7 @@ export default class UserApp {
   async searchUserById (_id: string | undefined): Promise<IHttpStatusCode> {
     if (_id === undefined) {
       return {
+        error: 'User id cannot be undefined,null or empty',
         message: "Error User's ID is undefined",
         statusCode: 500
       }
@@ -114,13 +114,7 @@ export default class UserApp {
     }
   }
 
-  getUsers = async (rol: TypeRol): Promise<IHttpStatusCode> => {
-    if (rol !== 'admin') {
-      return {
-        message: []
-      }
-    }
-
+  getUsers = async (): Promise<IHttpStatusCode> => {
     const user = await this.userRepository.find({}, { password: 0, __v: 0 })
     return {
       message: user
@@ -129,15 +123,15 @@ export default class UserApp {
 
   createUserAdmin = async (): Promise<void> => {
     const user = await this.userRepository.findOne({
-      email: constantes.EMAILADMIN
+      email: constantes.EMAIL_ADMIN
     }, { password: 0, __v: 0 })
 
     if (user !== null) return
-    const password = await this.encrypt.enCode(constantes.PASSWORDADMIN ?? '')
+    const password = await this.encrypt.enCode(constantes.PASSWORD_ADMIN)
     await this.userRepository.insert({
-      name: constantes.USERADMIN ?? '',
-      cellPhone: '111111',
-      email: constantes.EMAILADMIN ?? '',
+      name: constantes.USER_ADMIN,
+      cellPhone: constantes.CELLPHONE_ADMIN,
+      email: constantes.EMAIL_ADMIN,
       password,
       rol: 'admin'
     })
@@ -160,7 +154,7 @@ export default class UserApp {
 
   sendResetPassword = async (email: string): Promise<IHttpStatusCode> => {
     const token = this.token.sign({ email, time: new Date().getTime() })
-    const { FRONTENDURL, COMPANYLOGO } = constantes
+    const { FRONTEND_URL, COMPANY_LOGO } = constantes
     const user = await this.userRepository.find({ email })
     if (isEmptyNullOrUndefined(user)) {
       return {
@@ -169,8 +163,8 @@ export default class UserApp {
         message: 'The email no exists'
       }
     }
-    const linkResetPassword = `${FRONTENDURL}/changePassword?tokenResetPassword=${token}`
-    const template = getResetPasswordTemplate(COMPANYLOGO, linkResetPassword)
+    const linkResetPassword = `${FRONTEND_URL}/changePassword?tokenResetPassword=${token}`
+    const template = getResetPasswordTemplate(COMPANY_LOGO, linkResetPassword)
     await this.email.send({
       subject: 'Email Reset Password',
       to: email,
@@ -203,7 +197,7 @@ export default class UserApp {
     await this.userRepository.updatePassword({ email: userForgotPassword.email }, encryptPassword)
 
     return {
-      message: 'We send you email successfully'
+      message: 'We send you a email successfully'
     }
   }
 }

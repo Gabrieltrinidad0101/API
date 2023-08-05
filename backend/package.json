@@ -9,7 +9,8 @@
     "start": "node ./dist/backend/src/index.js",
     "eslint": "eslint --ignore-path .gitignore . --ext .ts, src/",
     "eslint-fix": "eslint . --ext .ts --fix",
-    "test": "node ./mongodb/dropInstancesTest.js && DB=chatPlusTest npx jest ./test/instance.spec.ts"
+    "test": "node ./mongodb/dropInstancesTest.js && DB=chatPlusTest npx jest ./test/instance.spec.ts",
+    "user-test": "node ./mongodb/dropInstancesTest.js && DB=chatPlusTest npx jest ./test/user.spec.ts"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",

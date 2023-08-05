@@ -10,4 +10,9 @@ export default class PaymentRepository implements IPaymentRepository {
     })
     await suscriptionModal.save()
   }
+
+  findOneSubscription = async (filter: object): Promise<ISubscriptionFromApi | null> => {
+    const subscriptionFromApi = await SuscriptionModal.findOne<ISubscriptionFromApi>(filter)
+    return subscriptionFromApi
+  }
 }

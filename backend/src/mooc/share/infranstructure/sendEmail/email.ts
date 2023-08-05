@@ -7,7 +7,7 @@ export class Email implements IEmail {
   send = async (sendEmail: ISendEmail): Promise<void> => {
     const transporter = this.createTransporter()
     await transporter.sendMail({
-      from: `From ${constantes.SERVEREMAIL}`, // sender address
+      from: `From ${constantes.SERVER_EMAIL}`, // sender address
       to: sendEmail.to, // list of receivers
       subject: sendEmail.subject, // Subject line
       html: sendEmail.template // html body
@@ -20,8 +20,8 @@ export class Email implements IEmail {
       port: 465,
       secure: true,
       auth: {
-        user: constantes.SERVEREMAIL,
-        pass: constantes.SERVEREMAILPASSWORD
+        user: constantes.SERVER_EMAIL,
+        pass: constantes.SERVER_EMAIL_PASSWORD
       }
     })
     return transporter

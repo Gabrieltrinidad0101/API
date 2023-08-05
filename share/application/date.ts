@@ -1,4 +1,7 @@
-const formatDate = (dateString: string)=> {
+import { isEmptyNullOrUndefined } from "./isEmptyNullUndefiner";
+
+const formatDate = (dateString: any)=> {
+    if(isEmptyNullOrUndefined(dateString) || dateString === undefined) return "-"
     const date = new Date(dateString)
     const year = date.getFullYear();
     const month = date.getMonth() + 1; // Month is zero-based, so we add 1

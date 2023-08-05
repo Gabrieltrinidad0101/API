@@ -12,7 +12,7 @@ import Dashboard from './components/Dashboard/infranstructure/Dashboard'
 import Documentation from './screens/docs/infranstructure/Documentation'
 import SendFile from './screens/docs/infranstructure/components/sendFile/SendFile'
 import SendMessage from './screens/docs/infranstructure/components/sendMessage/sendMessage'
-import InstanceTools from './screens/docs/infranstructure/components/instanceTools/InstanceTools'
+import GeneralDocs from './screens/docs/infranstructure/components/generalDocs/GeneralDocs.module'
 import ChangePassword from './screens/changePassword/infranstructure/ChangePassword'
 import Page404 from './screens/404/Page404'
 
@@ -26,11 +26,11 @@ export default function App (): JSX.Element {
           <Route element={<Dashboard />}>
             <Route path='/home' element={<Home />} />
             <Route path="/instance" element={<Instance />} />
+            <Route path="/docs" element={<GeneralDocs/>} ></Route>
             <Route path="/docs" element={<Documentation/>}>
               <Route path="sendFile" element={<SendFile/>} ></Route>
               <Route path="sendMessage" element={<SendMessage/>} ></Route>
             </Route>
-            <Route path="instanceTools" element={<InstanceTools/>} ></Route>
             <Route path="/users" element={<Users/>} ></Route>
           </Route>
         </Route>

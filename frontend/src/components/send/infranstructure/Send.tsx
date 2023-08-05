@@ -48,7 +48,7 @@ const Send = ({ Prop: propSend }: Prop<IPropSend>): JSX.Element => {
           <TextField name="to" type="text" onChange={inputChange} label="Phone" variant="outlined" value={inputs?.to} />
           {
             propSend.showFileName &&
-            <TextField name="filename" type="text" onChange={inputChange} label="File Name" variant="outlined" value={inputs?.filename} className='ml-3' />
+              <TextField name="filename" type="text" onChange={inputChange} label="File Name" variant="outlined" value={inputs?.filename}/>
           }
         </div>
         <div className={SendMessageCss.message}>

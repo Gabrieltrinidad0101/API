@@ -3,42 +3,44 @@ import { type TypekeyOfIConstantes, type IConstantes } from '../domain/constante
 
 const HOST = process.env.SERVER_URL ?? 'http://localhost'
 const PORT = process.env.PORT !== undefined ? Number(process.env.PORT) : 4000
-const SERVERURL = `${HOST}:${PORT}`
-const COMPANYNAME = 'Chat Plus'
-const PAYMENTURL = process.env.PAYMENT_URL ?? ''
-const PAYMENTSECRET = process.env.PAYMENT_SECRET ?? ''
-const PAYMENTSUBSCRIPTIONSURL = `${PAYMENTURL ?? ''}/v1/billing/subscriptions`
-const CLIENTPAYMENTID = process.env.CLIENT_PAYMENT_ID ?? ''
-const USERADMIN = process.env.USER_ADMIN ?? ''
-const PASSWORDADMIN = process.env.PASSWORD_ADMIN ?? ''
-const EMAILADMIN = process.env.EMAIL_ADMIN ?? ''
-const SENTRYDNS = process.env.SENTRY_DNS ?? ''
-const FRONTENDURL = process.env.FRONTEND_URL ?? ''
-const SERVEREMAIL = process.env.SERVER_EMAIL ?? ''
-const SERVEREMAILPASSWORD = process.env.SERVER_EMAIL_PASSWORD ?? ''
-const ENCRYPTTOKEN = process.env.ENCRYPT_TOKEN ?? ''
-const COMPANYLOGO = process.env.COMPANY_LOGO ?? ''
-const PAYMENTPLANID = process.env.PAYMENT_PLAN_ID ?? ''
+const SERVER_URL = `${HOST}:${PORT}`
+const COMPANY_NAME = 'Chat Plus'
+const PAYMENT_URL = process.env.PAYMENT_URL ?? ''
+const PAYMENT_SECRET = process.env.PAYMENT_SECRET ?? ''
+const PAYMENT_SUBSCRIPTIONS_URL = `${PAYMENT_URL ?? ''}/v1/billing/subscriptions`
+const CLIENT_PAYMENT_ID = process.env.CLIENT_PAYMENT_ID ?? ''
+const USER_ADMIN = process.env.USER_ADMIN ?? ''
+const PASSWORD_ADMIN = process.env.PASSWORD_ADMIN ?? ''
+const EMAIL_ADMIN = process.env.EMAIL_ADMIN ?? ''
+const SENTRY_DNS = process.env.SENTRY_DNS ?? ''
+const FRONTEND_URL = process.env.FRONTEND_URL ?? ''
+const SERVER_EMAIL = process.env.SERVER_EMAIL ?? ''
+const SERVER_EMAIL_PASSWORD = process.env.SERVER_EMAIL_PASSWORD ?? ''
+const ENCRYPT_TOKEN = process.env.ENCRYPT_TOKEN ?? ''
+const COMPANY_LOGO = process.env.COMPANY_LOGO ?? ''
+const PAYMENT_PLAN_ID = process.env.PAYMENT_PLAN_ID ?? ''
+const CELLPHONE_ADMIN = process.env.CELLPHONE_ADMIN ?? ''
 
 const constantes: IConstantes = {
   HOST,
   PORT,
-  SERVERURL,
-  COMPANYNAME,
-  PAYMENTURL,
-  PAYMENTSECRET,
-  CLIENTPAYMENTID,
-  PAYMENTSUBSCRIPTIONSURL,
-  USERADMIN,
-  PASSWORDADMIN,
-  EMAILADMIN,
-  SENTRYDNS,
-  FRONTENDURL,
-  SERVEREMAIL,
-  SERVEREMAILPASSWORD,
-  ENCRYPTTOKEN,
-  COMPANYLOGO,
-  PAYMENTPLANID
+  SERVER_URL,
+  COMPANY_NAME,
+  PAYMENT_URL,
+  PAYMENT_SECRET,
+  CLIENT_PAYMENT_ID,
+  PAYMENT_SUBSCRIPTIONS_URL,
+  USER_ADMIN,
+  CELLPHONE_ADMIN,
+  PASSWORD_ADMIN,
+  EMAIL_ADMIN,
+  SENTRY_DNS,
+  FRONTEND_URL,
+  SERVER_EMAIL,
+  SERVER_EMAIL_PASSWORD,
+  ENCRYPT_TOKEN,
+  COMPANY_LOGO,
+  PAYMENT_PLAN_ID
 }
 
 // If any property is undefined stop the server

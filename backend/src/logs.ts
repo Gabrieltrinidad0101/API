@@ -4,7 +4,7 @@ import constantes from './mooc/share/infranstructure/Constantes'
 
 export const InititalLogs = (app: Express): void => {
   Sentry.init({
-    dsn: constantes.SENTRYDNS,
+    dsn: constantes.SENTRY_DNS,
     integrations: [
       // enable HTTP calls tracing
       new Sentry.Integrations.Http({

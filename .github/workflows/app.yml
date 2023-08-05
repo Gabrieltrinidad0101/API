@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Chat Plus CI/CD
 
 on:
   push:

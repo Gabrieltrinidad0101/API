@@ -11,6 +11,8 @@ export const generateObjectSubscription = (user: IUserSubscriber): ISubscription
     },
     email_address: user.email
   },
-  return_url: 'http://localhost:4000/payment/sucess',
-  cancel_url: 'http://localhost:4000/payment/cancel'
+  application_context: {
+    return_url: 'http://localhost:4000/payment/sucess',
+    cancel_url: 'http://localhost:4000/payment/cancel'
+  }
 })

@@ -1,10 +1,10 @@
 import app from '../src/app'
 import request from 'supertest'
-import { carlosUser, emptyUser, pedroUser, pedroUserModify, User } from './obejctMother/user'
+import { carlosUser, emptyUser, pedroUser, pedroUserModify, userAdmin, User } from './obejctMother/user'
 import type IUser from '../../share/domain/user'
 import Tokens from './helps/tokens'
 
-describe('POST /authentication', () => {
+describe('Authentication', () => {
   test('authentication register with error', async () => {
     const newUser = User(emptyUser)
     const response = await request(app).post('/user/authentication').send(
@@ -61,7 +61,38 @@ describe('POST /authentication', () => {
   })
 })
 
-describe('POST /update', () => {
+describe('Test User Admin', () => {
+  test('Login', async () => {
+    const admin = User({ ...userAdmin, typeAuthentication: 'Login' })
+    const response = await request(app).post('/user/authentication').send(admin)
+    const { message } = response.body
+    expect(message).toBeTruthy()
+    expect(response.statusCode).toBe(200)
+    Tokens.adminToken = message
+  })
+
+  test('Admin Get Users', async () => {
+    const response = await request(app)
+      .get('/user/get')
+      .set({ token: Tokens.adminToken })
+      .send()
+    const { error, message } = response.body
+    expect(error).toBeUndefined()
+    expect(message.length).toBe(3)
+  })
+
+  test('User Get Users', async () => {
+    const response = await request(app).get('/user/get')
+      .set({ token: Tokens.pedroToken })
+      .send()
+    const { error, message } = response.body
+    expect(error).toBe('User admin')
+    expect(message).toBe('No access')
+    expect(response.statusCode).toBe(404)
+  })
+})
+
+describe('Update User', () => {
   test('update user with error', async () => {
     const response = await request(app).put('/user/update')
       .set({ token: Tokens.pedroToken })
@@ -87,7 +118,7 @@ describe('POST /update', () => {
       .toEqual({ ...pedroUserModify, _id: user._id })
   })
 
-  test('update user whem email exist', async () => {
+  test('update user when email exist', async () => {
     const response = await request(app).put('/user/update')
       .set({ token: Tokens.pedroToken })
       .send(carlosUser)

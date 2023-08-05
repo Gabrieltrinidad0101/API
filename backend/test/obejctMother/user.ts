@@ -1,5 +1,6 @@
 import type IUser from '../../../share/domain/user'
 import { type TypeRol } from '../../../share/domain/user'
+import constantes from '../../src/mooc/share/infranstructure/Constantes'
 
 export default interface ITestUser {
   name?: string
@@ -50,6 +51,16 @@ export const pedroUserModify: IUser =
   _id: '122@34Modify',
   rol: 'user'
 }
+
+export const userAdmin = User(
+  {
+    name: constantes.USER_ADMIN,
+    email: constantes.EMAIL_ADMIN,
+    password: constantes.PASSWORD_ADMIN,
+    cellPhone: constantes.CELLPHONE_ADMIN,
+    _id: ''
+  }
+)
 
 export const joseUser = User(
   {

@@ -11,11 +11,9 @@ const instanceSchema = new Schema({
   initialDate: Date,
   paymentLink: String,
   messageLimit: Number,
-  createdIn: {
-    type: Date,
-    default: Date.now()
-  },
-  endService: Date
+  createdIn: Date,
+  endService: Date,
+  subscriptionId: String
 })
 
 const InstanceModal = model('instance', instanceSchema)

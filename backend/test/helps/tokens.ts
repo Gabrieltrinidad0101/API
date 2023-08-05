@@ -1,4 +1,5 @@
 const Tokens = {
-  pedroToken: ''
+  pedroToken: '',
+  adminToken: ''
 }
 export default Tokens

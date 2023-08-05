@@ -1,7 +1,7 @@
 import { type Request } from 'express'
 import { type IHttpStatusCode } from '../../../../../../share/domain/httpResult'
 import type IUser from '../../../../../../share/domain/user'
-import { type IUserUpdate, type TypeRol } from '../../../../../../share/domain/user'
+import { type IUserUpdate } from '../../../../../../share/domain/user'
 import type Authentication from '../application/userApp'
 
 export default class UserControl {
@@ -23,8 +23,7 @@ export default class UserControl {
   }
 
   getUsers = async (req: Request): Promise<IHttpStatusCode> => {
-    const rol = req.headers.userRol as TypeRol
-    return await this.userControl.getUsers(rol)
+    return await this.userControl.getUsers()
   }
 
   verifyAuthentication = async (req: Request): Promise<IHttpStatusCode> => {

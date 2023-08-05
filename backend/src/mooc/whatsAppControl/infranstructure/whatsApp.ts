@@ -138,7 +138,10 @@ export default class WhatsAppController implements IWhatsAppController {
     try {
       const client = screens.get(screenId)
       if (client === undefined) return
-      const status = await client.getState()
+      const status = await Promise.race([
+        client.getState(),
+        wait(10000).then(() => { throw new Error('setTimeout getting status of instance') })
+      ])
       const screenIsOpen = client.pupPage !== undefined ? WAState.OPENING : undefined
       return status ?? screenIsOpen
     } catch (error) {
@@ -167,12 +170,11 @@ export default class WhatsAppController implements IWhatsAppController {
 
   start = async (instance: IInstance, instanceStart: TypeInstanceStart): Promise<void> => {
     try {
-      const { _id } = instance
-      if (_id === undefined) return
+      const { _id, status } = instance
+      if (status === 'unpayment') return
       const screenId = getScreenId(instance)
-      if (screenId === undefined) return
-      const status = await this.getStatus(screenId)
-      if (status === WAState.CONNECTED || status === WAState.OPENING) return
+      const instanceStatus = await this.getStatus(screenId)
+      if (instanceStatus === WAState.CONNECTED || instanceStatus === WAState.OPENING) return
       Logs.Info(`Start instance id = ${_id}, start by ${instanceStart}`)
       const client = new Client({
         authStrategy: new LocalAuth({ clientId: screenId }),
@@ -181,6 +183,7 @@ export default class WhatsAppController implements IWhatsAppController {
         }
       })
       await this.instanceRepository.updateStatus(_id, 'initial')
+      await this.instanceRepository.updateQr(_id, '')
       await this.destroy(screenId)
       screens.set(screenId, client)
       this.onMessage(client, instance)
