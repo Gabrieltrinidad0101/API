@@ -15,4 +15,8 @@ export default class PaymentRepository implements IPaymentRepository {
     const subscriptionFromApi = await SuscriptionModal.findOne<ISubscriptionFromApi>(filter)
     return subscriptionFromApi
   }
+
+  updateStatus = async (_id: string,status: string): Promise<void> => {
+    await SuscriptionModal.updateOne({_id},{status})
+  }
 }
