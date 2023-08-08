@@ -1,13 +1,12 @@
 import { isEmptyNullOrUndefined } from '../../../../../../share/application/isEmptyNullUndefiner'
 import { type IHttpStatusCode } from '../../../../../../share/domain/httpResult'
-import type IInstance from '../../../../../../share/domain/instance'
 import { Logs } from '../../../../logs'
 import { type IConstantes } from '../../../share/domain/constantes'
 import { type IHttpRequest } from '../../../share/domain/httpRequest'
 import { type TypeValidation } from '../../../share/domain/Validator'
 import type IWhatsAppController from '../../../whatsAppControl/domian/whatsAppController'
 import type IInstanceRepository from '../../instance/domian/InstanceRepository'
-import { type IPaymentRepository, type ISubscription, type ISubscriptionFromApi, type IUserSubscriber, type IPaymentApp } from '../domian/payment'
+import { type IPaymentRepository, type ISubscription, type ISubscriptionFromApi, type IUserSubscriber, type IPaymentApp, type ICaptureSubscription } from '../domian/payment'
 import { generateObjectSubscription } from './jsonPayment'
 
 export class PaymentApp implements IPaymentApp {
@@ -52,7 +51,14 @@ export class PaymentApp implements IPaymentApp {
 
   captureSubscription = async (subscriptionId: string): Promise<IHttpStatusCode> => {
     const subscription = await this.paymentRepository.findOneSubscription({ id: subscriptionId })
-    if (subscription?.status === 'Active') {
+    if (subscription === null) {
+      return {
+        statusCode: 404,
+        message: 'Subscription not exist'
+      }
+    }
+
+    if (subscription?.status === 'ACTIVE') {
       return {
         statusCode: 201,
         message: 'Subscription activated'
@@ -69,18 +75,21 @@ export class PaymentApp implements IPaymentApp {
     }
 
     const { PAYMENT_SUBSCRIPTIONS_URL } = this.constantes
-    const url = `${PAYMENT_SUBSCRIPTIONS_URL}${subscriptionId}`
-    const result = await this.makeHttpRequest(url, {}, 'GET')
-
-    if (result.status !== 'active') {
+    const url = `${PAYMENT_SUBSCRIPTIONS_URL}/${subscriptionId}`
+    const captureSubscription = await this.makeHttpRequest(url, {}, 'GET') as ICaptureSubscription
+    if (captureSubscription.status !== 'ACTIVE') {
       return {
         statusCode: 422,
         error: 'The subscription needs to be active',
         message: 'The subscription is not active'
       }
     }
-    const newInstance: IInstance = { ...instance, status: 'initial' }
-    this.whatsAppController.start(newInstance, 'payment')
+    instance.status = 'initial'
+    const date = new Date()
+    const nextMonth = new Date(date.setMonth(date.getMonth() + 1))
+    await this.instanceRepository.updateEndService(instance._id, nextMonth)
+    await this.paymentRepository.updateStatus(subscription?._id, 'ACTIVE')
+    this.whatsAppController.start(instance, 'payment')
       .catch(error => {
         Logs.Exception(error)
       })

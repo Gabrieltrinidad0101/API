@@ -78,6 +78,10 @@ export default class InstanceRepository implements IInstanceRepository {
     await this.updateInstance(_id, 'name', name)
   }
 
+  updateEndService = async (_id: string, value: Date): Promise<void> => {
+    await this.updateInstance(_id, 'endService', value)
+  }
+
   private readonly updateInstance = async (_id: string, key: keyof IInstance, value: unknown): Promise<void> => {
     await InstanceModal.updateOne({ _id }, { [key]: value })
   }

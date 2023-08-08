@@ -47,7 +47,7 @@ export default class Instance {
     const status: TypeStatusInstance = isFirstInstane ? 'initial' : 'unpayment'
     const instance: IInstance = {
       token: crypto.randomUUID(),
-      createdIn: isFirstInstane ? date : undefined,
+      createdIn: date,
       endService,
       initialDate: date,
       messageLimit,

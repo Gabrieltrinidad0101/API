@@ -35,7 +35,9 @@ export default class WhatsAppController implements IWhatsAppController {
         await client?.sendMessage(`${send.to ?? ''}@c.us`, media)
       }
       const newLimit = instance.messageLimit - 1
-      await this.instanceRepository.updateMessageLimit(instance._id, newLimit)
+      if (newLimit !== Infinity) {
+        await this.instanceRepository.updateMessageLimit(instance._id, newLimit)
+      }
     } catch (error: any) {
       Logs.Error(error)
     }

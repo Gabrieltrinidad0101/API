@@ -1,4 +1,3 @@
-import './conf'
 import express from 'express'
 import { authRouter } from './mooc/routes/user/infranstructure/userRouter'
 import { instanceRouter } from './mooc/routes/instance/infranstructure/instanceRouter'

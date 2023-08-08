@@ -1,3 +1,6 @@
+import './conf'
+import './mooc/share/infranstructure/sendEmail/pdf/invoice'
+
 import app from './app'
 import constantes from './mooc/share/infranstructure/Constantes'
 

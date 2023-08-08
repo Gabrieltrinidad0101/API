@@ -42,6 +42,7 @@
   "dependencies": {
     "@sentry/node": "^7.60.0",
     "@types/nodemailer": "^6.4.9",
+    "@types/pdfkit": "^0.12.10",
     "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
@@ -51,6 +52,7 @@
     "mongoose": "^7.0.3",
     "morgan": "^1.10.0",
     "nodemailer": "^6.9.4",
+    "pdfkit": "^0.13.0",
     "request": "^2.88.2",
     "whatsapp-web.js": "^1.21.0"
   }
