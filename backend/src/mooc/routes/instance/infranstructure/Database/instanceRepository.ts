@@ -90,4 +90,6 @@ export default class InstanceRepository implements IInstanceRepository {
     const instance = await InstanceModal.findById<IInstanceQRStatus>({ _id, token }, { qr: 1, status: 1, _id: 0 })
     return instance
   }
+
+
 }
