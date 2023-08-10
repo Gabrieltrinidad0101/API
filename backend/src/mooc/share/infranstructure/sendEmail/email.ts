@@ -10,11 +10,15 @@ export class Email implements IEmail {
       from: `From ${constantes.SERVER_EMAIL}`, // sender address
       to: sendEmail.to, // list of receivers
       subject: sendEmail.subject, // Subject line
-      html: sendEmail.template // html body
+      html: sendEmail.template, // html body
+      attachments: [{
+        filename: sendEmail.file?.filename,
+        path: sendEmail.file?.path
+      }]
     })
   }
 
-  createTransporter = (): Transporter<SMTPTransport.SentMessageInfo> => {
+  private readonly createTransporter = (): Transporter<SMTPTransport.SentMessageInfo> => {
     const transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
       port: 465,

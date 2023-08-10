@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Invoice Generated</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #333333;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+        p {
+            color: #666666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Invoice Generated</h1>
+        <p>Dear {{=For=}},</p>
+        <p>We hope this email finds you well. We would like to inform you that the invoice you requested has been successfully generated and is now available for your review and records.</p>
+        <p>To access and download your invoice in PDF format, please click the link below:</p>
+        <p><a href="{{=PdfLink=}}">Download PDF Invoice</a></p>
+        <p>If you have any questions or concerns regarding the invoice, please don't hesitate to reach out to our accounts department at <a href="mailto:[Accounts Email]">[Accounts Email]</a> or [Accounts Phone Number]. We kindly request that you make the payment by the due date mentioned on the invoice.</p>
+        <p>Thank you for your continued partnership and prompt attention to this matter.</p>
+        <p>Best regards,<br>
+        {{=CompanyName=}}<br>
+        <p><a href="{{=CompanyLink=}}">Your Contact Information</a></p>
+    </div>
+</body>
+</html>

@@ -3,7 +3,7 @@ import fs from 'fs'
 import PDFDocument from 'pdfkit'
 import constantes from '../../Constantes'
 
-function createInvoice (invoice: IInvoice, path: string): void {
+export function createInvoicePdf (invoice: IInvoice, path: string): void {
   const doc = new PDFDocument({ size: 'A4', margin: 50 })
   generateHeader(doc)
   generateCustomerInformation(doc, invoice)
@@ -172,27 +172,3 @@ function formatDate (date: Date): string {
 
   return `${year}/${month}/${day}`
 }
-
-const invoice = {
-  shipping: {
-    name: 'John Doe',
-    address: '1234 Main Street',
-    city: 'San Francisco',
-    state: 'CA',
-    country: 'US',
-    postal_code: 94111
-  },
-  items: [
-    {
-      item: 'Instance Id',
-      description: 'Payment month',
-      quantity: 1,
-      amount: 2500
-    }
-  ],
-  subtotal: 2500,
-  paid: 0,
-  invoice_nr: 2500
-}
-
-createInvoice(invoice, './invoice.pdf')

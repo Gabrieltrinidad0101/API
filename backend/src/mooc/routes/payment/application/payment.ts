@@ -10,7 +10,7 @@ import { type IPaymentRepository, type ISubscription, type ISubscriptionFromApi,
 import { generateObjectSubscription } from './jsonPayment'
 
 export class PaymentApp implements IPaymentApp {
-  constructor(
+  constructor (
     private readonly httpRequest: IHttpRequest,
     private readonly constantes: IConstantes,
     private readonly paymentRepository: IPaymentRepository,
@@ -60,16 +60,10 @@ export class PaymentApp implements IPaymentApp {
 
     if (subscription?.status === 'ACTIVE') {
       return {
-        statusCode: 404,
-        message: 'Subscription not exist'
+        statusCode: 201,
+        message: 'Subscription activated'
       }
     }
-    // if (subscription?.status === 'ACTIVE') {
-    //   return {
-    //     statusCode: 201,
-    //     message: 'Subscription activated'
-    //   }
-    // }
 
     const instance = await this.instanceRepository.findOne({ subscriptionId })
     if (isEmptyNullOrUndefined(instance) || instance === null) {
