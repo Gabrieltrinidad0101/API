@@ -1,6 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { type IGenerateInvoiceTemplate, type TypeGnerateInvoiceTemplate } from '../../domain/email'
+import constantes from '../Constantes'
 
 export const getResetPasswordTemplate = (logon: string, linkResetPassword: string): string => {
   const template = fs.readFileSync(path.join(__dirname, '/templatesHtml/resetPassword.html'), 'utf-8')
@@ -14,8 +15,8 @@ export const getGenerateInvoiceTemplate: TypeGnerateInvoiceTemplate = (generateI
   const template = fs.readFileSync(path.join(__dirname, '/templatesHtml/invoice.html'), 'utf-8')
   const templateWithReplaceData = template
     .replace('{{=For=}}', generateInvoiceTemplate.for)
-    .replace('{{=PdfLink=}}', generateInvoiceTemplate.pdfLink)
-    .replace('{{=CompanyName=}}', generateInvoiceTemplate.companyName)
-    .replace('{{=CompanyLink=}}', generateInvoiceTemplate.companyLink)
+    .replace('{{=CompanyName=}}', constantes.COMPANY_NAME)
+    .replace('{{=CompanyLink=}}', constantes.COMPANY_LINK)
+    .replace('{{=CompanyEmail=}}', constantes.COMPANY_EMAIL)
   return templateWithReplaceData
 }

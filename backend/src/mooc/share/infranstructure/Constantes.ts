@@ -20,6 +20,8 @@ const ENCRYPT_TOKEN = process.env.ENCRYPT_TOKEN ?? ''
 const COMPANY_LOGO = process.env.COMPANY_LOGO ?? ''
 const PAYMENT_PLAN_ID = process.env.PAYMENT_PLAN_ID ?? ''
 const CELLPHONE_ADMIN = process.env.CELLPHONE_ADMIN ?? ''
+const COMPANY_LINK = process.env.COMPANY_LINK ?? ''
+const COMPANY_EMAIL = process.env.COMPANY_EMAIL ?? ''
 
 const constantes: IConstantes = {
   HOST,
@@ -40,7 +42,9 @@ const constantes: IConstantes = {
   SERVER_EMAIL_PASSWORD,
   ENCRYPT_TOKEN,
   COMPANY_LOGO,
-  PAYMENT_PLAN_ID
+  PAYMENT_PLAN_ID,
+  COMPANY_LINK,
+  COMPANY_EMAIL
 }
 
 // If any property is undefined stop the server

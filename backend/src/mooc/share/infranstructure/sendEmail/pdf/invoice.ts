@@ -27,7 +27,7 @@ function generateCustomerInformation (doc: PDFKit.PDFDocument, invoice: IInvoice
   doc
     .fillColor('#444444')
     .fontSize(20)
-    .text('Invoice', 50, 160)
+    .text('Subscription', 50, 160)
 
   generateHr(doc, 185)
 
@@ -35,11 +35,11 @@ function generateCustomerInformation (doc: PDFKit.PDFDocument, invoice: IInvoice
 
   doc
     .fontSize(10)
-    .text('Invoice Number:', 50, customerInformationTop)
+    .text('Subscription Number:', 50, customerInformationTop)
     .font('Helvetica-Bold')
     .text(invoice.invoice_nr.toString(), 150, customerInformationTop)
     .font('Helvetica')
-    .text('Invoice Date:', 50, customerInformationTop + 15)
+    .text('Subscription Date:', 50, customerInformationTop + 15)
     .text(formatDate(new Date()), 150, customerInformationTop + 15)
     .text('Balance Due:', 50, customerInformationTop + 30)
     .text(
@@ -98,7 +98,7 @@ function generateInvoiceTable (doc: PDFKit.PDFDocument, invoice: IInvoice): void
     generateHr(doc, position + 20)
   }
 
-  const subtotalPosition = invoiceTableTop + (invoice.items.length) * 30
+  const subtotalPosition = invoiceTableTop + (invoice.items.length + 1) * 30
   generateTableRow(
     doc,
     subtotalPosition,

@@ -18,6 +18,8 @@ export interface IConstantes {
   readonly ENCRYPT_TOKEN: string
   readonly COMPANY_LOGO: string
   readonly PAYMENT_PLAN_ID: string
+  readonly COMPANY_LINK: string
+  readonly COMPANY_EMAIL: string
 }
 
 export type TypekeyOfIConstantes = keyof IConstantes

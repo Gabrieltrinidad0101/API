@@ -1,11 +1,13 @@
 import { isEmptyNullOrUndefined } from '../../../../../../share/application/isEmptyNullUndefiner'
 import { type IHttpStatusCode } from '../../../../../../share/domain/httpResult'
 import { Logs } from '../../../../logs'
+import { type ISubscriptionEmail } from '../../../emailSubscription/domian/emailSubscription'
 import { type IConstantes } from '../../../share/domain/constantes'
 import { type IHttpRequest } from '../../../share/domain/httpRequest'
 import { type TypeValidation } from '../../../share/domain/Validator'
 import type IWhatsAppController from '../../../whatsAppControl/domian/whatsAppController'
 import type IInstanceRepository from '../../instance/domian/InstanceRepository'
+import type IUserRepository from '../../user/domain/IUserRepository'
 import { type IPaymentRepository, type ISubscription, type ISubscriptionFromApi, type IUserSubscriber, type IPaymentApp, type ICaptureSubscription } from '../domian/payment'
 import { generateObjectSubscription } from './jsonPayment'
 
@@ -16,7 +18,9 @@ export class PaymentApp implements IPaymentApp {
     private readonly paymentRepository: IPaymentRepository,
     private readonly instanceRepository: IInstanceRepository,
     private readonly whatsAppController: IWhatsAppController,
-    private readonly paymentSubscriptionValidator: TypeValidation
+    private readonly paymentSubscriptionValidator: TypeValidation,
+    private readonly subscriptionEmail: ISubscriptionEmail,
+    private readonly userRepository: IUserRepository
   ) { }
 
   private readonly makeHttpRequest = async (url: string, productoToCreate: ISubscription | object, method: 'POST' | 'GET' = 'POST'): Promise<any> => {
@@ -93,6 +97,12 @@ export class PaymentApp implements IPaymentApp {
       .catch(error => {
         Logs.Exception(error)
       })
+    const user = await this.userRepository.findById(instance.userId ?? '')
+    if (user === null) {
+      Logs.Error(`Instance id = ${instance._id} with null user id ${instance.userId ?? 'undefined'} and name ${instance.userName ?? 'undefined'}`)
+    } else {
+      await this.subscriptionEmail.send(user)
+    }
     return {
       message: 'The instance is initialized successfully'
     }

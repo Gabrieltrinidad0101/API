@@ -40,9 +40,6 @@ export interface IInvoice {
 
 export interface IGenerateInvoiceTemplate {
   for: string
-  pdfLink: string
-  companyName: string
-  companyLink: string
 }
 
 export type TypeGnerateInvoiceTemplate = (generateInvoiceTemplate: IGenerateInvoiceTemplate) => string

@@ -10,7 +10,6 @@ import { InititalLogs } from './logs'
 import { paymentRouter } from './mooc/routes/payment/infranstructure/paymentRouter'
 
 const app = express()
-
 // Set configuration of logs
 InititalLogs(app)
 

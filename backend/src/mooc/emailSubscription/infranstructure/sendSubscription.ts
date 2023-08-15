@@ -1,9 +1,12 @@
-import constantes from '../../share/infranstructure/Constantes'
+import type IUser from '../../../../../share/domain/user'
 import { createInvoicePdf, email, getGenerateInvoiceTemplate } from '../../share/infranstructure/dependecies'
+import { type ISubscriptionEmail } from '../domian/emailSubscription'
+import crypto from 'crypto'
+import path from 'path'
 
-export class InvoiceEmail {
+export class SubscriptionEmail implements ISubscriptionEmail {
   private readonly getInvoicePath = (): string => {
-    return `./invoices/${__dirname + crypto.randomUUID()}.pdf`
+    return path.join(__dirname, `/subscriptionPdf/${crypto.randomUUID()}.pdf`)
   }
 
   private readonly generatedPdf = (invoiceFilename: string): void => {
@@ -30,18 +33,15 @@ export class InvoiceEmail {
     }, invoiceFilename)
   }
 
-  send = async (): Promise<void > => {
+  send = async (user: IUser): Promise<void> => {
     const invoicePath = this.getInvoicePath()
     this.generatedPdf(invoicePath)
     const template = getGenerateInvoiceTemplate({
-      for: 'Test',
-      companyLink: 'Test',
-      companyName: constantes.COMPANY_NAME,
-      pdfLink: 'Test'
+      for: user.name
     })
     await email.send({
       subject: 'Invoice is generate',
-      to: 'gabrielqwes123@gmail.com',
+      to: user.email,
       template,
       file: {
         filename: 'Invoice.pdf',
