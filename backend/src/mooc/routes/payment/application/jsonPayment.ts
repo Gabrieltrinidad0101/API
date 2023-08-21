@@ -1,8 +1,10 @@
+import constantes from '../../../share/infranstructure/Constantes'
 import { type ISubscription, type IUserSubscriber } from '../domian/payment'
+const { PAYMENT_PLAN_ID } = constantes
 
 export const generateObjectSubscription = (user: IUserSubscriber): ISubscription => ({
-  plan_id: '',
-  start_time: '2023-08-16T00:00:00Z',
+  plan_id: PAYMENT_PLAN_ID,
+  start_time: new Date(new Date().getTime() + 1).toISOString(),
   quantity: 1,
   subscriber: {
     name: {

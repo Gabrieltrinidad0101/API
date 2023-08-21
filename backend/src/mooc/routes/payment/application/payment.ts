@@ -23,11 +23,11 @@ export class PaymentApp implements IPaymentApp {
     private readonly userRepository: IUserRepository
   ) { }
 
-  private readonly makeHttpRequest = async (url: string, productoToCreate: ISubscription | object, method: 'POST' | 'GET' = 'POST'): Promise<any> => {
+  private readonly makeHttpRequest = async (url: string, subscription: ISubscription | object, method: 'POST' | 'GET' = 'POST'): Promise<any> => {
     const response = await this.httpRequest({
       method,
       url,
-      body: productoToCreate,
+      body: subscription,
       auth: {
         user: this.constantes.CLIENT_PAYMENT_ID,
         pass: this.constantes.PAYMENT_SECRET
@@ -42,12 +42,11 @@ export class PaymentApp implements IPaymentApp {
   }
 
   createSubscription = async (subscriptionToCreate: ISubscription): Promise<ISubscriptionFromApi> => {
-    const { PAYMENT_PLAN_ID, PAYMENT_SUBSCRIPTIONS_URL } = this.constantes
-    subscriptionToCreate.plan_id = PAYMENT_PLAN_ID
+    const { PAYMENT_SUBSCRIPTIONS_URL } = this.constantes
     const subscriptionFromApi = await this.makeHttpRequest(PAYMENT_SUBSCRIPTIONS_URL, subscriptionToCreate) as ISubscriptionFromApi
     const error = this.paymentSubscriptionValidator(subscriptionFromApi)
     if (error !== undefined) {
-      throw new Error(`Error creating susbscription ${JSON.stringify(error)}`)
+      throw new Error(`Error creating susbscription api reponse ${JSON.stringify(subscriptionFromApi)} error = ${error}`)
     }
     await this.paymentRepository.saveSubscription(subscriptionFromApi)
     return subscriptionFromApi

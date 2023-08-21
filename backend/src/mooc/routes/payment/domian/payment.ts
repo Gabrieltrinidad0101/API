@@ -24,6 +24,8 @@ interface IAppContext {
 export interface IUserSubscriber {
   name: string
   email: string
+  startSubscriptionDate: string
+  created: string
 }
 
 interface ISubscriber {
