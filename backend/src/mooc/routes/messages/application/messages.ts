@@ -1,7 +1,7 @@
 import { type TypeValidation } from '../../../share/domain/Validator'
 import type IWhatsAppController from '../../../whatsAppControl/domian/whatsAppController'
 import { type IHttpStatusCode } from '../../../../../../share/domain/httpResult'
-import type ISendMessage from '../../../../../../share/domain/Send'
+import { type ISendMessage } from '../../../../../../share/domain/Send'
 import type IInstanceRepository from '../../instance/domian/InstanceRepository'
 import { isEmptyNullOrUndefined } from '../../../../../../share/application/isEmptyNullUndefiner'
 export default class MessagesApp {
@@ -19,12 +19,12 @@ export default class MessagesApp {
         error
       }
     }
-    const { _id, token } = send
-    const instance = await this.instanceRepository.findByIdAndToken(_id, token)
+    const { instanceId, token } = send
+    const instance = await this.instanceRepository.findByIdAndToken(instanceId, token)
     if (isEmptyNullOrUndefined(instance) || instance === null) {
       return {
         statusCode: 422,
-        error: `token ${token} or _id ${_id} is invalid`,
+        error: `token ${token} or _id ${instanceId} is invalid`,
         message: 'id or token is invalid'
       }
     }

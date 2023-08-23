@@ -4,8 +4,8 @@ export interface IToAndData {
     filename?: string
 }
 
-export default interface ISend extends  IToAndData {
-    _id: string
+export interface ISendMessage extends  IToAndData {
+    instanceId: string
     token: string
     document?: string 
 }

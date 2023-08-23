@@ -12,7 +12,7 @@ export const getResetPasswordTemplate = (logon: string, linkResetPassword: strin
 }
 
 export const getGenerateInvoiceTemplate: TypeGnerateInvoiceTemplate = (generateInvoiceTemplate: IGenerateInvoiceTemplate): string => {
-  const template = fs.readFileSync(path.join(__dirname, '/templatesHtml/invoice.html'), 'utf-8')
+  const template = fs.readFileSync(path.join(__dirname, '/templatesHtml/subscription.html'), 'utf-8')
   const templateWithReplaceData = template
     .replace('{{=For=}}', generateInvoiceTemplate.for)
     .replace('{{=CompanyName=}}', constantes.COMPANY_NAME)

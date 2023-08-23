@@ -44,7 +44,7 @@ export class SubscriptionEmail implements ISubscriptionEmail {
       to: user.email,
       template,
       file: {
-        filename: 'Invoice.pdf',
+        filename: invoicePath,
         path: invoicePath
       }
     })

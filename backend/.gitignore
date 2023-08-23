@@ -130,3 +130,4 @@ dist
 .pnp.*
 .wwebjs_auth
 .wwebjs_cache
+src/mooc/emailSubscription/infranstructure/subscriptionPdf/

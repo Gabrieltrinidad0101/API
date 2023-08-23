@@ -14,6 +14,7 @@ import SendFile from './screens/docs/infranstructure/components/sendFile/SendFil
 import SendMessage from './screens/docs/infranstructure/components/sendMessage/sendMessage'
 import GeneralDocs from './screens/docs/infranstructure/components/generalDocs/GeneralDocs.module'
 import ChangePassword from './screens/changePassword/infranstructure/ChangePassword'
+import { Payment } from './screens/payment/infranstructure/Payment'
 import Page404 from './screens/404/Page404'
 
 export default function App (): JSX.Element {
@@ -35,6 +36,7 @@ export default function App (): JSX.Element {
           </Route>
         </Route>
         <Route element={<ChangePassword />} path="changePassword" />
+        <Route path="/payment" element={<Payment/>} ></Route>
         <Route path="/*" element={<Page404 />}></Route>
       </Routes>
       <ToastContainer />

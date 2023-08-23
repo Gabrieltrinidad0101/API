@@ -16,7 +16,7 @@ export default class Instance {
   private readonly whatsAppController: IWhatsAppController
   private readonly paymentApp: IPaymentApp
 
-  constructor(
+  constructor (
     iInstanceContructor: IInstanceContructor
   ) {
     this.instanceRepository = iInstanceContructor.instanceRepository
@@ -24,27 +24,21 @@ export default class Instance {
     this.paymentApp = iInstanceContructor.paymentApp
   }
 
-  private validateSearchHttp(searchHttp: ISearchInstance): boolean {
+  private validateSearchHttp (searchHttp: ISearchInstance): boolean {
     return isEmptyNullOrUndefined(searchHttp.skip) ||
       isEmptyNullOrUndefined(searchHttp.limit)
   }
 
   private readonly generateSubscription = async (user: IBasicUser): Promise<ISubscriptionFromApi> => {
-    const currentDate = new Date();
-    const previousDate = new Date(currentDate);
-    previousDate.setDate(currentDate.getDate() - 2);
-    const isoString = previousDate.toISOString();
     const response = await this.paymentApp.generateSubscription({
       name: user.name,
-      email: user.email,
-      startSubscriptionDate: isoString,
-      created: currentDate.toISOString()
+      email: user.email
     })
     return response
   }
 
   private readonly createInstance = async (user: IBasicUser): Promise<IInstance> => {
-    const instances = await this. instanceRepository.find({ userId: user._id })
+    const instances = await this.instanceRepository.find({ userId: user._id })
     const isFirstInstane = instances.length <= 0
     const subscriptionFromApi = isFirstInstane ? null : await this.generateSubscription(user)
     const date = new Date()
@@ -68,7 +62,7 @@ export default class Instance {
     return instance
   }
 
-  async save(user: IBasicUser): Promise<IHttpStatusCode> {
+  async save (user: IBasicUser): Promise<IHttpStatusCode> {
     const instancesUnpayment = await this.instanceRepository.find(
       { status: 'unpayment', userId: user._id }
     )
@@ -96,7 +90,7 @@ export default class Instance {
     }
   }
 
-  async findById(_id: string, userId: string): Promise<IHttpStatusCode> {
+  async findById (_id: string, userId: string): Promise<IHttpStatusCode> {
     const Instance = await this.instanceRepository.findByIdAndUserId(_id, userId)
     if (Instance === null) {
       return {
@@ -111,7 +105,7 @@ export default class Instance {
     }
   }
 
-  async get(searchHttp: ISearchInstance, userId: string): Promise<IHttpStatusCode> {
+  async get (searchHttp: ISearchInstance, userId: string): Promise<IHttpStatusCode> {
     if (this.validateSearchHttp(searchHttp)) {
       return {
         statusCode: 400,
@@ -125,7 +119,7 @@ export default class Instance {
     }
   }
 
-  async delete(_id: string, userId: string): Promise<IHttpStatusCode> {
+  async delete (_id: string, userId: string): Promise<IHttpStatusCode> {
     await this.instanceRepository.delete(_id, userId)
     return {
       statusCode: 200,
@@ -133,7 +127,7 @@ export default class Instance {
     }
   }
 
-  async getQr(_id: string, token: string): Promise<IHttpStatusCode> {
+  async getQr (_id: string, token: string): Promise<IHttpStatusCode> {
     if (isEmptyNullOrUndefined(token)) {
       return {
         statusCode: 422,
@@ -159,9 +153,8 @@ export default class Instance {
     this.whatsAppController.getStatus(screenId)
       .then(async (screenStatus): Promise<void> => {
         const timeFromInitialDate = Math.abs(instance.initialDate.getTime() - new Date().getTime())
-        const minute = 1000 * 60
-
-        if (screenStatus === undefined && timeFromInitialDate > minute) {
+        const thirtySenconds = 1000 * 30
+        if (screenStatus === undefined && timeFromInitialDate > thirtySenconds) {
           await this.whatsAppController.restart(instance)
         }
       })
@@ -180,7 +173,7 @@ export default class Instance {
     }
   }
 
-  async saveWebhookUrl(_id: string, webhookUrl: string): Promise<IHttpStatusCode> {
+  async saveWebhookUrl (_id: string, webhookUrl: string): Promise<IHttpStatusCode> {
     if (isEmptyNullOrUndefined(webhookUrl)) {
       return {
         statusCode: 422,
@@ -195,7 +188,7 @@ export default class Instance {
     }
   }
 
-  async saveName(_id: string, name?: string): Promise<IHttpStatusCode> {
+  async saveName (_id: string, name?: string): Promise<IHttpStatusCode> {
     if (isEmptyNullOrUndefined(name) || name === undefined) {
       return {
         statusCode: 422,
@@ -210,7 +203,7 @@ export default class Instance {
     }
   }
 
-  async restart(_id: string, token: string): Promise<IHttpStatusCode> {
+  async restart (_id: string, token: string): Promise<IHttpStatusCode> {
     if (isEmptyNullOrUndefined(token)) {
       return {
         statusCode: 422,
@@ -232,7 +225,7 @@ export default class Instance {
     }
   }
 
-  async getRealStatus(_id: string, token: string): Promise<IHttpStatusCode> {
+  async getRealStatus (_id: string, token: string): Promise<IHttpStatusCode> {
     if (isEmptyNullOrUndefined(token)) {
       return {
         statusCode: 422,
@@ -255,7 +248,7 @@ export default class Instance {
     }
   }
 
-  async logout(_id: string, token: string): Promise<IHttpStatusCode> {
+  async logout (_id: string, token: string): Promise<IHttpStatusCode> {
     if (isEmptyNullOrUndefined(_id) || isEmptyNullOrUndefined(token)) {
       return {
         statusCode: 422,

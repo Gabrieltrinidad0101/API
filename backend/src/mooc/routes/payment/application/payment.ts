@@ -46,7 +46,7 @@ export class PaymentApp implements IPaymentApp {
     const subscriptionFromApi = await this.makeHttpRequest(PAYMENT_SUBSCRIPTIONS_URL, subscriptionToCreate) as ISubscriptionFromApi
     const error = this.paymentSubscriptionValidator(subscriptionFromApi)
     if (error !== undefined) {
-      throw new Error(`Error creating susbscription api reponse ${JSON.stringify(subscriptionFromApi)} error = ${error}`)
+      throw new Error(`Error creating susbscription api reponse ${JSON.stringify(subscriptionFromApi)} error = ${JSON.stringify(error)}`)
     }
     await this.paymentRepository.saveSubscription(subscriptionFromApi)
     return subscriptionFromApi

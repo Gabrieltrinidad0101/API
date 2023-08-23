@@ -5,34 +5,35 @@ import type IWhatsAppController from '../domian/whatsAppController'
 import wait from '../../../../../share/application/wait'
 import sendReceiveMessage from './sendReceiveMessage'
 import { type TypeInstanceStart } from '../../../../../share/domain/instance'
-import type ISend from '../../../../../share/domain/Send'
+import { type ISendMessage } from '../../../../../share/domain/Send'
 import getMessageMediaExtension from './getMediaFileExtension'
 import { getScreenId } from './getScreenId'
 import { Logs } from '../../../logs'
 import { type TypeOpenWithError } from '../domian/whatsAppController'
+import { messageQueue } from './dependencies'
 
 const screens = new Map<string, Client>()
 
 export default class WhatsAppController implements IWhatsAppController {
   constructor (private readonly instanceRepository: IInstanceRepository) { }
 
-  async send (instance: IInstance, send: ISend): Promise<string | undefined> {
+  async send (instance: IInstance, message: ISendMessage): Promise<string | undefined> {
     try {
       const screenId = getScreenId({
-        _id: send._id,
-        token: send.token
+        _id: message.instanceId,
+        token: message.token
       })
       if (instance.messageLimit === 0) {
         return 'you exceeded the limit of messages'
       }
       const client = screens.get(screenId)
-      if (send.body !== undefined && send.to !== undefined) {
-        await client?.sendMessage(`${send.to}@c.us`, send.body)
-      } else if (send.document !== undefined) {
-        const extension = getMessageMediaExtension(send.filename ?? '')
+      if (message.body !== undefined && message.to !== undefined) {
+        await client?.sendMessage(`${message.to}@c.us`, message.body)
+      } else if (message.document !== undefined) {
+        const extension = getMessageMediaExtension(message.filename ?? '')
         if (extension === false) return
-        const media = await MessageMedia.fromUrl(send.document)
-        await client?.sendMessage(`${send.to ?? ''}@c.us`, media)
+        const media = await MessageMedia.fromUrl(message.document)
+        await client?.sendMessage(`${message.to ?? ''}@c.us`, media)
       }
       const newLimit = instance.messageLimit - 1
       if (newLimit !== Infinity) {
@@ -40,6 +41,7 @@ export default class WhatsAppController implements IWhatsAppController {
       }
     } catch (error: any) {
       Logs.Error(error)
+      await messageQueue.add(message)
     }
   }
 

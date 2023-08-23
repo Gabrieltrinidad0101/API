@@ -21,7 +21,10 @@ const initialState: IInstance = {
   token: '',
   userId: '',
   name: '',
-  initialDate: new Date()
+  initialDate: new Date(),
+  paymentLink: '',
+  messageLimit: 100,
+  subscriptionId: ''
 }
 
 export default function Instance (): JSX.Element {

@@ -1,9 +1,9 @@
 import axios, { AxiosError } from 'axios'
 import type ICustomFecth from '../domian/customFecth'
 import type BaseHttp from '../domian/baseHttp'
-import { Toast, serverUrl, loaderAnimation } from './dependencies'
+import { Toast, serverUrl } from './dependencies'
 import { type IOptionsFetch } from '../domian/customFecth'
-
+import LoaderAnimation from './loaderAnimation'
 class CustomFecth implements ICustomFecth {
   private readonly customFecth = axios.create({
     baseURL: serverUrl
@@ -58,11 +58,12 @@ class CustomFecth implements ICustomFecth {
   }
 
   async baseHttp<T>(baseHttp: BaseHttp): Promise<T | undefined> {
+    const loaderAnimation = new LoaderAnimation()
     try {
       const token = localStorage.getItem('token')
       const { removeDefaultHeaders, showLoader } = baseHttp.optionsFetch ?? {}
       if (removeDefaultHeaders !== true) baseHttp.headers = { ...baseHttp.headers, token }
-      if (showLoader === false) loaderAnimation.showAfter(500)
+      if (showLoader !== false) loaderAnimation.showAfter(500)
       const result = await this.customFecth.request(baseHttp)
       loaderAnimation.hide()
       return result.data as T
