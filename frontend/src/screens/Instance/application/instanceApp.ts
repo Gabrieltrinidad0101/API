@@ -1,7 +1,7 @@
 import { CustomFetchError, type IFecthAlert } from '../../../share/domian/customFecth'
 import { type ISaveInstance } from '../../../../../share/domain/instance'
 import type IInstance from '../../../../../share/domain/instance'
-import type ISendMessage from '../../../../../share/domain/Send'
+import { type ISendMessage } from '../../../../../share/domain/Send'
 import { isEmptyNullOrUndefined } from '../../../../../share/application/isEmptyNullUndefiner'
 import APIURL from '../../../share/application/Api'
 
@@ -33,7 +33,7 @@ export default class InstanceApp {
 
   sendTestMessage = async (send: ISendMessage): Promise<void> => {
     try {
-      const url = isEmptyNullOrUndefined(send.body) ? APIURL.sendMessage(send._id) : APIURL.sendDocument(send._id)
+      const url = !isEmptyNullOrUndefined(send.body) ? APIURL.sendMessage(send.instanceId) : APIURL.sendDocument(send.instanceId)
       const res = await this.fetchAlert.customFecth.post<string>(url, send)
       if (res?.message === undefined) return
       this.fetchAlert.toast.sucess(res?.message.toString())

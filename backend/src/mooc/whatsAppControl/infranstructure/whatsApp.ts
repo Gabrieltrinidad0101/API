@@ -5,19 +5,20 @@ import type IWhatsAppController from '../domian/whatsAppController'
 import wait from '../../../../../share/application/wait'
 import sendReceiveMessage from './sendReceiveMessage'
 import { type TypeInstanceStart } from '../../../../../share/domain/instance'
-import { type ISendMessage } from '../../../../../share/domain/Send'
+import { type ISendMessageUserId } from '../../../../../share/domain/Send'
 import getMessageMediaExtension from './getMediaFileExtension'
 import { getScreenId } from './getScreenId'
 import { Logs } from '../../../logs'
 import { type TypeOpenWithError } from '../domian/whatsAppController'
-import { messageQueue } from './dependencies'
+import { type MessageQueue } from './messageQueue'
 
 const screens = new Map<string, Client>()
 
 export default class WhatsAppController implements IWhatsAppController {
-  constructor (private readonly instanceRepository: IInstanceRepository) { }
+  constructor (private readonly instanceRepository: IInstanceRepository,
+    private readonly messageQueue: MessageQueue) { }
 
-  async send (instance: IInstance, message: ISendMessage): Promise<string | undefined> {
+  async send (instance: IInstance, message: ISendMessageUserId): Promise<string | undefined> {
     try {
       const screenId = getScreenId({
         _id: message.instanceId,
@@ -26,14 +27,17 @@ export default class WhatsAppController implements IWhatsAppController {
       if (instance.messageLimit === 0) {
         return 'you exceeded the limit of messages'
       }
-      const client = screens.get(screenId)
+      const screen = screens.get(screenId)
       if (message.body !== undefined && message.to !== undefined) {
-        await client?.sendMessage(`${message.to}@c.us`, message.body)
+        await screen?.sendMessage(`${message.to}@c.us`, message.body)
       } else if (message.document !== undefined) {
         const extension = getMessageMediaExtension(message.filename ?? '')
         if (extension === false) return
         const media = await MessageMedia.fromUrl(message.document)
-        await client?.sendMessage(`${message.to ?? ''}@c.us`, media)
+        await screen?.sendMessage(`${message.to ?? ''}@c.us`, media)
+      }
+      if (message.isQueue) {
+        // to-do delete message from db
       }
       const newLimit = instance.messageLimit - 1
       if (newLimit !== Infinity) {
@@ -41,7 +45,8 @@ export default class WhatsAppController implements IWhatsAppController {
       }
     } catch (error: any) {
       Logs.Error(error)
-      await messageQueue.add(message)
+      const messageQueue = { ...message, isQueue: true }
+      await this.messageQueue.insert(messageQueue)
     }
   }
 

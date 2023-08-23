@@ -9,3 +9,8 @@ export interface ISendMessage extends  IToAndData {
     token: string
     document?: string 
 }
+
+export interface ISendMessageUserId extends  ISendMessage {
+    isQueue: boolean
+    userId: string
+}

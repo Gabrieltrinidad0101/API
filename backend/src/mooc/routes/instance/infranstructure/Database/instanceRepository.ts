@@ -91,3 +91,5 @@ export default class InstanceRepository implements IInstanceRepository {
     return instance
   }
 }
+
+export const instanceRepository = new InstanceRepository()

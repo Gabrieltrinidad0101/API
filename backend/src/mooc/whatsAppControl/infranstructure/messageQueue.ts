@@ -1,11 +1,11 @@
-import { type ISendMessage } from '../../../../../share/domain/Send'
+import { type ISendMessageUserId } from '../../../../../share/domain/Send'
 import { Logs } from '../../../logs'
 import { type IMessageRepository } from '../../routes/messages/domian/messages'
 
 export class MessageQueue {
   constructor (private readonly messageRepository: IMessageRepository) {}
 
-  add = async (message: ISendMessage): Promise<void> => {
+  insert = async (message: ISendMessageUserId): Promise<void> => {
     try {
       await this.messageRepository.insert(message)
     } catch (ex) {

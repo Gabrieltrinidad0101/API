@@ -1,7 +1,7 @@
 import { type IHttpStatusCode } from '../../../../../../share/domain/httpResult'
 import { type Request } from 'express'
 import type MessagesApp from '../application/messages'
-import type ISendMessage from '../../../../../../share/domain/Send'
+import { type ISendMessage } from '../../../../../../share/domain/Send'
 
 export default class MessagesControl {
   constructor (
@@ -11,7 +11,12 @@ export default class MessagesControl {
   send = async (req: Request): Promise<IHttpStatusCode> => {
     const _id = req.params._id
     const data = req.body as ISendMessage
-    data._id = _id
+    data.instanceId = _id
     return await this.messagesApp.send(data)
+  }
+
+  queuedMessage = async (req: Request): Promise<IHttpStatusCode> => {
+    const { userId } = req.headers
+    return await this.messagesApp.queuedMessage(userId?.toString() ?? '')
   }
 }

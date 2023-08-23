@@ -12,7 +12,7 @@ export default function SendMessage (): JSX.Element {
       title: 'Send Test Message',
       multiline: true,
       messagePlaceHolder: 'message',
-      typeOfSend: 'document',
+      typeOfSend: 'body',
       showFileName: false
     }} />
   )

@@ -1,26 +1,29 @@
 import { type TypeValidation } from '../../../share/domain/Validator'
 import type IWhatsAppController from '../../../whatsAppControl/domian/whatsAppController'
 import { type IHttpStatusCode } from '../../../../../../share/domain/httpResult'
-import { type ISendMessage } from '../../../../../../share/domain/Send'
+import { type ISendMessageUserId, type ISendMessage } from '../../../../../../share/domain/Send'
 import type IInstanceRepository from '../../instance/domian/InstanceRepository'
 import { isEmptyNullOrUndefined } from '../../../../../../share/application/isEmptyNullUndefiner'
+import { type IMessageRepository } from '../domian/messages'
+import { Logs } from '../../../../logs'
 export default class MessagesApp {
   constructor (
     private readonly instanceRepository: IInstanceRepository,
     private readonly instanceValidation: TypeValidation,
-    private readonly whatsAppController: IWhatsAppController
+    private readonly whatsAppController: IWhatsAppController,
+    private readonly messageRepository: IMessageRepository
   ) { }
 
-  send = async (send: ISendMessage): Promise<IHttpStatusCode> => {
-    const error = this.instanceValidation(send)
+  send = async (message: ISendMessage): Promise<IHttpStatusCode> => {
+    const error = this.instanceValidation(message)
     if (error !== undefined) {
       return {
         statusCode: 422,
         error
       }
     }
-    const { instanceId, token } = send
-    const instance = await this.instanceRepository.findByIdAndToken(instanceId, token)
+    const { instanceId, token } = message
+    const instance = await this.instanceRepository.findOne({ _id: instanceId })
     if (isEmptyNullOrUndefined(instance) || instance === null) {
       return {
         statusCode: 422,
@@ -28,7 +31,23 @@ export default class MessagesApp {
         message: 'id or token is invalid'
       }
     }
-    await this.whatsAppController.send(instance, send)
+    const messageWithUserId: ISendMessageUserId = { ...message, userId: instance.userId ?? '', isQueue: false }
+    await this.whatsAppController.send(instance, messageWithUserId)
+    return {
+      message: 'success'
+    }
+  }
+
+  queuedMessage = async (userId: string): Promise<IHttpStatusCode> => {
+    const queuedMessages = await this.messageRepository.find({ userId, isQueue: true })
+    for (const queuedMessage of queuedMessages) {
+      const instance = await this.instanceRepository.findOne({ _id: queuedMessage.instanceId })
+      if (isEmptyNullOrUndefined(instance) || instance === null) {
+        Logs.Error(`Error tring to get the instance in queuedMessage instance = ${JSON.stringify(instance)} message = ${JSON.stringify(queuedMessage)}`)
+        continue
+      }
+      await this.whatsAppController.send(instance, queuedMessage)
+    }
     return {
       message: 'success'
     }

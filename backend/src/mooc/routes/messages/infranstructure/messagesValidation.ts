@@ -3,7 +3,7 @@ import { validator } from '../../../share/infranstructure/dependecies'
 
 const messageSchema = Joi.object({
   token: Joi.string().required(),
-  _id: Joi.string().required(),
+  instanceId: Joi.string().required(),
   to: Joi.string().required(),
   body: Joi.string().optional().allow(''),
   document: Joi.string().optional().allow(''),

@@ -20,7 +20,7 @@ const Send = ({ Prop: propSend }: Prop<IPropSend>): JSX.Element => {
     }
 
     instanceApp.sendTestMessage({
-      _id: propSend._id,
+      instanceId: propSend._id,
       token: propSend.token,
       [propSend.typeOfSend]: body,
       to,
