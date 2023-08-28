@@ -14,7 +14,9 @@ export default function InstanceStateControl ({ Prop: instanceStateControl }: Pr
       width="100%"
       height="90%"
     />,
-    authenticated: <InstanceActive Prop={instanceStateControl.instance} />
+    authenticated: <InstanceActive Prop={instanceStateControl.instance} />,
+    unpayment: <h1>Unpayment</h1>
+
   }
   return InstanceState[instanceStateControl.instance.status]
 }
