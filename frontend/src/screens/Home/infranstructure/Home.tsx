@@ -5,11 +5,9 @@ import HomeCss from './Home.module.css'
 import Instances from './Components/Instances/Instances'
 import type IInstance from '../../../../../share/domain/instance'
 import { isEmptyNullOrUndefined } from '../../../../../share/application/isEmptyNullUndefiner'
-import { useUserContext } from '../../../share/infranstruture/AuthenticationContext'
 
 export default function Home (): JSX.Element {
   const [instancesData, setInstancesData] = useState<IInstance[]>([])
-  const { user } = useUserContext()
   const [search, setSearch] = useState<string>('')
 
   const getInstance = async (): Promise<void> => {
@@ -27,7 +25,7 @@ export default function Home (): JSX.Element {
   }, [])
 
   const createNewInstance = async (): Promise<void> => {
-    const newInstance = await instanceApp.createNewInstance(user.name)
+    const newInstance = await instanceApp.createNewInstance()
     if (newInstance === undefined) return
     setInstancesData((prevInstancesData) => [newInstance, ...prevInstancesData])
   }

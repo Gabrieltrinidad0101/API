@@ -1,5 +1,6 @@
 import { isEmptyNullOrUndefined } from '../../../../../../share/application/isEmptyNullUndefiner'
 import { type IHttpStatusCode } from '../../../../../../share/domain/httpResult'
+import { type IBasicUser, type TypeRol } from '../../../../../../share/domain/user'
 import { Logs } from '../../../../logs'
 import { type ISubscriptionEmail } from '../../../emailSubscription/domian/emailSubscription'
 import { type IConstantes } from '../../../share/domain/constantes'
@@ -8,7 +9,7 @@ import { type TypeValidation } from '../../../share/domain/Validator'
 import type IWhatsAppController from '../../../whatsAppControl/domian/whatsAppController'
 import type IInstanceRepository from '../../instance/domian/InstanceRepository'
 import type IUserRepository from '../../user/domain/IUserRepository'
-import { type IPaymentRepository, type ISubscription, type ISubscriptionFromApi, type IUserSubscriber, type IPaymentApp, type ICaptureSubscription } from '../domian/payment'
+import { type IPaymentRepository, type ISubscription, type ISubscriptionFromApi, type IPaymentApp, type ICaptureSubscription } from '../domian/payment'
 import { generateObjectSubscription } from './jsonPayment'
 
 export class PaymentApp implements IPaymentApp {
@@ -36,18 +37,19 @@ export class PaymentApp implements IPaymentApp {
     return response.body
   }
 
-  generateSubscription = async (userSubscriber: IUserSubscriber): Promise<ISubscriptionFromApi> => {
-    const subscription = generateObjectSubscription(userSubscriber)
-    return await this.createSubscription(subscription)
+  generateSubscription = async (user: IBasicUser): Promise<ISubscriptionFromApi> => {
+    const subscription = generateObjectSubscription(user)
+    return await this.createSubscription(user, subscription)
   }
 
-  createSubscription = async (subscriptionToCreate: ISubscription): Promise<ISubscriptionFromApi> => {
+  createSubscription = async (user: IBasicUser, subscriptionToCreate: ISubscription): Promise<ISubscriptionFromApi> => {
     const { PAYMENT_SUBSCRIPTIONS_URL } = this.constantes
     const subscriptionFromApi = await this.makeHttpRequest(PAYMENT_SUBSCRIPTIONS_URL, subscriptionToCreate) as ISubscriptionFromApi
     const error = this.paymentSubscriptionValidator(subscriptionFromApi)
     if (error !== undefined) {
       throw new Error(`Error creating susbscription api reponse ${JSON.stringify(subscriptionFromApi)} error = ${JSON.stringify(error)}`)
     }
+    subscriptionFromApi.userId = user._id
     await this.paymentRepository.saveSubscription(subscriptionFromApi)
     return subscriptionFromApi
   }
@@ -104,6 +106,13 @@ export class PaymentApp implements IPaymentApp {
     }
     return {
       message: 'The instance is initialized successfully'
+    }
+  }
+
+  get = async (userId: string, userRol: TypeRol): Promise<IHttpStatusCode> => {
+    const subscription = await this.paymentRepository.findSubscriptions(userRol === 'admin' ? {} : { userId })
+    return {
+      message: subscription
     }
   }
 }

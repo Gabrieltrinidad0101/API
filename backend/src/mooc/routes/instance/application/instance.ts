@@ -30,10 +30,7 @@ export default class Instance {
   }
 
   private readonly generateSubscription = async (user: IBasicUser): Promise<ISubscriptionFromApi> => {
-    const response = await this.paymentApp.generateSubscription({
-      name: user.name,
-      email: user.email
-    })
+    const response = await this.paymentApp.generateSubscription(user)
     return response
   }
 

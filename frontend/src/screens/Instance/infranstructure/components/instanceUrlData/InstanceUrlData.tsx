@@ -4,6 +4,7 @@ import type IInstance from '../../../../../../../share/domain/instance'
 import InstanceUrlDataCss from './InstanceUrlData.module.css'
 import { serverUrl } from '../../../../../share/infranstruture/dependencies'
 import { IconButton } from '@mui/material'
+import InstanceStateComponent from '../../../../../components/InstanceStateComponent/InstanceStateComponent'
 
 export default function InstanceUrlData ({ Prop: instance }: Prop<IInstance>): JSX.Element {
   const copy = (id: string): void => {
@@ -21,7 +22,9 @@ export default function InstanceUrlData ({ Prop: instance }: Prop<IInstance>): J
     <div className={InstanceUrlDataCss.container}>
       <div className={InstanceUrlDataCss.section}>
         <div>Instance State</div>
-        <div>{instance.status.toUpperCase()}</div>
+        <div>
+          <InstanceStateComponent Prop={instance.status} />
+        </div>
       </div>
       <div className={InstanceUrlDataCss.section}>
         <div>Url Api</div>
@@ -35,7 +38,7 @@ export default function InstanceUrlData ({ Prop: instance }: Prop<IInstance>): J
       <div className={InstanceUrlDataCss.section}>
         <div>Instance Id</div>
         <div className={InstanceUrlDataCss.inputContainer}>
-          <input type="text" id="instanceId" value={instance._id ?? ''} disabled />
+          <input type="text" id="instanceId" value={instance._id ?? ''} disabled></input>
           <IconButton color="primary" onClick={() => { copy('instanceId') }}>
             <i className="fa-regular fa-copy"></i>
           </IconButton>

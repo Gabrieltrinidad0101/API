@@ -1,4 +1,5 @@
 import type IUser from '../../../../../share/domain/user'
+import { Logs } from '../../../logs'
 import { createInvoicePdf, email, getGenerateInvoiceTemplate } from '../../share/infranstructure/dependecies'
 import { type ISubscriptionEmail } from '../domian/emailSubscription'
 import crypto from 'crypto'
@@ -34,19 +35,23 @@ export class SubscriptionEmail implements ISubscriptionEmail {
   }
 
   send = async (user: IUser): Promise<void> => {
-    const invoicePath = this.getInvoicePath()
-    this.generatedPdf(invoicePath)
-    const template = getGenerateInvoiceTemplate({
-      for: user.name
-    })
-    await email.send({
-      subject: 'Invoice is generate',
-      to: user.email,
-      template,
-      file: {
-        filename: invoicePath,
-        path: invoicePath
-      }
-    })
+    try {
+      const invoicePath = this.getInvoicePath()
+      this.generatedPdf(invoicePath)
+      const template = getGenerateInvoiceTemplate({
+        for: user.name
+      })
+      await email.send({
+        subject: 'Invoice is generate',
+        to: user.email,
+        template,
+        file: {
+          filename: invoicePath,
+          path: invoicePath
+        }
+      })
+    } catch (error) {
+      Logs.Exception(error)
+    }
   }
 }

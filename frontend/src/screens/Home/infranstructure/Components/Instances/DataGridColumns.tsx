@@ -4,10 +4,9 @@ import Button from '@mui/material/Button'
 import { type IDataGridInstance } from '../../../domian/instance'
 import formatDate from '../../../../../../../share/application/date'
 import type IInstance from '../../../../../../../share/domain/instance'
-import InstancesCss from './Instances.module.css'
 import { type TypeStatusInstance } from '../../../../../../../share/domain/instance'
-
-export const DataGridColumns = ({ userRol, onClickManage }: IDataGridInstance): GridColDef[] => {
+import InstanceStateComponent from '../../../../../components/InstanceStateComponent/InstanceStateComponent'
+export const DataGridColumns = ({ onClickManage }: IDataGridInstance): GridColDef[] => {
   const goTo = (url: string): void => {
     window.open(url, '_blank')
   }
@@ -15,12 +14,9 @@ export const DataGridColumns = ({ userRol, onClickManage }: IDataGridInstance): 
   const DateComponent = (dateString: unknown): JSX.Element =>
     <p>{formatDate(dateString as string ?? '')}</p>
 
-  const InstanceStateComponent = (status: unknown): JSX.Element =>
-    <p className={`${InstancesCss.baseStatus} ${InstancesCss[status as string]}`}>{status as string}</p>
-
   const columns: Array<GridColDef<IInstance>> = [
     { field: '_id', headerName: 'ID', flex: 1 },
-    { field: 'userName', headerName: 'User Name', flex: 1, hideable: userRol !== 'admin' },
+    { field: 'userName', headerName: 'User Name', flex: 1 },
     { field: 'name', headerName: 'Instance  Name', flex: 1 },
     {
       field: 'createdIn',
@@ -41,7 +37,7 @@ export const DataGridColumns = ({ userRol, onClickManage }: IDataGridInstance): 
       headerName: 'Status',
       flex: 1,
       renderCell: (params: GridCellParams) =>
-        InstanceStateComponent(params.value)
+      <InstanceStateComponent Prop={params.value}/>
     },
     {
       field: 'actions',

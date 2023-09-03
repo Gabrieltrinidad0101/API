@@ -25,6 +25,8 @@ export default function MenuDashboard (): JSX.Element {
       </Nav>
       <Nav text='Documention' to='/Docs' icon={<i className={'fa-solid fa-layer-group'}></i>}>
       </Nav>
+      <Nav text='Invoices' to='/Invoices' icon={<i className="fa-solid fa-file-invoice-dollar"></i>}>
+      </Nav>
       <Nav text='Users' rol="admin" to='/users' icon={<i className={'fa-solid fa-user'}></i>}></Nav>
       <Nav text='Sign out' onClick={session} to='/login' icon={<i className={'fa-solid fa-right-from-bracket'}></i>} />
     </Menu>

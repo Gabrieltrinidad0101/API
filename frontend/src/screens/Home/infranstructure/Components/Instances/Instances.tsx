@@ -11,16 +11,20 @@ export default function Instances ({ instancesData }: IPropInstance): JSX.Elemen
     navigation(`/instance?id=${idInstance}`)
   }
   const { user } = useUserContext()
-  console.log(instancesData)
   return (
     <div className={InstancesCss.wrapper}>
       <DataGrid
         rows={instancesData}
-        columns={DataGridColumns({ userRol: user.rol, onClickManage: goToInstances })}
+        columns={DataGridColumns({ onClickManage: goToInstances })}
         getRowId={(row) => row._id}
         initialState={{
           pagination: {
             paginationModel: { page: 0, pageSize: 10 }
+          },
+          columns: {
+            columnVisibilityModel: {
+              userName: user.rol === 'admin'
+            }
           }
         }}
         pageSizeOptions={[5, 30]}

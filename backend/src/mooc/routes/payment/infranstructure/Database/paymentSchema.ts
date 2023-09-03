@@ -5,7 +5,8 @@ const SubscriptionSchema = new Schema({
   id: String,
   create_time: Date,
   paymentLink: String,
-  links: String
+  links: String,
+  userId: String
 })
 
 export const SuscriptionModal = model('subscriptionpayment', SubscriptionSchema)

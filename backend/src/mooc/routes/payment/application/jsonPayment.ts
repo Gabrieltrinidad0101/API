@@ -1,8 +1,9 @@
+import { type IBasicUser } from '../../../../../../share/domain/user'
 import constantes from '../../../share/infranstructure/Constantes'
-import { type ISubscription, type IUserSubscriber } from '../domian/payment'
+import { type ISubscription } from '../domian/payment'
 const { PAYMENT_PLAN_ID, FRONTEND_URL } = constantes
 
-export const generateObjectSubscription = (user: IUserSubscriber): ISubscription => ({
+export const generateObjectSubscription = (user: IBasicUser): ISubscription => ({
   plan_id: PAYMENT_PLAN_ID,
   start_time: new Date(new Date().getTime() + 2000).toISOString(),
   quantity: 1,

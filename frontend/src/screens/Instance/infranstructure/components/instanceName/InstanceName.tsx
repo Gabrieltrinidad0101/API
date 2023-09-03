@@ -23,7 +23,7 @@ export default function InstanceName ({ Prop: instance }: Prop<IInstance>): JSX.
 
   return (
     <div>
-      <TextField id="standard-basic" value={ instanceName } onChange={onChange} onKeyDown={saveName} label="Instance Name" variant="standard" />
+      <TextField id="standard-basic" className='w-100' value={ instanceName } onChange={onChange} onKeyDown={saveName} label="Instance Name" variant="standard" />
     </div>
   )
 }

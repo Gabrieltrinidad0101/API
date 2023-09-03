@@ -1,11 +1,14 @@
+import { type IBasicUser } from '../../../../../../share/domain/user'
+
 export interface IPaymentApp {
-  generateSubscription: (subscription: IUserSubscriber) => Promise<ISubscriptionFromApi>
+  generateSubscription: (subscription: IBasicUser) => Promise<ISubscriptionFromApi>
 }
 
 export interface IPaymentRepository {
   saveSubscription: (subscription: ISubscriptionFromApi) => Promise<void>
   findOneSubscription: (filter: object) => Promise<ISubscriptionFromApi | null>
   updateStatus: (_id: string, status: string) => Promise<void>
+  findSubscriptions: (filter: object) => Promise<ISubscriptionFromApi[]>
 }
 
 export interface ISubscription {
@@ -19,11 +22,6 @@ export interface ISubscription {
 interface IAppContext {
   return_url: string
   cancel_url: string
-}
-
-export interface IUserSubscriber {
-  name: string
-  email: string
 }
 
 interface ISubscriber {
@@ -43,6 +41,7 @@ export interface ISubscriptionFromApi {
   paymentLink: string
   links: ILinks[]
   _id: string
+  userId: string
 }
 
 export interface ILinks {

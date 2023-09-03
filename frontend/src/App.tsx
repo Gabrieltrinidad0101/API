@@ -14,6 +14,7 @@ import SendFile from './screens/docs/infranstructure/components/sendFile/SendFil
 import SendMessage from './screens/docs/infranstructure/components/sendMessage/sendMessage'
 import GeneralDocs from './screens/docs/infranstructure/components/generalDocs/GeneralDocs.module'
 import ChangePassword from './screens/changePassword/infranstructure/ChangePassword'
+import Invoices from './screens/invoices/insfranstructure/Invoices'
 import { Payment } from './screens/payment/infranstructure/Payment'
 import Page404 from './screens/404/Page404'
 
@@ -33,6 +34,7 @@ export default function App (): JSX.Element {
               <Route path="sendMessage" element={<SendMessage/>} ></Route>
             </Route>
             <Route path="/users" element={<Users/>} ></Route>
+            <Route path='/invoices' element={<Invoices/>}></Route>
           </Route>
         </Route>
         <Route element={<ChangePassword />} path="changePassword" />

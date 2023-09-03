@@ -2,6 +2,7 @@
     height: 100%;
     display: grid;
     grid-template-rows: 10% 20% 70%;
+    gap: 10px;
     grid-template-columns: 95%;
     justify-content: center;
 }
@@ -10,4 +11,17 @@
     display: grid;
     grid-template-columns: 20% 80%;
     align-items: center;
+}
+
+@media only screen and (max-width: 580px) {
+    .container{
+        grid-template-rows: 15% 25% 50%;
+    }
+}
+
+@media only screen and (max-width: 470px) {
+    .section1{
+        grid-template-columns: 100%;
+        grid-template-rows: 50% 50%;
+    }
 }

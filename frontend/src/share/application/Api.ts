@@ -13,8 +13,8 @@ const APIURL = {
   authentication: '/user/authentication',
   getRealInstanceStatus: (instanceId: string) => `/${instanceId}/instance/realStatus`,
   updatePassword: '/user/updatePassword',
-  listPlan: '/payment/listPlan',
-  verifySubscription: (subscriptionId: string) => `/payment/sucess?subscription_id=${subscriptionId}`
+  verifySubscription: (subscriptionId: string) => `/payment/sucess?subscription_id=${subscriptionId}`,
+  getInvoices: '/payment'
 }
 
 export default APIURL

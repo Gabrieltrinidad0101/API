@@ -1,6 +1,5 @@
 import { type ISearchInstance } from '../../../../../share/domain/instance'
 import type IInstance from '../../../../../share/domain/instance'
-import { type TypeRol } from '../../../../../share/domain/user'
 
 export default interface IInstancesApp {
   createNewInstance: () => Promise<IInstance | undefined>
@@ -22,6 +21,5 @@ export interface ISearchInstanceContext {
 }
 
 export interface IDataGridInstance {
-  userRol: TypeRol
   onClickManage?: (instanceId: string) => void
 }
