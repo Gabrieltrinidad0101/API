@@ -1,4 +1,5 @@
-import { type IBasicUser } from '../../../../../../share/domain/user'
+import { type ISubscriptionAndInstance } from '../../../../../../share/domain/instance'
+import { type TypeRol, type IBasicUser } from '../../../../../../share/domain/user'
 
 export interface IPaymentApp {
   generateSubscription: (subscription: IBasicUser) => Promise<ISubscriptionFromApi>
@@ -9,6 +10,7 @@ export interface IPaymentRepository {
   findOneSubscription: (filter: object) => Promise<ISubscriptionFromApi | null>
   updateStatus: (_id: string, status: string) => Promise<void>
   findSubscriptions: (filter: object) => Promise<ISubscriptionFromApi[]>
+  findPaymentsWithInstance: (userId: string, userRol: TypeRol) => Promise<ISubscriptionAndInstance[]>
 }
 
 export interface ISubscription {

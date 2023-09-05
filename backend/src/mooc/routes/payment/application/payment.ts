@@ -110,9 +110,9 @@ export class PaymentApp implements IPaymentApp {
   }
 
   get = async (userId: string, userRol: TypeRol): Promise<IHttpStatusCode> => {
-    const subscription = await this.paymentRepository.findSubscriptions(userRol === 'admin' ? {} : { userId })
+    const instances = await this.paymentRepository.findPaymentsWithInstance(userId, userRol)
     return {
-      message: subscription
+      message: instances
     }
   }
 }

@@ -1,3 +1,4 @@
+import { ISubscriptionFromApi } from "../../backend/src/mooc/routes/payment/domian/payment"
 import { TypeRol } from "./user"
 
 export interface IInstanceInitial{
@@ -49,4 +50,8 @@ export interface ILimitSearch{
 export interface ISearchInstance extends ILimitSearch {
     userId: string
     userRol: TypeRol
+}
+
+export interface ISubscriptionAndInstance extends ISubscriptionFromApi {
+    instance: IInstance[]
 }

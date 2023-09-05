@@ -39,7 +39,7 @@ export default class Instance {
     const isFirstInstane = instances.length <= 0
     const subscriptionFromApi = isFirstInstane ? null : await this.generateSubscription(user)
     const date = new Date()
-    const endService = isFirstInstane ? new Date(date.setMonth(date.getMonth() + 1)) : undefined
+    const endService = isFirstInstane ? new Date(date.getMonth() + 1) : undefined
     const messageLimit = isFirstInstane ? 100 : Infinity
     const status: TypeStatusInstance = isFirstInstane ? 'initial' : 'unpayment'
     const instance: IInstance = {
