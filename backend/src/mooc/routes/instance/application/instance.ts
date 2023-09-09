@@ -5,7 +5,7 @@ import { type IHttpStatusCode } from '../../../../../../share/domain/httpResult'
 import type IInstanceRepository from '../domian/InstanceRepository'
 import type IWhatsAppController from '../../../whatsAppControl/domian/whatsAppController'
 import type IInstanceContructor from '../domian/instance'
-import { getScreenId } from '../../../whatsAppControl/infranstructure/getScreenId'
+import { getScreenId } from '../../../share/application/getScreenId'
 import { type ISubscriptionFromApi, type IPaymentApp } from '../../payment/domian/payment'
 import { type IBasicUser } from '../../../../../../share/domain/user'
 import crypto from 'crypto'
@@ -246,7 +246,7 @@ export default class Instance {
   }
 
   async logout (_id: string, token: string): Promise<IHttpStatusCode> {
-    if (isEmptyNullOrUndefined(_id) || isEmptyNullOrUndefined(token)) {
+    if (isEmptyNullOrUndefined(_id, token)) {
       return {
         statusCode: 422,
         error: 'instance id and token are required'

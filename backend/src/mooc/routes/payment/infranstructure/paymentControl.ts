@@ -14,4 +14,10 @@ export default class PaymentControl {
     const userRol = req.headers.userRol?.toString() as TypeRol
     return await paymentApp.get(userId, userRol)
   }
+
+  eventosControl = async (req: Request): Promise<IHttpStatusCode> => {
+    const body = req.body
+    console.log(body)
+    return await paymentApp.eventsControls(body)
+  }
 }

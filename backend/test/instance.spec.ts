@@ -5,7 +5,7 @@ import Tokens from './helps/tokens'
 import type IInstance from '../../share/domain/instance'
 import wait from '../../share/application/wait'
 import { whatsAppController } from '../src/mooc/whatsAppControl/infranstructure/dependencies'
-import { getScreenId } from '../src/mooc/whatsAppControl/infranstructure/getScreenId'
+import { getScreenId } from '../src/mooc/share/application/getScreenId'
 import { WAState } from 'whatsapp-web.js'
 import TestServer from '../testServer/testServer'
 

@@ -1,8 +1,10 @@
+import { type IHttpStatusCode } from '../../../../../../share/domain/httpResult'
 import { type ISubscriptionAndInstance } from '../../../../../../share/domain/instance'
 import { type TypeRol, type IBasicUser } from '../../../../../../share/domain/user'
 
 export interface IPaymentApp {
   generateSubscription: (subscription: IBasicUser) => Promise<ISubscriptionFromApi>
+  eventsControls: (body: any) => Promise<IHttpStatusCode>
 }
 
 export interface IPaymentRepository {

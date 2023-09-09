@@ -3,6 +3,7 @@ import { type IHttpStatusCode } from '../../../../../../share/domain/httpResult'
 import { type IBasicUser, type TypeRol } from '../../../../../../share/domain/user'
 import { Logs } from '../../../../logs'
 import { type ISubscriptionEmail } from '../../../emailSubscription/domian/emailSubscription'
+import { getScreenId } from '../../../share/application/getScreenId'
 import { type IConstantes } from '../../../share/domain/constantes'
 import { type IHttpRequest } from '../../../share/domain/httpRequest'
 import { type TypeValidation } from '../../../share/domain/Validator'
@@ -89,10 +90,10 @@ export class PaymentApp implements IPaymentApp {
         message: 'The subscription is not active'
       }
     }
-    instance.status = 'initial'
     const date = new Date()
     const nextMonth = new Date(date.setMonth(date.getMonth() + 1))
     await this.instanceRepository.updateEndService(instance._id, nextMonth)
+    await this.instanceRepository.updateStatus({ _id: instance._id }, 'initial')
     await this.paymentRepository.updateStatus(subscription?._id, 'ACTIVE')
     this.whatsAppController.start(instance, 'payment')
       .catch(error => {
@@ -114,5 +115,26 @@ export class PaymentApp implements IPaymentApp {
     return {
       message: instances
     }
+  }
+
+  eventsControls = async (body: any): Promise<IHttpStatusCode> => {
+    if (body.event_type === 'BILLING.SUBSCRIPTION.CANCELLED') {
+      const subscriptionId = body.resource.id
+      await this.cancelSuscription(subscriptionId)
+    }
+    return {
+      message: 'ok'
+    }
+  }
+
+  cancelSuscription = async (subscriptionId: string): Promise<void> => {
+    const instance = await this.instanceRepository.findOne({ subscriptionId })
+    if (instance === null) {
+      Logs.Error(`SubscriptionId ${subscriptionId} with null instance`)
+      return
+    }
+    await this.instanceRepository.updateStatus({ _id: instance._id }, 'cancel')
+    const screenId = getScreenId(instance)
+    await this.whatsAppController.destroy(screenId)
   }
 }

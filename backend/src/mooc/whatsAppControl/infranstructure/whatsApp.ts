@@ -7,7 +7,7 @@ import sendReceiveMessage from './sendReceiveMessage'
 import { type TypeInstanceStart } from '../../../../../share/domain/instance'
 import { type ISendMessageUserId } from '../../../../../share/domain/Send'
 import getMessageMediaExtension from './getMediaFileExtension'
-import { getScreenId } from './getScreenId'
+import { getScreenId } from '../../share/application/getScreenId'
 import { Logs } from '../../../logs'
 import { type TypeOpenWithError } from '../domian/whatsAppController'
 import { type MessageQueue } from './messageQueue'
@@ -15,8 +15,10 @@ import { type MessageQueue } from './messageQueue'
 const screens = new Map<string, Client>()
 
 export default class WhatsAppController implements IWhatsAppController {
-  constructor (private readonly instanceRepository: IInstanceRepository,
-    private readonly messageQueue: MessageQueue) { }
+  constructor (
+    private readonly instanceRepository: IInstanceRepository,
+    private readonly messageQueue: MessageQueue
+  ) { }
 
   async send (instance: IInstance, message: ISendMessageUserId): Promise<string | undefined> {
     try {
@@ -51,7 +53,7 @@ export default class WhatsAppController implements IWhatsAppController {
   }
 
   private readonly onQrAsync = async (qr: string, id: string): Promise<void> => {
-    await this.instanceRepository.updateStatus(id, 'pending')
+    await this.instanceRepository.updateStatus({ _id: id }, 'pending')
     await this.instanceRepository.updateQr(id, qr)
   }
 
@@ -66,7 +68,7 @@ export default class WhatsAppController implements IWhatsAppController {
 
   onAuthenticated = (client: Client, id: string): void => {
     client.on('authenticated', (session) => {
-      this.instanceRepository.updateStatus(id, 'authenticated')
+      this.instanceRepository.updateStatus({ _id: id }, 'authenticated')
         .catch(error => {
           Logs.Exception(error)
         })
@@ -77,7 +79,7 @@ export default class WhatsAppController implements IWhatsAppController {
     client.on('disconnected', (): void => {
       try {
         if (instance._id === undefined) return
-        this.instanceRepository.updateStatus(instance._id, 'pending')
+        this.instanceRepository.updateStatus({ _id: instance._id }, 'pending')
           .catch(err => {
             console.log(err)
           })
@@ -160,7 +162,7 @@ export default class WhatsAppController implements IWhatsAppController {
 
   logout = async (instanceId: string, token: string): Promise<void> => {
     try {
-      await this.instanceRepository.updateStatus(instanceId, 'pending')
+      await this.instanceRepository.updateStatus({ _id: instanceId }, 'pending')
       const client = screens.get(`${instanceId}${token}`)
       await client?.logout()
     } catch {
@@ -177,10 +179,15 @@ export default class WhatsAppController implements IWhatsAppController {
     return instanceStatus
   }
 
-  start = async (instance: IInstance, instanceStart: TypeInstanceStart): Promise<void> => {
+  start = async (instanceRef: IInstance, instanceStart: TypeInstanceStart): Promise<void> => {
     try {
+      const instance = await this.instanceRepository.findOne({ _id: instanceRef?._id })
+      if (instance === null) {
+        Logs.Error(`Start Instance null TypeInstanceStart ${instanceStart}`)
+        return
+      }
       const { _id, status } = instance
-      if (status === 'unpayment') return
+      if (status === 'unpayment' || status === 'cancel') return
       const screenId = getScreenId(instance)
       const instanceStatus = await this.getStatus(screenId)
       if (instanceStatus === WAState.CONNECTED || instanceStatus === WAState.OPENING) return
@@ -191,7 +198,7 @@ export default class WhatsAppController implements IWhatsAppController {
           headless: false
         }
       })
-      await this.instanceRepository.updateStatus(_id, 'initial')
+      await this.instanceRepository.updateStatus({ _id }, 'initial')
       await this.instanceRepository.updateQr(_id, '')
       await this.destroy(screenId)
       screens.set(screenId, client)
@@ -207,9 +214,9 @@ export default class WhatsAppController implements IWhatsAppController {
       await client.initialize()
     } catch (error: any) {
       Logs.Exception(error)
-      await this.destroy(getScreenId(instance) ?? '')
+      await this.destroy(getScreenId(instanceRef) ?? '')
       await wait(10000)
-      await this.start(instance, 'error')
+      await this.start(instanceRef, 'error')
     }
   }
 }

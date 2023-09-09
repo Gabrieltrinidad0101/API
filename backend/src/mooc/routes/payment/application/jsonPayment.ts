@@ -5,7 +5,7 @@ const { PAYMENT_PLAN_ID, FRONTEND_URL } = constantes
 
 export const generateObjectSubscription = (user: IBasicUser): ISubscription => ({
   plan_id: PAYMENT_PLAN_ID,
-  start_time: new Date(new Date().getTime() + 2000).toISOString(),
+  start_time: new Date(new Date().getTime() + 30000).toISOString(),
   quantity: 1,
   subscriber: {
     name: {

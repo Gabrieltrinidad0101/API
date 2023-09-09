@@ -58,32 +58,32 @@ export default class InstanceRepository implements IInstanceRepository {
   }
 
   updateQr = async (_id: string, value: string): Promise<void> => {
-    await this.updateInstance(_id, 'qr', value)
+    await this.updateInstance({ _id }, 'qr', value)
   }
 
   updateMessageLimit = async (_id: string, value: number): Promise<void> => {
-    await this.updateInstance(_id, 'messageLimit', value)
+    await this.updateInstance({ _id }, 'messageLimit', value)
   }
 
-  updateStatus = async (_id: string, value: TypeStatusInstance): Promise<void> => {
-    await this.updateInstance(_id, 'status', value)
-    if (value === 'initial') await this.updateInstance(_id, 'initialDate', new Date())
+  updateStatus = async (filter: object, value: TypeStatusInstance): Promise<void> => {
+    await this.updateInstance(filter, 'status', value)
+    if (value === 'initial') await this.updateInstance(filter, 'initialDate', new Date())
   }
 
   saveWebhookUrl = async (_id: string, webhookUrl: string): Promise<void> => {
-    await this.updateInstance(_id, 'webhookUrl', webhookUrl)
+    await this.updateInstance({ _id }, 'webhookUrl', webhookUrl)
   }
 
   saveName = async (_id: string, name: string): Promise<void> => {
-    await this.updateInstance(_id, 'name', name)
+    await this.updateInstance({ _id }, 'name', name)
   }
 
   updateEndService = async (_id: string, value: Date): Promise<void> => {
-    await this.updateInstance(_id, 'endService', value)
+    await this.updateInstance({ _id }, 'endService', value)
   }
 
-  private readonly updateInstance = async (_id: string, key: keyof IInstance, value: unknown): Promise<void> => {
-    await InstanceModal.updateOne({ _id }, { [key]: value })
+  private readonly updateInstance = async (filter: object, key: keyof IInstance, value: unknown): Promise<void> => {
+    await InstanceModal.updateOne(filter, { [key]: value })
   }
 
   getQrAndStatus = async (_id: string, token: string): Promise<IInstanceQRStatus | undefined | null> => {

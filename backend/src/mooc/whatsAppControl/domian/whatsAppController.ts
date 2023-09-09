@@ -9,6 +9,7 @@ export default interface IWhatsAppController {
   logout: (instanceId: string, token: string) => Promise<void>
   send: (instance: IInstance, send: ISendMessageUserId) => Promise<string | undefined>
   getStatus: (screenId: string) => Promise<WAState | TypeOpenWithError | undefined>
+  destroy: (screenId: string) => Promise<void>
 }
 
 export interface IIdTokenWhatsApp {

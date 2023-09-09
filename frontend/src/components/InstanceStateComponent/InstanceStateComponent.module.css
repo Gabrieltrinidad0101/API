@@ -27,6 +27,11 @@
     background-color: rgb(255, 208, 198);
 }
 
+.cancel{
+    color: rgb(255, 86, 48);
+    background-color: rgb(255, 208, 198);
+}
+
 .authenticated{
     color: rgb(17, 141, 87);
     background-color: rgb(195, 255, 217);
