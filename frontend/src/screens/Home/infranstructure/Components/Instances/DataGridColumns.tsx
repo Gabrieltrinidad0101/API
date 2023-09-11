@@ -48,7 +48,7 @@ export const DataGridColumns = ({ onClickManage }: IDataGridInstance): GridColDe
         return (
           <>
             {
-              status === 'unpayment'
+              (status === 'unpayment' || status === 'cancel')
                 ? <Button color="success" variant="contained" onClick={() => { goTo(url) }} >Pay</Button>
                 : <Button variant="contained" onClick={() => { onClickManage?.(params.id.toString()) }} >Manager</Button>
             }

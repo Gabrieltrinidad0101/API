@@ -137,4 +137,16 @@ export class PaymentApp implements IPaymentApp {
     const screenId = getScreenId(instance)
     await this.whatsAppController.destroy(screenId)
   }
+
+  createSubscriptionToExistSubscription = async (user: IBasicUser, instanceId: string): Promise<IHttpStatusCode> => {
+    const newEndService = new Date(new Date().getMonth() + 1)
+    const subscriptionFromApi = await this.generateSubscription(user)
+    const subscriptionLink = subscriptionFromApi?.links[0].href ?? ''
+    await this.instanceRepository.updateSubscriptionId(instanceId, subscriptionFromApi.id)
+    await this.instanceRepository.updateEndService(instanceId, newEndService)
+    await this.paymentRepository.updateInstanceId(subscriptionFromApi.id, instanceId)
+    return {
+      message: subscriptionLink
+    }
+  }
 }

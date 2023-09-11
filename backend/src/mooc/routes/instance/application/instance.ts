@@ -6,7 +6,7 @@ import type IInstanceRepository from '../domian/InstanceRepository'
 import type IWhatsAppController from '../../../whatsAppControl/domian/whatsAppController'
 import type IInstanceContructor from '../domian/instance'
 import { getScreenId } from '../../../share/application/getScreenId'
-import { type ISubscriptionFromApi, type IPaymentApp } from '../../payment/domian/payment'
+import { type ISubscriptionFromApi, type IPaymentApp, type IPaymentRepository } from '../../payment/domian/payment'
 import { type IBasicUser } from '../../../../../../share/domain/user'
 import crypto from 'crypto'
 import { Logs } from '../../../../logs'
@@ -15,6 +15,7 @@ export default class Instance {
   private readonly instanceRepository: IInstanceRepository
   private readonly whatsAppController: IWhatsAppController
   private readonly paymentApp: IPaymentApp
+  private readonly paymentRepository: IPaymentRepository
 
   constructor (
     iInstanceContructor: IInstanceContructor
@@ -22,6 +23,7 @@ export default class Instance {
     this.instanceRepository = iInstanceContructor.instanceRepository
     this.whatsAppController = iInstanceContructor.whatsAppController
     this.paymentApp = iInstanceContructor.paymentApp
+    this.paymentRepository = iInstanceContructor.paymentRepository
   }
 
   private validateSearchHttp (searchHttp: ISearchInstance): boolean {
@@ -72,6 +74,7 @@ export default class Instance {
     }
     const instance = await this.createInstance(user)
     const instanceSaved = await this.instanceRepository.insert(instance)
+    await this.paymentRepository.updateInstanceId(instanceSaved.subscriptionId ?? '', instanceSaved._id)
     if (instanceSaved.status === 'initial') {
       this.whatsAppController.start(instanceSaved, 'start')
         .catch(error => {

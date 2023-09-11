@@ -17,7 +17,16 @@ export default class PaymentControl {
 
   eventosControl = async (req: Request): Promise<IHttpStatusCode> => {
     const body = req.body
-    console.log(body)
     return await paymentApp.eventsControls(body)
+  }
+
+  createSubscriptionToExistSubscription = async (req: Request): Promise<IHttpStatusCode> => {
+    const { userId, userEmail, userName } = req.headers
+    const { instanceId } = req.body
+    return await paymentApp.createSubscriptionToExistSubscription({
+      _id: userId?.toString() ?? '',
+      email: userEmail?.toString() ?? '',
+      name: userName?.toString() ?? ''
+    }, instanceId)
   }
 }

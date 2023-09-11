@@ -11,6 +11,7 @@ export interface IPaymentRepository {
   saveSubscription: (subscription: ISubscriptionFromApi) => Promise<void>
   findOneSubscription: (filter: object) => Promise<ISubscriptionFromApi | null>
   updateStatus: (_id: string, status: string) => Promise<void>
+  updateInstanceId: (_id: string, instanceId: string) => Promise<void>
   findSubscriptions: (filter: object) => Promise<ISubscriptionFromApi[]>
   findPaymentsWithInstance: (userId: string, userRol: TypeRol) => Promise<ISubscriptionAndInstance[]>
 }

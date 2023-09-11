@@ -11,6 +11,7 @@ export default interface IInstanceRepository {
   updateEndService: (_id: string, value: Date) => Promise<void>
   updateStatus: (filter: object, value: TypeStatusInstance) => Promise<void>
   updateMessageLimit: (_id: string, limit: number) => Promise<void>
+  updateSubscriptionId: (_id: string, subscription: string) => Promise<void>
   getQrAndStatus: (_id: string, token: string) => Promise<IInstanceQRStatus | undefined | null>
   saveWebhookUrl: (_id: string, url: string) => Promise<void>
   saveName: (_id: string, name: string) => Promise<void>

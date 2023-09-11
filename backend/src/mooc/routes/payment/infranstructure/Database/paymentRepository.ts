@@ -27,6 +27,10 @@ export default class PaymentRepository implements IPaymentRepository {
     await SuscriptionModal.updateOne({ _id }, { status })
   }
 
+  updateInstanceId = async (id: string, instanceId: string): Promise<void> => {
+    await SuscriptionModal.updateOne({ id }, { instanceId })
+  }
+
   findPaymentsWithInstance = async (userId: string, userRol: TypeRol): Promise<ISubscriptionAndInstance[]> => {
     return await SuscriptionModal.aggregate<ISubscriptionAndInstance>([
       {

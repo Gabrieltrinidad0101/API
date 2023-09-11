@@ -1,11 +1,12 @@
 import Instance from '../application/instance'
 import { instanceRepository } from './Database/instanceRepository'
 import InstanceControl from './instanceControl'
-import { paymentApp } from '../../payment/infranstructure/dependecies'
+import { paymentApp, paymentRepository } from '../../payment/infranstructure/dependecies'
 import { whatsAppController } from '../../../whatsAppControl/infranstructure/dependencies'
 const instance = new Instance({
   instanceRepository,
   whatsAppController,
-  paymentApp
+  paymentApp,
+  paymentRepository
 })
 export const instanceControl = new InstanceControl(instance)
