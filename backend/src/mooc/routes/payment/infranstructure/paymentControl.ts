@@ -20,10 +20,10 @@ export default class PaymentControl {
     return await paymentApp.eventsControls(body)
   }
 
-  createSubscriptionToExistSubscription = async (req: Request): Promise<IHttpStatusCode> => {
+  reCreateSubscription = async (req: Request): Promise<IHttpStatusCode> => {
     const { userId, userEmail, userName } = req.headers
     const { instanceId } = req.body
-    return await paymentApp.createSubscriptionToExistSubscription({
+    return await paymentApp.reCreateSubscription({
       _id: userId?.toString() ?? '',
       email: userEmail?.toString() ?? '',
       name: userName?.toString() ?? ''

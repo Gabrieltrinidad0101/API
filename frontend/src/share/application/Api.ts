@@ -14,7 +14,8 @@ const APIURL = {
   getRealInstanceStatus: (instanceId: string) => `/${instanceId}/instance/realStatus`,
   updatePassword: '/user/updatePassword',
   verifySubscription: (subscriptionId: string) => `/payment/sucess?subscription_id=${subscriptionId}`,
-  getInvoices: '/payment'
+  getInvoices: '/payment',
+  reCreateSubscription: '/payment/reCreateSubscription'
 }
 
 export default APIURL

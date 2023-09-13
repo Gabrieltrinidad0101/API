@@ -7,10 +7,7 @@ import type IInstance from '../../../../../../../share/domain/instance'
 import { type TypeStatusInstance } from '../../../../../../../share/domain/instance'
 import InstanceStateComponent from '../../../../../components/InstanceStateComponent/InstanceStateComponent'
 export const DataGridColumns = ({ onClickManage }: IDataGridInstance): GridColDef[] => {
-  const goTo = (url: string): void => {
-    window.open(url, '_blank')
-  }
-
+  
   const DateComponent = (dateString: unknown): JSX.Element =>
     <p>{formatDate(dateString as string ?? '')}</p>
 
