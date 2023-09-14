@@ -120,30 +120,48 @@ export class PaymentApp implements IPaymentApp {
   eventsControls = async (body: any): Promise<IHttpStatusCode> => {
     if (body.event_type === 'BILLING.SUBSCRIPTION.CANCELLED') {
       const subscriptionId = body.resource.id
-      await this.cancelSuscription(subscriptionId)
+      await this.cancelSubscription(subscriptionId)
     }
     return {
       message: 'ok'
     }
   }
 
-  cancelSuscription = async (subscriptionId: string): Promise<void> => {
+  cancelSubscription = async (subscriptionId: string): Promise<void> => {
     const instance = await this.instanceRepository.findOne({ subscriptionId })
     if (instance === null) {
       Logs.Error(`SubscriptionId ${subscriptionId} with null instance`)
       return
     }
-    await this.instanceRepository.updateStatus({ _id: instance._id }, 'cancel')
+    await this.instanceRepository.updateStatus({ _id: instance._id }, 'unpayment')
+    const user = await this.userRepository.findOne({ _id: instance.userId })
     const screenId = getScreenId(instance)
     await this.whatsAppController.destroy(screenId)
+    if (isEmptyNullOrUndefined(user) || user === null) {
+      Logs.Error(`User is null in cancel subscription ${JSON.stringify(instance)}`)
+      return
+    }
+    const subscriptionFromApi = await this.generateSubscription({
+      _id: user._id ?? '',
+      email: user.email,
+      name: user.name
+    })
+    await this.instanceRepository.updateSubscriptionId(user._id ?? '', subscriptionFromApi.id)
+    await this.instanceRepository.updateEndService(instance._id, undefined)
   }
 
   reCreateSubscription = async (user: IBasicUser, instanceId: string): Promise<IHttpStatusCode> => {
-    const newEndService = new Date(new Date().getMonth() + 1)
+    if (isEmptyNullOrUndefined(instanceId)) {
+      return {
+        error: 'instanceId cannot be empty null or undefined',
+        message: 'Instance id is required',
+        statusCode: 422
+      }
+    }
     const subscriptionFromApi = await this.generateSubscription(user)
     const subscriptionLink = subscriptionFromApi?.links[0].href ?? ''
     await this.instanceRepository.updateSubscriptionId(instanceId, subscriptionFromApi.id)
-    await this.instanceRepository.updateEndService(instanceId, newEndService)
+    await this.instanceRepository.updateStatus({ _id: instanceId }, 'unpayment')
     await this.paymentRepository.updateInstanceId(subscriptionFromApi.id, instanceId)
     return {
       message: subscriptionLink

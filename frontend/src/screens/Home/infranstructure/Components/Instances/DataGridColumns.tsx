@@ -4,10 +4,8 @@ import Button from '@mui/material/Button'
 import { type IDataGridInstance } from '../../../domian/instance'
 import formatDate from '../../../../../../../share/application/date'
 import type IInstance from '../../../../../../../share/domain/instance'
-import { type TypeStatusInstance } from '../../../../../../../share/domain/instance'
 import InstanceStateComponent from '../../../../../components/InstanceStateComponent/InstanceStateComponent'
-export const DataGridColumns = ({ onClickManage }: IDataGridInstance): GridColDef[] => {
-  
+export const DataGridColumns = ({ onClickManage, onPayment }: IDataGridInstance): GridColDef[] => {
   const DateComponent = (dateString: unknown): JSX.Element =>
     <p>{formatDate(dateString as string ?? '')}</p>
 
@@ -40,13 +38,12 @@ export const DataGridColumns = ({ onClickManage }: IDataGridInstance): GridColDe
       field: 'actions',
       headerName: 'Actions',
       renderCell: (params: GridCellParams) => {
-        const status = params.row.status as TypeStatusInstance
-        const url = params.row.paymentLink as string
+        const instance = params.row as IInstance
         return (
           <>
             {
-              (status === 'unpayment' || status === 'cancel')
-                ? <Button color="success" variant="contained" onClick={() => { goTo(url) }} >Pay</Button>
+              (instance.status === 'unpayment' || instance.status === 'cancel')
+                ? <Button color="success" variant="contained" onClick={() => { onPayment(instance) }} >Pay</Button>
                 : <Button variant="contained" onClick={() => { onClickManage?.(params.id.toString()) }} >Manager</Button>
             }
           </>

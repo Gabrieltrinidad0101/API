@@ -7,4 +7,7 @@ const editorApp = new EditorApp({
   toast: Toast
 })
 
-export const instanceApp = new InstancesApp(editorApp, customFecth)
+export const instanceApp = new InstancesApp(editorApp, {
+  customFecth,
+  toast: Toast
+})

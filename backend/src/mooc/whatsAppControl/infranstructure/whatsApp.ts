@@ -187,7 +187,7 @@ export default class WhatsAppController implements IWhatsAppController {
         return
       }
       const { _id, status } = instance
-      if (status === 'unpayment' || status === 'cancel') return
+      if (status === 'unpayment') return
       const screenId = getScreenId(instance)
       const instanceStatus = await this.getStatus(screenId)
       if (instanceStatus === WAState.CONNECTED || instanceStatus === WAState.OPENING) return

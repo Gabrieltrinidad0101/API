@@ -8,7 +8,7 @@ export default interface IInstanceRepository {
   get: (searchHttp: ISearchInstance) => Promise<IInstance[]>
   delete: (_id: string, userId: string) => Promise<void>
   updateQr: (_id: string, value: string) => Promise<void>
-  updateEndService: (_id: string, value: Date) => Promise<void>
+  updateEndService: (_id: string, value: Date | undefined) => Promise<void>
   updateStatus: (filter: object, value: TypeStatusInstance) => Promise<void>
   updateMessageLimit: (_id: string, limit: number) => Promise<void>
   updateSubscriptionId: (_id: string, subscription: string) => Promise<void>
