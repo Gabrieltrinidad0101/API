@@ -22,5 +22,5 @@ export interface ISearchInstanceContext {
 
 export interface IDataGridInstance {
   onClickManage?: (instanceId: string) => void
-  onPayment: (instance: IInstance) => void
+  onPayment: (instance: IInstance) => Promise<void>
 }

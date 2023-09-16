@@ -146,8 +146,11 @@ export class PaymentApp implements IPaymentApp {
       email: user.email,
       name: user.name
     })
+
+    const link = subscriptionFromApi.links[0].href
     await this.instanceRepository.updateSubscriptionId(user._id ?? '', subscriptionFromApi.id)
-    await this.instanceRepository.updateEndService(instance._id, undefined)
+    await this.instanceRepository.updateEndService(instance._id, null)
+    await this.instanceRepository.updatePaymentLink(instance._id, link)
   }
 
   reCreateSubscription = async (user: IBasicUser, instanceId: string): Promise<IHttpStatusCode> => {

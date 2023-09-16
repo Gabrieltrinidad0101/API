@@ -43,7 +43,7 @@ export const DataGridColumns = ({ onClickManage, onPayment }: IDataGridInstance)
           <>
             {
               (instance.status === 'unpayment' || instance.status === 'cancel')
-                ? <Button color="success" variant="contained" onClick={() => { onPayment(instance) }} >Pay</Button>
+                ? <Button color="success" variant="contained" onClick={() => { onPayment(instance).catch(error => { console.log(error) }) }} >Pay</Button>
                 : <Button variant="contained" onClick={() => { onClickManage?.(params.id.toString()) }} >Manager</Button>
             }
           </>
