@@ -53,5 +53,5 @@ export interface ISearchInstance extends ILimitSearch {
 }
 
 export interface ISubscriptionAndInstance extends ISubscriptionFromApi {
-    instance: IInstance[]
+    instance: IInstance[] | null[]
 }

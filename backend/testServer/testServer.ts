@@ -9,6 +9,7 @@ export default class TestServer {
   start = (): void => {
     this.server = app.listen(8080)
     app.get('/messega', (req): void => {
+      console.log(req.body)
       this.message = req.body as Message
     })
   }

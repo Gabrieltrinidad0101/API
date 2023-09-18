@@ -8,6 +8,5 @@ const router = new RouterManager(paymentRouter)
 
 router.get('/sucess', paymentControl.captureSubscription)
 router.get('/', verifyAuthentication.user, paymentControl.get)
-router.post('/eventosControl', paymentControl.eventosControl)
-router.post('/reCreateSubscription', verifyAuthentication.user, paymentControl.reCreateSubscription)
+router.post('/eventosControl', paymentControl.eventsControls)
 export { paymentRouter }

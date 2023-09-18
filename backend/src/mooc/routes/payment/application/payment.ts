@@ -148,26 +148,10 @@ export class PaymentApp implements IPaymentApp {
     })
 
     const link = subscriptionFromApi.links[0].href
-    await this.instanceRepository.updateSubscriptionId(user._id ?? '', subscriptionFromApi.id)
+    const paymentSubscriptionId = subscriptionFromApi.id
+    await this.instanceRepository.updateSubscriptionId(instance._id ?? '', paymentSubscriptionId)
     await this.instanceRepository.updateEndService(instance._id, null)
     await this.instanceRepository.updatePaymentLink(instance._id, link)
-  }
-
-  reCreateSubscription = async (user: IBasicUser, instanceId: string): Promise<IHttpStatusCode> => {
-    if (isEmptyNullOrUndefined(instanceId)) {
-      return {
-        error: 'instanceId cannot be empty null or undefined',
-        message: 'Instance id is required',
-        statusCode: 422
-      }
-    }
-    const subscriptionFromApi = await this.generateSubscription(user)
-    const subscriptionLink = subscriptionFromApi?.links[0].href ?? ''
-    await this.instanceRepository.updateSubscriptionId(instanceId, subscriptionFromApi.id)
-    await this.instanceRepository.updateStatus({ _id: instanceId }, 'unpayment')
-    await this.paymentRepository.updateInstanceId(subscriptionFromApi.id, instanceId)
-    return {
-      message: subscriptionLink
-    }
+    await this.paymentRepository.updateInstanceId(paymentSubscriptionId ?? '', instance._id)
   }
 }

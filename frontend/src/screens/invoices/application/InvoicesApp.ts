@@ -11,15 +11,15 @@ export default class InvoicesApp {
       return []
     }
     const result = invoices.message?.map<IInvoiceColumn>((invoice): IInvoiceColumn => {
+      console.log(invoice.instance)
       return {
         id: invoice?.id ?? '',
-        instanceId: invoice?.instance[0]._id ?? '',
+        instanceId: invoice?.instance[0]?._id ?? '',
         paymentDate: formatDate(invoice?.create_time ?? ''),
-        instanceName: invoice?.instance[0].name ?? '',
-        userName: invoice?.instance[0].userName ?? ''
+        instanceName: invoice?.instance[0]?.name ?? '',
+        userName: invoice?.instance[0]?.userName ?? ''
       }
     }) ?? []
-    console.log(result)
     return result
   }
 }

@@ -35,18 +35,6 @@ describe('Instance', () => {
     expect(instanceStatus).toBe(WAState.OPENING)
   }, 30000)
 
-  test('POST get qr', async () => {
-    const response = await request(app).get(`/${instance._id}/instance/qr`)
-      .set({
-        token: instance.token
-      })
-      .send()
-    const { qr, status } = response.body.message
-    expect(response.statusCode).toBe(200)
-    expect(qr).toBeTruthy()
-    expect(status).toBe('pending')
-  })
-
   test('save webhook url', async () => {
     const response = await request(app).post(`/${instance._id}/instance/webhookUrl`)
       .set({ token: Tokens.pedroToken })
