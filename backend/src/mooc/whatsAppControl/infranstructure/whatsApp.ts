@@ -11,7 +11,8 @@ import { getScreenId } from '../../share/application/getScreenId'
 import { Logs } from '../../../logs'
 import { type TypeOpenWithError } from '../domian/whatsAppController'
 import { type MessageQueue } from './messageQueue'
-
+import fs from 'fs'
+import crypto from 'crypto'
 const screens = new Map<string, Client>()
 
 export default class WhatsAppController implements IWhatsAppController {
@@ -116,6 +117,17 @@ export default class WhatsAppController implements IWhatsAppController {
       Logs.Warning(`On message to instance not found in db id = ${_id} userId = ${userId}`)
       return
     }
+
+    if (message.hasMedia) {
+      const media = await message.downloadMedia()
+      const filename = `${crypto.randomUUID()}.${media.mimetype.split('/')[1]}`
+      const pathFile = `public/${filename}`
+
+      const fileStream = fs.createWriteStream(pathFile)
+      fileStream.write(media.data, 'base64') // Write the base64 data to the file
+      fileStream.end()
+    }
+
     await sendReceiveMessage(message, instance)
   }
 

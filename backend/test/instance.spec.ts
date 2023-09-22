@@ -57,7 +57,6 @@ describe('Instance', () => {
   }, 30000)
 
   test('get message', async () => {
-    console.log(testServer.getMessage())
-    expect(1).toBe(1)
+    expect(testServer.getMessage()).toBeTruthy()
   })
 })

@@ -10,8 +10,8 @@ export default class InvoicesApp {
     if (invoices === undefined) {
       return []
     }
+    console.log(invoices)
     const result = invoices.message?.map<IInvoiceColumn>((invoice): IInvoiceColumn => {
-      console.log(invoice.instance)
       return {
         id: invoice?.id ?? '',
         instanceId: invoice?.instance[0]?._id ?? '',

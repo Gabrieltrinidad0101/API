@@ -7,9 +7,9 @@ export default class TestServer {
   private message: Message | null = null
   private server: http.Server | null = null
   start = (): void => {
+    app.use(express.json({ limit: '50mb' }))
     this.server = app.listen(8080)
-    app.get('/messega', (req): void => {
-      console.log(req.body)
+    app.post('/messega', (req): void => {
       this.message = req.body as Message
     })
   }

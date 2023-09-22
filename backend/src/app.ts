@@ -9,11 +9,11 @@ import morgan from 'morgan'
 import './database'
 import { InititalLogs } from './logs'
 import { paymentRouter } from './mooc/routes/payment/infranstructure/paymentRouter'
-
 const app = express()
 // Set configuration of logs
 InititalLogs(app)
 
+app.use(express.static('public'))
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json({ limit: '50mb' }))
 app.use(cors({ origin: '*' }))

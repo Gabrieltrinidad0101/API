@@ -14,6 +14,7 @@
     "start-test-server": "ts-node-dev --respawn ./testServer/startTestServer.ts"
   },
   "devDependencies": {
+    "@sentry/node": "^7.60.0",
     "@types/bcrypt": "^5.0.0",
     "@types/cors": "^2.8.13",
     "@types/dotenv": "^8.2.0",
@@ -23,6 +24,8 @@
     "@types/jsonwebtoken": "^9.0.1",
     "@types/mime-types": "^2.1.1",
     "@types/morgan": "^1.9.4",
+    "@types/nodemailer": "^6.4.9",
+    "@types/pdfkit": "^0.12.10",
     "@types/request": "^2.48.8",
     "@types/supertest": "^2.0.12",
     "@typescript-eslint/eslint-plugin": "^5.43.0",
@@ -41,9 +44,6 @@
     "typescript": "^*"
   },
   "dependencies": {
-    "@sentry/node": "^7.60.0",
-    "@types/nodemailer": "^6.4.9",
-    "@types/pdfkit": "^0.12.10",
     "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",

@@ -11,5 +11,8 @@
   },
   "scripts": {
     "prepare": "husky install"
+  },
+  "dependencies": {
+    "@types/jest": "^29.5.5"
   }
 }
