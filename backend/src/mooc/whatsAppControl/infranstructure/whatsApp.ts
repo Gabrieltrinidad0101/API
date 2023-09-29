@@ -13,6 +13,7 @@ import { type TypeOpenWithError } from '../domian/whatsAppController'
 import { type MessageQueue } from './messageQueue'
 import fs from 'fs'
 import crypto from 'crypto'
+import deleteOldFiles from './deleteOldFiles'
 const screens = new Map<string, Client>()
 
 export default class WhatsAppController implements IWhatsAppController {
@@ -129,6 +130,7 @@ export default class WhatsAppController implements IWhatsAppController {
     }
 
     await sendReceiveMessage(message, instance)
+    deleteOldFiles()
   }
 
   onMessage = (client: Client, instance: IInstance): void => {

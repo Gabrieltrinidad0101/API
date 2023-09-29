@@ -10,6 +10,7 @@ import { type ISubscriptionFromApi, type IPaymentApp, type IPaymentRepository } 
 import { type IBasicUser } from '../../../../../../share/domain/user'
 import crypto from 'crypto'
 import { Logs } from '../../../../logs'
+import addMonthDate from '../../../share/application/addMonthDate'
 
 export default class Instance {
   private readonly instanceRepository: IInstanceRepository
@@ -41,7 +42,7 @@ export default class Instance {
     const isFirstInstane = instances.length <= 0
     const subscriptionFromApi = isFirstInstane ? null : await this.generateSubscription(user)
     const date = new Date()
-    const endService = isFirstInstane ? new Date(date.getMonth() + 1) : undefined
+    const endService = isFirstInstane ? addMonthDate(date) : undefined
     const messageLimit = isFirstInstane ? 100 : Infinity
     const status: TypeStatusInstance = isFirstInstane ? 'initial' : 'unpayment'
     const instance: IInstance = {
