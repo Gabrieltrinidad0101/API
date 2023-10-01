@@ -7,7 +7,10 @@ const SubscriptionSchema = new Schema({
   paymentLink: String,
   links: String,
   userId: String,
-  instanceId: String
+  instanceId: {
+    type: Schema.Types.ObjectId,
+    ref: 'instances' // Optional, for referencing another model
+  }
 })
 
 export const SuscriptionModal = model('subscriptionpayment', SubscriptionSchema)

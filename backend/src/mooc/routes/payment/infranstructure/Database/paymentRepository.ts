@@ -32,20 +32,20 @@ export default class PaymentRepository implements IPaymentRepository {
   }
 
   findPaymentsWithInstance = async (userId: string, userRol: TypeRol): Promise<ISubscriptionAndInstance[]> => {
+    const match: any = {
+      status: 'ACTIVE'
+    }
+    if (userRol !== 'admin') match['instance.userId'] = userId
     const result = await SuscriptionModal.aggregate<ISubscriptionAndInstance>([
-      { $addFields: { prueba: { $toObjectId: '$instanceId' } } },
       {
-        $match: {
-          status: 'ACTIVE',
-          'instance.userId': userRol === 'admin' ? {} : userId
-        }
+        $match: match
       },
       {
         $lookup: {
           from: 'instances', // The name of the target collection (case-sensitive)
           foreignField: '_id', // The field in the 'instances' collection
           as: 'instance', // The alias for the joined data
-          localField: 'prueba' // The field in the 'suscription' collection
+          localField: 'instanceId' // The field in the 'suscription' collection
         }
       }
     ])

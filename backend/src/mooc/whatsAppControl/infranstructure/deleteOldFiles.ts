@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import { Logs } from '../../../logs'
 const deleteOldFiles = (): void => {
-  const folderPath = '/public'
+  const folderPath = 'public'
 
   try {
     const files = fs.readdirSync(folderPath)

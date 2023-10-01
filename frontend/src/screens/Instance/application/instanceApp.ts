@@ -6,7 +6,7 @@ import { isEmptyNullOrUndefined } from '../../../../../share/application/isEmpty
 import APIURL from '../../../share/application/Api'
 
 export default class InstanceApp {
-  constructor (private readonly fetchAlert: IFecthAlert) {}
+  constructor (private readonly fetchAlert: IFecthAlert) { }
 
   save = async (): Promise<IInstance | undefined> => {
     try {
@@ -31,8 +31,15 @@ export default class InstanceApp {
     }
   }
 
+  isValidInstanceId = (instanceId: string): boolean => {
+    const regex = /^[a-zA-Z0-9]+$/
+    return regex.test(instanceId)
+  }
+
   sendTestMessage = async (send: ISendMessage): Promise<void> => {
     try {
+      const isValid = this.isValidInstanceId(send.instanceId)
+      if (!isValid) { this.fetchAlert.toast.error('Instance ID cannot have a special character'); return }
       const url = !isEmptyNullOrUndefined(send.body) ? APIURL.sendMessage(send.instanceId) : APIURL.sendDocument(send.instanceId)
       const res = await this.fetchAlert.customFecth.post<string>(url, send)
       if (res?.message === undefined) return

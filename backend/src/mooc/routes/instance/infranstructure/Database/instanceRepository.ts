@@ -5,8 +5,9 @@ import InstanceModal from './instanceSchema'
 import mongoose from 'mongoose'
 import { findInstanceQuery } from './findInstanceQuery'
 import { userRepository } from '../../../user/infranstructure/dependencies'
+import DataBase from '../../../../share/infranstructure/Database'
 
-export default class InstanceRepository implements IInstanceRepository {
+export default class InstanceRepository extends DataBase implements IInstanceRepository {
   insert = async (instance: IInstance): Promise<IInstance> => {
     const instanceModal = new InstanceModal({
       ...instance,
@@ -25,6 +26,8 @@ export default class InstanceRepository implements IInstanceRepository {
   }
 
   async findOne (filter: object): Promise<IInstance | null> {
+    const isValid = this.isValidObjectId(filter)
+    if (!isValid) return null
     const instanceModal = await InstanceModal.findOne<IInstance>(filter)
     return instanceModal
   }

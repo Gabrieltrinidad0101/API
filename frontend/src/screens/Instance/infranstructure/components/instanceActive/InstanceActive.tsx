@@ -7,6 +7,7 @@ import { instanceApp } from '../../dependencies'
 import { Button, FormControl, InputAdornment, InputLabel, OutlinedInput } from '@mui/material'
 import { isEmptyNullOrUndefined } from '../../../../../../../share/application/isEmptyNullUndefiner'
 import { Toast } from '../../../../../share/infranstruture/toast'
+import { type IInstanceAuthentication } from '../../../../../../../share/domain/instance'
 export default function InstanceActive ({ Prop: instance }: Prop<IInstance>): JSX.Element {
   const [webhookUrl, setWebhookUrl] = useState<string>(instance?.webhookUrl ?? '')
 
@@ -21,6 +22,10 @@ export default function InstanceActive ({ Prop: instance }: Prop<IInstance>): JS
   const inputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     const { value } = e.target
     setWebhookUrl(value)
+  }
+
+  const getIdAndToken = (): IInstanceAuthentication => {
+    return instance
   }
 
   return (
@@ -42,8 +47,7 @@ export default function InstanceActive ({ Prop: instance }: Prop<IInstance>): JS
         />
       </FormControl>
       <SendMessage Prop={{
-        _id: instance._id,
-        token: instance.token,
+        getIdAndToken,
         multiline: true,
         title: 'Send Test Message',
         messagePlaceHolder: 'Message',
