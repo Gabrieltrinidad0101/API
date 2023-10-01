@@ -20,14 +20,14 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 0px 10px;
 }
 
 .containerInputs{
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
-    padding-left: 3px;
-    padding-top: 10px;
+    padding: 15px 5px;
     gap: 10px
 }
 

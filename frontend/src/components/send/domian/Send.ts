@@ -1,6 +1,7 @@
+import { type IInstanceAuthentication } from '../../../../../share/domain/instance'
+
 export interface IPropSend {
-  _id: string
-  token: string
+  getIdAndToken: () => IInstanceAuthentication
   messagePlaceHolder: string
   title: string
   multiline: boolean

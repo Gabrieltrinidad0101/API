@@ -1,14 +1,16 @@
 import React from 'react'
 import instanceAuthentication from '../../getInstanceAuthentication'
 import Send from '../../../../../components/send/infranstructure/Send'
+import { type IInstanceAuthentication } from '../../../../../../../share/domain/instance'
 
 export default function SendMessage (): JSX.Element {
-  const { _id, token } = instanceAuthentication()
+  const getIdAndToken = (): IInstanceAuthentication => {
+    return instanceAuthentication()
+  }
 
   return (
     <Send Prop={{
-      _id,
-      token,
+      getIdAndToken,
       title: 'Send Test Message',
       multiline: true,
       messagePlaceHolder: 'message',

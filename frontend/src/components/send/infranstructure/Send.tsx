@@ -18,10 +18,11 @@ const Send = ({ Prop: propSend }: Prop<IPropSend>): JSX.Element => {
       Toast.error('All the fields are required')
       return
     }
+    const { _id, token } = propSend.getIdAndToken()
 
     instanceApp.sendTestMessage({
-      instanceId: propSend._id,
-      token: propSend.token,
+      instanceId: _id,
+      token,
       [propSend.typeOfSend]: body,
       to,
       filename
