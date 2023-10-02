@@ -131,3 +131,4 @@ dist
 yarn.lock
 
 ./backend/src/mooc/emailSubscription/infranstructure/subscriptionPdf/*
+e2e/cypress/e2e/conf.js

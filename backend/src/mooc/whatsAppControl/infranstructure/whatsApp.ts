@@ -22,7 +22,7 @@ export default class WhatsAppController implements IWhatsAppController {
     private readonly messageQueue: MessageQueue
   ) { }
 
-  async send (instance: IInstance, message: ISendMessageUserId): Promise<string | undefined> {
+  async send (instance: IInstance, message: ISendMessageUserId): Promise<string> {
     try {
       const screenId = getScreenId({
         _id: message.instanceId,
@@ -36,7 +36,7 @@ export default class WhatsAppController implements IWhatsAppController {
         await screen?.sendMessage(`${message.to}@c.us`, message.body)
       } else if (message.document !== undefined) {
         const extension = getMessageMediaExtension(message.filename ?? '')
-        if (extension === false) return
+        if (extension === false) return 'Error in extension file'
         const media = await MessageMedia.fromUrl(message.document)
         await screen?.sendMessage(`${message.to ?? ''}@c.us`, media)
       }
@@ -52,6 +52,8 @@ export default class WhatsAppController implements IWhatsAppController {
       const messageQueue = { ...message, isQueue: true }
       await this.messageQueue.insert(messageQueue)
     }
+
+    return 'success'
   }
 
   private readonly onQrAsync = async (qr: string, id: string): Promise<void> => {

@@ -3,6 +3,7 @@ import { type IHttpStatusCode } from '../../../../../../share/domain/httpResult'
 import { type IBasicUser, type TypeRol } from '../../../../../../share/domain/user'
 import { Logs } from '../../../../logs'
 import { type ISubscriptionEmail } from '../../../emailSubscription/domian/emailSubscription'
+import addMonthDate from '../../../share/application/addMonthDate'
 import { getScreenId } from '../../../share/application/getScreenId'
 import { type IConstantes } from '../../../share/domain/constantes'
 import { type IHttpRequest } from '../../../share/domain/httpRequest'
@@ -55,9 +56,10 @@ export class PaymentApp implements IPaymentApp {
     return subscriptionFromApi
   }
 
-  captureSubscription = async (subscriptionId: string): Promise<IHttpStatusCode> => {
+  captureSubscription = async (subscriptionId: string, paymentFrom: string): Promise<IHttpStatusCode> => {
     const subscription = await this.paymentRepository.findOneSubscription({ id: subscriptionId })
     if (subscription === null) {
+      Logs.Error(`Activating INSTANCE from: ${paymentFrom},subscription id: ${subscriptionId}`)
       return {
         statusCode: 404,
         message: 'Subscription not exist'
@@ -73,6 +75,7 @@ export class PaymentApp implements IPaymentApp {
 
     const instance = await this.instanceRepository.findOne({ subscriptionId })
     if (isEmptyNullOrUndefined(instance) || instance === null) {
+      Logs.Error(`The subscription do not have any instance from: ${paymentFrom},subscription id: ${subscriptionId}`)
       return {
         statusCode: 404,
         error: 'The subscription do not have any instance',
@@ -90,8 +93,7 @@ export class PaymentApp implements IPaymentApp {
         message: 'The subscription is not active'
       }
     }
-    const date = new Date()
-    const nextMonth = new Date(date.setMonth(date.getMonth() + 1))
+    const nextMonth = addMonthDate(new Date())
     await this.instanceRepository.updateEndService(instance._id, nextMonth)
     await this.instanceRepository.updateStatus({ _id: instance._id }, 'initial')
     await this.paymentRepository.updateStatus(subscription?._id, 'ACTIVE')

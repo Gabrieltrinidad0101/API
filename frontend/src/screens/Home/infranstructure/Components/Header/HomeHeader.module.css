@@ -34,7 +34,7 @@
 }
 
 .containerNewInstance{
-    justify-self: flex-end;
+    justify-self: flex-start;
 }
 
 .newInstance {
@@ -78,7 +78,7 @@
         position: fixed;
         width: 0px;
         height: 0px;
-        left: 5px;
+        left: calc(100vw - 95px);
         top: calc(100% - 10px - 50px );
         z-index: 10;
         background: transparent;

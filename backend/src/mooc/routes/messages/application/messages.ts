@@ -32,9 +32,9 @@ export default class MessagesApp {
       }
     }
     const messageWithUserId: ISendMessageUserId = { ...message, userId: instance.userId ?? '', isQueue: false }
-    await this.whatsAppController.send(instance, messageWithUserId)
+    const reponseMessage = await this.whatsAppController.send(instance, messageWithUserId)
     return {
-      message: 'success'
+      message: reponseMessage
     }
   }
 

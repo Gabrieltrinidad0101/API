@@ -1,5 +1,0 @@
-describe('Auth', () => {
-  it('passes', () => {
-    
-  })
-})

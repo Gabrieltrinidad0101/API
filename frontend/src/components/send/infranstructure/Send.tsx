@@ -40,7 +40,7 @@ const Send = ({ Prop: propSend }: Prop<IPropSend>): JSX.Element => {
     <div className={SendMessageCss.containerSendMessage}>
       <div className={SendMessageCss.title}>
         <h2>{propSend?.title}</h2>
-        <Button variant="contained" onClick={sendTestMessage} endIcon={<i className="fa-solid fa-paper-plane"></i>}>
+        <Button id="buttonSendTestMessage" variant="contained" onClick={sendTestMessage} endIcon={<i className="fa-solid fa-paper-plane"></i>}>
           Send
         </Button>
       </div>

@@ -5,8 +5,8 @@ import { verifyAuthentication } from '../../../share/infranstructure/dependecies
 
 const paymentRouter = Router()
 const router = new RouterManager(paymentRouter)
-
 router.get('/sucess', paymentControl.captureSubscription)
+router.post('/sucess', paymentControl.captureSubscriptionRecurrent)
 router.get('/', verifyAuthentication.user, paymentControl.get)
 router.post('/eventosControl', paymentControl.eventsControls)
 export { paymentRouter }

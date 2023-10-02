@@ -35,7 +35,7 @@ export default class PaymentRepository implements IPaymentRepository {
     const match: any = {
       status: 'ACTIVE'
     }
-    if (userRol !== 'admin') match['instance.userId'] = userId
+    if (userRol !== 'admin') match.userId = userId
     const result = await SuscriptionModal.aggregate<ISubscriptionAndInstance>([
       {
         $match: match

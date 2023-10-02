@@ -7,6 +7,7 @@
     "dev": "ts-node-dev --respawn ./src/index.ts",
     "build": "tsc",
     "start": "node ./dist/backend/src/index.js",
+    "start-test": "node ./mongodb/dropInstancesTest.js && DB=chatPlusTest ts-node-dev --respawn ./src/index.ts",
     "eslint": "eslint --ignore-path .gitignore . --ext .ts, src/",
     "eslint-fix": "eslint . --ext .ts --fix",
     "test": "node ./mongodb/dropInstancesTest.js && DB=chatPlusTest npx jest ./test/instance.spec.ts",
