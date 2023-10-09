@@ -32,9 +32,16 @@ export default class MessagesApp {
       }
     }
     const messageWithUserId: ISendMessageUserId = { ...message, userId: instance.userId ?? '', isQueue: false }
-    const reponseMessage = await this.whatsAppController.send(instance, messageWithUserId)
+    const thereIsError = await this.whatsAppController.send(instance, messageWithUserId)
+    if (!isEmptyNullOrUndefined(thereIsError)) {
+      return {
+        statusCode: 422,
+        error: 'Send the Message',
+        message: thereIsError
+      }
+    }
     return {
-      message: reponseMessage
+      message: 'success'
     }
   }
 

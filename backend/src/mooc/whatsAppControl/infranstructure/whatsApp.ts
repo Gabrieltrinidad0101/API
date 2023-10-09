@@ -22,7 +22,7 @@ export default class WhatsAppController implements IWhatsAppController {
     private readonly messageQueue: MessageQueue
   ) { }
 
-  async send (instance: IInstance, message: ISendMessageUserId): Promise<string> {
+  async send (instance: IInstance, message: ISendMessageUserId): Promise<string | undefined> {
     try {
       const screenId = getScreenId({
         _id: message.instanceId,
@@ -52,8 +52,6 @@ export default class WhatsAppController implements IWhatsAppController {
       const messageQueue = { ...message, isQueue: true }
       await this.messageQueue.insert(messageQueue)
     }
-
-    return 'success'
   }
 
   private readonly onQrAsync = async (qr: string, id: string): Promise<void> => {

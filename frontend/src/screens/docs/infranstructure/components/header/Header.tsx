@@ -23,7 +23,6 @@ export default function Header (): JSX.Element {
 
   return (
         <div className={HeaderCss.headerContainer}>
-            <h1>Send File</h1>
             <div className={HeaderCss.container}>
                 <div className={HeaderCss.inputsContainer}>
                     <TextField variant='standard' name="_id" onChange={changeInput} value={instanceAuthentication?._id} label="Instance ID" />
