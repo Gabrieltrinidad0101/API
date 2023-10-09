@@ -14,7 +14,7 @@ export interface IInstanceQRStatus{
 
 export type TypeInstanceStart = "start" | "restart" | "error" | "windowClose" | "payment"
 
-export type TypeStatusInstance = "pending" | "initial" | "authenticated" | "unpayment" | "cancel"
+export type TypeStatusInstance = "pending" | "initial" | "authenticated" | "unpayment"
 
 type TypeInstanceName = string
 

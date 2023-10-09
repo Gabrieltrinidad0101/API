@@ -1,27 +1,30 @@
-const { url, userAdmin, password, phone, send101Messages } = require("./conf")
+const {phone, send101Messages } = require("./conf")
+const login = require('./login.js')
 
-const login = () => {
-  cy.visit(`${url}/login`)
-  cy.viewport(1200, 800)
-  cy.get("input[type='email']").type(userAdmin)
-  cy.get("input[type='password']").type(password)
-  cy.get("button").click()
-  cy.contains("WELCOME").click()
-}
-
-describe('Auth', () => {
+describe('Instance', () => {
   it('Create Instance', () => {
     login();
+    cy.contains("New Instance").click()
     cy.contains("New Instance").click()
   })
 
   it('Scan QR', () => {
-    login();
+    login()
     cy.contains("Manager").click()
     cy.wait(70 * 1000)
     cy.contains("authenticated")
   })
 
+
+  it("Change Name to Instance", () => {
+    login();
+    cy.contains("Manager").click()
+    cy.get("#instanceName").clear().type("Instance1").type('{enter}')
+  })
+})
+
+
+describe("send message",()=>{
   it('Send Message', () => {
     if (!send101Messages) return;
     login();
@@ -37,16 +40,5 @@ describe('Auth', () => {
       if (i == 100) cy.contains("YOU EXCEEDED THE LIMIT OF MESSAGES").click()
     }
   })
-
-  it("Change Name to Instance", () => {
-    login();
-    cy.contains("Manager").click()
-    cy.get("#instanceName").type("Instance1").type('{enter}')
-  })
-
-  it("Create new Payment Instance", () => {
-    login();
-    cy.contains("New Instance").click()
-    cy.contains("PAY").click()
-  })
 })
+

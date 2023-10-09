@@ -40,13 +40,9 @@ export default class WhatsAppController implements IWhatsAppController {
         const media = await MessageMedia.fromUrl(message.document)
         await screen?.sendMessage(`${message.to ?? ''}@c.us`, media)
       }
-      if (message.isQueue) {
-        // to-do delete message from db
-      }
+      if (message.isQueue) { await this.messageQueue.delete(message) }
       const newLimit = instance.messageLimit - 1
-      if (newLimit !== Infinity) {
-        await this.instanceRepository.updateMessageLimit(instance._id, newLimit)
-      }
+      if (newLimit !== Infinity) { await this.instanceRepository.updateMessageLimit(instance._id, newLimit) }
     } catch (error: any) {
       Logs.Error(error)
       const messageQueue = { ...message, isQueue: true }
@@ -125,7 +121,7 @@ export default class WhatsAppController implements IWhatsAppController {
       const pathFile = `public/${filename}`
 
       const fileStream = fs.createWriteStream(pathFile)
-      fileStream.write(media.data, 'base64') // Write the base64 data to the file
+      fileStream.write(media.data, 'base64')
       fileStream.end()
     }
 
@@ -149,6 +145,8 @@ export default class WhatsAppController implements IWhatsAppController {
     await this.destroy(screenId)
   }
 
+  // The catch do nothing because sometimes
+  // the library return a exception
   destroy = async (screenId: string): Promise<void> => {
     try {
       const client = screens.get(screenId)

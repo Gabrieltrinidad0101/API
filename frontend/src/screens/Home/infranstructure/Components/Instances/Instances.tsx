@@ -5,9 +5,6 @@ import { type IPropInstance } from '../../../domian/instance'
 import { useNavigate } from 'react-router-dom'
 import { useUserContext } from '../../../../../share/infranstruture/AuthenticationContext'
 import { DataGridColumns } from './DataGridColumns'
-import { instanceApp } from '../../dependencies'
-import type IInstance from '../../../../../../../share/domain/instance'
-import { isEmptyNullOrUndefined } from '../../../../../../../share/application/isEmptyNullUndefiner'
 
 export default function Instances ({ instancesData }: IPropInstance): JSX.Element {
   const navigation = useNavigate()
@@ -15,18 +12,12 @@ export default function Instances ({ instancesData }: IPropInstance): JSX.Elemen
     navigation(`/instance?id=${idInstance}`)
   }
 
-  const onPayment = async (instance: IInstance): Promise<void> => {
-    const link = await instanceApp.reCreateSubscription(instancesData, instance._id)
-    if (isEmptyNullOrUndefined(link)) return
-    window.open(link, '_black')
-  }
-
   const { user } = useUserContext()
   return (
     <div className={InstancesCss.wrapper}>
       <DataGrid
         rows={instancesData}
-        columns={DataGridColumns({ onClickManage: goToInstances, onPayment })}
+        columns={DataGridColumns({ onClickManage: goToInstances })}
         getRowId={(row) => row._id}
         initialState={{
           pagination: {
