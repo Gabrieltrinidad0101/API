@@ -12,7 +12,7 @@ export const DataGridColumns = ({ onClickManage }: IDataGridInstance): GridColDe
 
   const PaymentButton = ({ Prop: instance }: IProp<IInstance>): JSX.Element =>
     <Button color="success" variant="contained">
-      <a id="payInstancelink" target="_blank" href={instance.paymentLink} className='remove-style-link' rel="noreferrer">
+      <a id="payInstanceLink" target="_blank" href={instance.paymentLink} className='remove-style-link' rel="noreferrer">
         Pay
       </a>
     </Button>
