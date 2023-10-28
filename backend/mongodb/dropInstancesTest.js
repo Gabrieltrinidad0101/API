@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost:27017/chatPlusTest', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect('mongodb://127.0.0.1:27017/chatPlusTest', { useNewUrlParser: true, useUnifiedTopology: true })
   .then( async () => {
     // Access the underlying MongoDB connection object
     const db = mongoose.connection.db;

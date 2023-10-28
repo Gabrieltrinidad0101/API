@@ -29,6 +29,8 @@ export default class WhatsAppController implements IWhatsAppController {
         token: message.token
       })
       if (instance.messageLimit === 0) {
+        this.instanceRepository.updateStatus({_id: instance._id},"unpayment");
+        screens.get(screenId)?.destroy();
         return 'you exceeded the limit of messages'
       }
       const screen = screens.get(screenId)
@@ -210,19 +212,19 @@ export default class WhatsAppController implements IWhatsAppController {
           headless: false
         }
       })
-      await this.instanceRepository.updateStatus({ _id }, 'initial')
-      await this.instanceRepository.updateQr(_id, '')
-      await this.destroy(screenId)
       screens.set(screenId, client)
-      this.onMessage(client, instance)
-      this.onQr(client, _id)
-      this.onAuthfailure(client, instance)
-      this.onAuthenticated(client, _id)
-      this.onDisconnected(client, instance)
-      this.onScreenLoad(client, instance)
-        .catch(error => {
-          Logs.Exception(error)
-        })
+      // await this.instanceRepository.updateStatus({ _id }, 'initial')
+      // await this.instanceRepository.updateQr(_id, '')
+      // await this.destroy(screenId)
+      // this.onMessage(client, instance)
+      // this.onQr(client, _id)
+      // this.onAuthfailure(client, instance)
+      // this.onAuthenticated(client, _id)
+      // this.onDisconnected(client, instance)
+      // this.onScreenLoad(client, instance)
+      //   .catch(error => {
+      //     Logs.Exception(error)
+      //   })
       await client.initialize()
     } catch (error: any) {
       Logs.Exception(error)
