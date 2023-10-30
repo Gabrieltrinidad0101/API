@@ -18,6 +18,7 @@ export type TypeStatusInstance = "pending" | "initial" | "authenticated" | "unpa
 
 type TypeInstanceName = string
 
+
 export interface IInstanceAuthentication{
     token: string
     _id: string

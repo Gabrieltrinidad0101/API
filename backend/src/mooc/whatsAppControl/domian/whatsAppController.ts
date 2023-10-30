@@ -12,9 +12,9 @@ export default interface IWhatsAppController {
   destroy: (screenId: string) => Promise<void>
 }
 
-export interface IIdTokenWhatsApp {
+
+export interface IScreenId {
   _id: string
-  token: string
 }
 
 export type TypeOpenWithError = 'openWithError'
