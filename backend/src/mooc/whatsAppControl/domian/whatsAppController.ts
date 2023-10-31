@@ -12,7 +12,6 @@ export default interface IWhatsAppController {
   destroy: (screenId: string) => Promise<void>
 }
 
-
 export interface IScreenId {
   _id: string
 }

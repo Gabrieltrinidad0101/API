@@ -120,10 +120,8 @@ export class PaymentApp implements IPaymentApp {
   }
 
   eventsControls = async (body: any): Promise<IHttpStatusCode> => {
-    if (body.event_type === 'BILLING.SUBSCRIPTION.CANCELLED') {
-      const subscriptionId = body.resource.id
-      await this.cancelSubscription(subscriptionId)
-    }
+    const subscriptionId = body.resource.id
+    await this.cancelSubscription(subscriptionId)
     return {
       message: 'ok'
     }
