@@ -79,7 +79,7 @@ export default class Instance {
     if (instanceSaved.status === 'initial') {
       this.whatsAppController.start(instanceSaved, 'start')
         .catch(error => {
-          console.log(error)
+          Logs.Error(error)
         })
     }
     return {
@@ -149,7 +149,7 @@ export default class Instance {
     }
 
     // always it try to get the qr and the instance is not active
-    // it will try to restart but only do that after one minute
+    // it will try to restart but only do that after 30 seconds
     // because when the instance is initial,it is not active
     this.whatsAppController.getStatus(screenId)
       .then(async (screenStatus): Promise<void> => {

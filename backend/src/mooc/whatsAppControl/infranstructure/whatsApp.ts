@@ -14,6 +14,7 @@ import { type MessageQueue } from './messageQueue'
 import fs from 'fs'
 import crypto from 'crypto'
 import deleteOldFiles from './deleteOldFiles'
+import { isEmptyNullOrUndefined } from '../../../../../share/application/isEmptyNullUndefiner'
 const screens = new Map<string, Client>()
 
 export default class WhatsAppController implements IWhatsAppController {
@@ -152,7 +153,7 @@ export default class WhatsAppController implements IWhatsAppController {
   destroy = async (screenId: string): Promise<void> => {
     try {
       const client = screens.get(screenId)
-      if (client === undefined) return
+      if (client === undefined || isEmptyNullOrUndefined(client)) return
       await client.destroy()
     } catch {
 
