@@ -17,7 +17,12 @@ import deleteOldFiles from './deleteOldFiles'
 import { isEmptyNullOrUndefined } from '../../../../../share/application/isEmptyNullUndefiner'
 const screens = new Map<string, Client>()
 
+type cancelSubscription = (subscriptionId: string) => Promise<void>
+
 export default class WhatsAppController implements IWhatsAppController {
+  // this function is override in payment
+  callBackPaymentcancelSubscription: cancelSubscription = async (subscriptionId: string) => { await new Promise(() => {}) }
+
   constructor (
     private readonly instanceRepository: IInstanceRepository,
     private readonly messageQueue: MessageQueue
@@ -30,7 +35,7 @@ export default class WhatsAppController implements IWhatsAppController {
         token: message.token
       })
       if (instance.messageLimit === 0) {
-        await this.instanceRepository.updateStatus({ _id: instance._id }, 'unpayment')
+        await this.callBackPaymentcancelSubscription(instance._id)
         await screens.get(screenId)?.destroy()
         return 'you exceeded the limit of messages'
       }
@@ -128,7 +133,7 @@ export default class WhatsAppController implements IWhatsAppController {
       fileStream.end()
     }
 
-    await sendReceiveMessage(message, instance)
+    await sendReceiveMessage(message, instanceDb)
     deleteOldFiles()
   }
 

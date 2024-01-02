@@ -14,12 +14,12 @@ export function createInvoicePdf (invoice: IInvoice, path: string): void {
 
 function generateHeader (doc: PDFKit.PDFDocument): void {
   doc
-    .image('/home/gabriel/Desktop/javascript/chatPlus/frontend/src/assets/images/logo.png', 50, 45, { width: 190 })
+    .image('C:/Users/Usuario/Desktop/javascript/chatPlus/frontend/src/assets/images/logo.png', 50, 45, { width: 190 })
     .fillColor('#444444')
     .fontSize(10)
     .text(constantes.COMPANY_NAME, 200, 50, { align: 'right' })
-    .text('123 Main Street', 200, 65, { align: 'right' })
-    .text('New York, NY, 10025', 200, 80, { align: 'right' })
+    .text(constantes.COMPANY_EMAIL, 200, 65, { align: 'right' })
+    .text(constantes.COMPANY_NUMBER, 200, 80, { align: 'right' })
     .moveDown()
 }
 
@@ -37,7 +37,7 @@ function generateCustomerInformation (doc: PDFKit.PDFDocument, invoice: IInvoice
     .fontSize(10)
     .text('Subscription Number:', 50, customerInformationTop)
     .font('Helvetica-Bold')
-    .text(invoice.invoice_nr.toString(), 150, customerInformationTop)
+    .text(invoice.invoice_nr, 150, customerInformationTop)
     .font('Helvetica')
     .text('Subscription Date:', 50, customerInformationTop + 15)
     .text(formatDate(new Date()), 150, customerInformationTop + 15)
@@ -45,20 +45,6 @@ function generateCustomerInformation (doc: PDFKit.PDFDocument, invoice: IInvoice
     .text(
       formatCurrency(invoice.subtotal - invoice.paid),
       150,
-      customerInformationTop + 30
-    )
-
-    .font('Helvetica-Bold')
-    .text(invoice.shipping.name, 300, customerInformationTop)
-    .font('Helvetica')
-    .text(invoice.shipping.address, 300, customerInformationTop + 15)
-    .text(
-      invoice.shipping.city +
-        ', ' +
-        invoice.shipping.state +
-        ', ' +
-        invoice.shipping.country,
-      300,
       customerInformationTop + 30
     )
     .moveDown()

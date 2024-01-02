@@ -10,6 +10,7 @@ export default interface IWhatsAppController {
   send: (instance: IInstance, send: ISendMessageUserId) => Promise<string | undefined>
   getStatus: (screenId: string) => Promise<WAState | TypeOpenWithError | undefined>
   destroy: (screenId: string) => Promise<void>
+  callBackPaymentcancelSubscription: (subscriptionId: string) => Promise<void>
 }
 
 export interface IScreenId {

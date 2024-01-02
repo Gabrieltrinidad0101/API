@@ -10,8 +10,8 @@
     "start-test": "node ./mongodb/dropInstancesTest.js & set DB=chatPlusTest & ts-node-dev --respawn ./src/index.ts",
     "eslint": "eslint --ignore-path .gitignore . --ext .ts, src/",
     "eslint-fix": "eslint . --ext .ts --fix",
-    "test": "node ./mongodb/dropInstancesTest.js && DB=chatPlusTest npx jest ./test/instance.spec.ts",
-    "user-test": "node ./mongodb/dropInstancesTest.js && DB=chatPlusTest npx jest ./test/user.spec.ts",
+    "test": "node ./mongodb/dropInstancesTest.js & set DB=chatPlusTest & npx jest ./test/instance.spec.ts",
+    "user-test": "node ./mongodb/dropInstancesTest.js & DB=chatPlusTest & npx jest ./test/user.spec.ts",
     "start-test-server": "ts-node-dev --respawn ./testServer/startTestServer.ts"
   },
   "devDependencies": {

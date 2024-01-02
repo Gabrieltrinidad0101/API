@@ -16,10 +16,8 @@ export interface IEmailFile {
 
 interface IShippingAddress {
   name: string
-  address: string
-  city: string
-  state: string
-  country: string
+  companyEmail: string
+  companyNumber: string
   postal_code: number
 }
 
@@ -35,7 +33,7 @@ export interface IInvoice {
   items: IItem[]
   subtotal: number
   paid: number
-  invoice_nr: number
+  invoice_nr: string
 }
 
 export interface IGenerateInvoiceTemplate {

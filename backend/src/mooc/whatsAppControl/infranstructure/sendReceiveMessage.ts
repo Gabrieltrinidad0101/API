@@ -5,7 +5,7 @@ import { httpRequet } from '../../share/infranstructure/httpRequest'
 
 const sendReceiveMessage = async (message: Message, instance: IInstance): Promise<void> => {
   try {
-    const { webhookUrl } = instance
+    const webhookUrl = instance.webhookUrl
     if (isEmptyNullOrUndefined(webhookUrl) || webhookUrl === undefined) return
     await httpRequet({
       method: 'POST',

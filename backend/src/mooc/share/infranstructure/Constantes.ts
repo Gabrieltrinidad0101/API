@@ -22,6 +22,7 @@ const PAYMENT_PLAN_ID = process.env.PAYMENT_PLAN_ID ?? ''
 const CELLPHONE_ADMIN = process.env.CELLPHONE_ADMIN ?? ''
 const COMPANY_LINK = process.env.COMPANY_LINK ?? ''
 const COMPANY_EMAIL = process.env.COMPANY_EMAIL ?? ''
+const COMPANY_NUMBER = process.env.COMPANY_NUMBER ?? ''
 
 const constantes: IConstantes = {
   HOST,
@@ -44,7 +45,8 @@ const constantes: IConstantes = {
   COMPANY_LOGO,
   PAYMENT_PLAN_ID,
   COMPANY_LINK,
-  COMPANY_EMAIL
+  COMPANY_EMAIL,
+  COMPANY_NUMBER
 }
 
 // If any property is undefined stop the server

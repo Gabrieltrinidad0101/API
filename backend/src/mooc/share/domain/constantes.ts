@@ -20,6 +20,7 @@ export interface IConstantes {
   readonly PAYMENT_PLAN_ID: string
   readonly COMPANY_LINK: string
   readonly COMPANY_EMAIL: string
+  readonly COMPANY_NUMBER: string
 }
 
 export type TypekeyOfIConstantes = keyof IConstantes

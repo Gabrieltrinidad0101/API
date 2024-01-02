@@ -20,4 +20,5 @@ export const paymentApp = new PaymentApp(
   subscriptionEmail,
   userRepository
 )
+
 export const paymentControl = new PaymentControl()

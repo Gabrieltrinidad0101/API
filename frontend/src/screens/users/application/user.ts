@@ -13,8 +13,8 @@ export default class UserApp {
 
   isInvalidUpdateUser = ({ name, email, cellPhone }: IUser): string | undefined => {
     if (isEmptyNullOrUndefined(name, email, cellPhone)) return 'All The Inputs Are Required'
-    const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!pattern.test(email)) { return 'Valid email' }
+    const pattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+    if (!pattern.test(email)) return 'Valid email'
   }
 
   updateUser = async (user: IUser): Promise<boolean> => {

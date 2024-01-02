@@ -1,23 +1,25 @@
 import type IUser from '../../../../../share/domain/user'
 import { Logs } from '../../../logs'
+import constantes from '../../share/infranstructure/Constantes'
 import { createInvoicePdf, email, getGenerateInvoiceTemplate } from '../../share/infranstructure/dependecies'
 import { type ISubscriptionEmail } from '../domian/emailSubscription'
 import crypto from 'crypto'
+import fs from 'fs'
 import path from 'path'
 
 export class SubscriptionEmail implements ISubscriptionEmail {
   private readonly getInvoicePath = (): string => {
+    const dir = path.join(__dirname, '/subscriptionPdf/')
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir)
     return path.join(__dirname, `/subscriptionPdf/${crypto.randomUUID()}.pdf`)
   }
 
-  private readonly generatedPdf = (invoiceFilename: string): void => {
+  private readonly generatedPdf = (invoiceFilename: string, instanceId: string): void => {
     createInvoicePdf({
       shipping: {
-        name: 'John Doe',
-        address: '1234 Main Street',
-        city: 'San Francisco',
-        state: 'CA',
-        country: 'US',
+        name: constantes.COMPANY_NAME,
+        companyEmail: constantes.COMPANY_EMAIL,
+        companyNumber: constantes.COMPANY_NUMBER,
         postal_code: 94111
       },
       items: [
@@ -30,14 +32,14 @@ export class SubscriptionEmail implements ISubscriptionEmail {
       ],
       subtotal: 2500,
       paid: 0,
-      invoice_nr: 2500
+      invoice_nr: instanceId
     }, invoiceFilename)
   }
 
-  send = async (user: IUser): Promise<void> => {
+  send = async (user: IUser, instanceId: string): Promise<void> => {
     try {
       const invoicePath = this.getInvoicePath()
-      this.generatedPdf(invoicePath)
+      this.generatedPdf(invoicePath, instanceId)
       const template = getGenerateInvoiceTemplate({
         for: user.name
       })

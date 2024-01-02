@@ -24,7 +24,9 @@ export class PaymentApp implements IPaymentApp {
     private readonly paymentSubscriptionValidator: TypeValidation,
     private readonly subscriptionEmail: ISubscriptionEmail,
     private readonly userRepository: IUserRepository
-  ) { }
+  ) {
+    whatsAppController.callBackPaymentcancelSubscription = this.cancelSubscription
+  }
 
   private readonly makeHttpRequest = async (url: string, subscription: ISubscription | object, method: 'POST' | 'GET' = 'POST'): Promise<any> => {
     const response = await this.httpRequest({
@@ -97,15 +99,16 @@ export class PaymentApp implements IPaymentApp {
     await this.instanceRepository.updateEndService(instance._id, nextMonth)
     await this.instanceRepository.updateStatus({ _id: instance._id }, 'initial')
     await this.paymentRepository.updateStatus(subscription?._id, 'ACTIVE')
+    Logs.Info(`Payment format ${paymentFrom} instance ${JSON.stringify(instance)}`)
     this.whatsAppController.start(instance, 'payment')
       .catch(error => {
         Logs.Exception(error)
       })
     const user = await this.userRepository.findById(instance.userId ?? '')
     if (user === null) {
-      Logs.Error(`Instance id = ${instance._id} with null user id ${instance.userId ?? 'undefined'} and name ${instance.userName ?? 'undefined'}`)
+      Logs.Error(`Instance ${JSON.stringify(instance)} with null user id`)
     } else {
-      await this.subscriptionEmail.send(user)
+      await this.subscriptionEmail.send(user, instance._id)
     }
     return {
       message: 'The instance is initialized successfully'
