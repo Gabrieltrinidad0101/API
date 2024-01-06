@@ -24,4 +24,13 @@ export default class PaymentControl {
     const body = req.body
     return await paymentApp.eventsControls(body)
   }
+
+  getSubscriptionInvoice = async (req: Request): Promise<IHttpStatusCode> => {
+    const instanceId = req.params.instanceId
+    return await paymentApp.getSubscriptionInvoice({
+      name: req.headers.userName?.toString() ?? '',
+      email: req.headers.userEmail as TypeRol,
+      _id: req.headers.userId?.toString() ?? ''
+    }, instanceId)
+  }
 }

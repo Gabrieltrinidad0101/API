@@ -34,6 +34,7 @@ export interface IInvoice {
   subtotal: number
   paid: number
   invoice_nr: string
+  date: Date
 }
 
 export interface IGenerateInvoiceTemplate {

@@ -1,4 +1,5 @@
-import type IUser from '../../../../../share/domain/user'
+import { type IBasicUser } from '../../../../../share/domain/user'
+
 import { Logs } from '../../../logs'
 import constantes from '../../share/infranstructure/Constantes'
 import { createInvoicePdf, email, getGenerateInvoiceTemplate } from '../../share/infranstructure/dependecies'
@@ -14,7 +15,7 @@ export class SubscriptionEmail implements ISubscriptionEmail {
     return path.join(__dirname, `/subscriptionPdf/${crypto.randomUUID()}.pdf`)
   }
 
-  private readonly generatedPdf = (invoiceFilename: string, instanceId: string): void => {
+  private readonly generatedPdf = (invoiceFilename: string, instanceId: string, instanceCreated: Date): void => {
     createInvoicePdf({
       shipping: {
         name: constantes.COMPANY_NAME,
@@ -32,14 +33,15 @@ export class SubscriptionEmail implements ISubscriptionEmail {
       ],
       subtotal: 2500,
       paid: 0,
-      invoice_nr: instanceId
+      invoice_nr: instanceId,
+      date: instanceCreated
     }, invoiceFilename)
   }
 
-  send = async (user: IUser, instanceId: string): Promise<void> => {
+  send = async (user: IBasicUser, instanceId: string, instanceCreated: Date): Promise<string | undefined> => {
     try {
       const invoicePath = this.getInvoicePath()
-      this.generatedPdf(invoicePath, instanceId)
+      this.generatedPdf(invoicePath, instanceId, instanceCreated)
       const template = getGenerateInvoiceTemplate({
         for: user.name
       })
@@ -52,6 +54,7 @@ export class SubscriptionEmail implements ISubscriptionEmail {
           path: invoicePath
         }
       })
+      return invoicePath
     } catch (error) {
       Logs.Exception(error)
     }

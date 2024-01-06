@@ -5,6 +5,7 @@ import { type TypeRol, type IBasicUser } from '../../../../../../share/domain/us
 export interface IPaymentApp {
   generateSubscription: (subscription: IBasicUser) => Promise<ISubscriptionFromApi>
   eventsControls: (body: any) => Promise<IHttpStatusCode>
+  getSubscriptionInvoice: (user: IBasicUser, instanceId: string) => Promise<IHttpStatusCode>
 }
 
 export interface IPaymentRepository {

@@ -3,6 +3,7 @@ import APIURL from '../../../share/application/Api'
 import { type IInvoiceColumn } from '../domian/invoices'
 import { type ISubscriptionAndInstance } from '../../../../../share/domain/instance'
 import formatDate from '../../../../../share/application/date'
+import { isEmptyNullOrUndefined } from '../../../../../share/application/isEmptyNullUndefiner'
 export default class InvoicesApp {
   constructor (private readonly fecthAlert: IFecthAlert) {}
   get = async (): Promise<IInvoiceColumn[] | []> => {
@@ -10,7 +11,6 @@ export default class InvoicesApp {
     if (invoices === undefined) {
       return []
     }
-    console.log(invoices)
     const result = invoices.message?.map<IInvoiceColumn>((invoice): IInvoiceColumn => {
       return {
         id: invoice?.id ?? '',
@@ -21,5 +21,13 @@ export default class InvoicesApp {
       }
     }) ?? []
     return result
+  }
+
+  downloadPdfSubscriptionInvoice = async (instanceId: string): Promise<void> => {
+    const invoiceLink = await this.fecthAlert.customFecth.get<string>(APIURL.getSubscriptionInvoice(instanceId), {})
+    if (invoiceLink?.message === undefined || isEmptyNullOrUndefined(invoiceLink)) return
+    const downloadLink = document.createElement('a')
+    downloadLink.download = invoiceLink.message
+    downloadLink.click()
   }
 }

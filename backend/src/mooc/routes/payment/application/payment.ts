@@ -108,7 +108,10 @@ export class PaymentApp implements IPaymentApp {
     if (user === null) {
       Logs.Error(`Instance ${JSON.stringify(instance)} with null user id`)
     } else {
-      await this.subscriptionEmail.send(user, instance._id)
+      if (instance.createdIn == null) {
+        Logs.Error(`Instance ${JSON.stringify(instance)} with null createdIn`)
+      }
+      await this.subscriptionEmail.send(user as IBasicUser, instance._id, instance.createdIn ?? new Date())
     }
     return {
       message: 'The instance is initialized successfully'
@@ -156,5 +159,27 @@ export class PaymentApp implements IPaymentApp {
     await this.instanceRepository.updateEndService(instance._id, null)
     await this.instanceRepository.updatePaymentLink(instance._id, link)
     await this.paymentRepository.updateInstanceId(paymentSubscriptionId ?? '', instance._id)
+  }
+
+  getSubscriptionInvoice = async (user: IBasicUser, instanceId: string): Promise<IHttpStatusCode> => {
+    const instance = await this.instanceRepository.findByIdAndUserId(user._id, instanceId)
+    if (instance === null || isEmptyNullOrUndefined(instance)) {
+      return {
+        statusCode: 422,
+        error: 'Instance is not found',
+        message: 'Instance is not found'
+      }
+    }
+
+    const path = await this.subscriptionEmail.send(user, instance._id, instance.createdIn ?? new Date())
+    if (path === null) {
+      return {
+        statusCode: 500,
+        error: 'Error getting the pdf'
+      }
+    }
+    return {
+      message: path
+    }
   }
 }

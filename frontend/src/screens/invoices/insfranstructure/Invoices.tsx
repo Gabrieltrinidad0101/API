@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import { DataGrid, type GridColDef } from '@mui/x-data-grid'
+import { DataGrid, type GridCellParams, type GridColDef } from '@mui/x-data-grid'
 import InvoicesCss from './Invoices.module.css'
 import { invoicesApp } from './dependecies'
-import { TextField } from '@mui/material'
+import { Button, TextField } from '@mui/material'
 import { useUserContext } from '../../../share/infranstruture/AuthenticationContext'
+
+const DownloadButton = async (params: GridCellParams): Promise<JSX.Element> => {
+  await invoicesApp.downloadPdfSubscriptionInvoice(params.id.toString())
+  return <Button variant='text' color='success' > <i className="fa-solid fa-download mr-5"></i> Download</Button>
+}
+
 export default function Invoices (): JSX.Element {
   const [invoices, setInvoices] = useState<any[]>([])
   const { user } = useUserContext()
@@ -12,7 +18,8 @@ export default function Invoices (): JSX.Element {
     { field: 'instanceId', headerName: 'Instance Id', flex: 1 },
     { field: 'paymentDate', headerName: 'Payment Date', flex: 1 },
     { field: 'instanceName', headerName: 'Instance Name', flex: 1 },
-    { field: 'userName', headerName: 'User Name', flex: 1 }
+    { field: 'userName', headerName: 'User Name', flex: 1 },
+    { field: 'download', headerName: 'Download', flex: 1, renderCell: DownloadButton }
   ]
 
   useEffect((): void => {

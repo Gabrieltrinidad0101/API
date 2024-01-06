@@ -15,7 +15,8 @@ const APIURL = {
   updatePassword: '/user/updatePassword',
   verifySubscription: (subscriptionId: string) => `/payment/sucess?subscription_id=${subscriptionId}`,
   getInvoices: '/payment',
-  reCreateSubscription: '/payment/reCreateSubscription'
+  reCreateSubscription: '/payment/reCreateSubscription',
+  getSubscriptionInvoice: (instanceId: string) => `/payment/getSubscriptionInvoice/${instanceId}`
 }
 
 export default APIURL
